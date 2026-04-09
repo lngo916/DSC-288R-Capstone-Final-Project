@@ -1,0 +1,32 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage{amsmath,graphicx}
+\usepackage{url} 
+
+\title{Capstone Report - Steam Player Retention Project \\[0.2em]
+\large Predictive Modeling for Player Retention in Multi-Modal Gaming Data}
+
+\author{
+\IEEEauthorblockN{Jason Limfueco, Laura Ngo, Baixi Guo}
+\IEEEauthorblockA{
+University of California San Diego, Master of Data Science
+}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Steam is one of the largest digital gaming platforms in the world, generating vast amounts of multi-modal data that capture player behavior, game interactions, and community sentiment at scale. Player retention is a critical factor in the success of these online gaming platforms, as it directly influences user engagement, personalization, and long-time sustainability and revenue. In this project, we formulate player retention as a supervised learning task, where the goal is to predict whether a user will remain active on the platform given historical game play behavior, user interaction patterns, and game metadata. The input consists of structured behavioral logs, textual data (e.g., reviews), and derived semantic features, while the output is a binary retention label. We leverage a large-scale Steam dataset (43GB), reducing the high-dimensional feature space through embedding techniques to support both predictive modeling and exploratory analysis \cite{steam_dataset}. Dimensionality reduction methods such as Principal Component Analysis (PCA) and UMAP are used to compress feature representations and analyze tradeoffs between information preservation and interpretability. Embeddings are generated using TF-IDF and transformer-based models to capture semantic relationships in textual and content-based features. Prior work in retention modeling has primarily focused on simpler behavioral features in domains such as e-commerce and social platforms, often lacking integration of heterogeneous data sources. Our approach extends this by incorporating sentiment analysis and embedding-based representations to capture richer user and game dynamics. We evaluate a range of models, including Logistic Regression as an interpretable baseline, and more expressive methods such as Random Forests and Gradient Boosted Trees to capture nonlinear relationships. Additionally, we explore temporal patterns and embedding-based representations to improve predictive performance. Model performance is assessed using standard classification metrics including accuracy, precision, recall, F1-score, and ROC-AUC. Beyond predictive accuracy, we aims to provide actionable insights into the key factors that drive player retention in gaming ecosystems. This paper explores the analytical framework, system architecture, and visualizations developed to address the challenge of modeling and understanding player retention and  engagement on Steam. 
+\end{abstract}
+
+
+\begin{thebibliography}{1}
+
+\bibitem{steam_dataset}
+K. Pocock, "Steam Reviews Dataset," Kaggle, 2023. [Online]. Available: \url{https://www.kaggle.com/datasets/kieranpoc/steam-reviews/code}. [Accessed: Apr. 8, 2026].
+
+\end{thebibliography}
+
+\end{document}
