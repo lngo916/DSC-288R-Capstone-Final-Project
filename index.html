@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <title>Steam Retention Project</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.129.0/build/three.module.js",
+      "three/examples/jsm/": "https://unpkg.com/three@0.129.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="top-nav">
+    <ul>
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#intro">Story</a></li>
+      <li><a href="#eda">EDA</a></li>
+      <li><a href="#machine-learning">Machine Learning</a></li>
+      <li><a href="#insights">Insights</a></li>
+    </ul>
+  </nav>
+
+  <!-- Page 1 (Hero) -->
+  <section id="hero" class="hero">
+
+    <div class="hero-text">
+      <h1>
+        STEAM: PLAYER RETENTION <br> RECOMMENDER SYSTEM
+      </h1>
+
+      <p>
+        This project analyzes <strong>Steam</strong> player behavior, game interactions,
+        and user-generated reviews to predict player retention using
+        machine learning. Leveraging a large-scale multi-modal dataset,
+        we combine behavioral logs, textual data, and metadata to model
+        factors that influence a player's ongoing activity.
+      </p>
+
+      <a href="#intro" class="btn">Read More</a>
+
+      <div class="footer-link">
+        <span>Game Presentation</span>
+        <div class="line"></div>
+      </div>
+    </div>
+
+    <div class="hero-image">
+      <div id="container3D"></div>
+    </div>
+  </section>
+
+  <!-- Page 2 (Intro/Story) -->
+<section id="intro" class="intro-section">
+
+  <div class="intro-content">
+    <h2 class="intro-heading">INTRODUCTION</h2>
+
+    <p class="intro-body">
+      Our approach to player retention integrates
+      <strong>supervised learning, error analysis,</strong> and a
+      <strong>similarity-based recommendation system</strong>
+      to predict churn, understand its underlying drivers, and identify
+      competing games. We will be able to observe actionable insights
+      into player <strong>engagement</strong>,
+      <strong>personalization</strong>, and
+      <strong>retention</strong> strategies in gaming ecosystems.
+    </p>
+
+  <div class="intro-hexagons">
+    <div class="hex-wrap hex-top">
+      <div class="hex">
+        <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80" alt="Gaming setup" />
+      </div>
+    </div>
+    <div class="hex-wrap hex-bottom">
+      <div class="hex">
+        <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&q=80" alt="Esports" />
+      </div>
+    </div>
+  </div>
+
+</section>
+
+  <!-- Page 3 (EDA) -->
+  <section id="eda" class="section">
+    <h2>EDA</h2>
+    <p>Charts, distributions, player behavior analysis.</p>
+  </section>
+
+  <!-- Page 4 (Machine Learning) -->
+  <section id="machine-learning" class="section">
+    <h2>Machine Learning</h2>
+    <p>Models, features, evaluation metrics.</p>
+  </section>
+
+  <!-- Page 5 (Insights) -->
+  <section id="insights" class="section">
+    <h2>Insights</h2>
+    <p>Key findings and conclusions.</p>
+  </section>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
+

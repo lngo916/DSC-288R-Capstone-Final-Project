@@ -1,0 +1,323 @@
+/* ========================== */
+/* RESET */
+/* ========================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.section {
+  min-height: 100vh;
+  padding: 100px 80px;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+/* ========================== */
+/* ROOT VARIABLES */
+/* ========================== */
+:root {
+  --bg: #111111;
+  --accent: #9cbfe2;
+  --text: #ffffff;
+  --subtext: #e4e4e4;
+}
+
+/* ========================== */
+/* BODY */
+/* ========================== */
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
+}
+
+/* ========================== */
+/* NAVBAR */
+/* ========================== */
+.top-nav {
+  position: fixed;   /* 🔥 important fix */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  z-index: 1000;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 0 clamp(20px, 6vw, 80px);
+
+  /* glass effect */
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* REMOVE LIST DEFAULTS */
+.top-nav ul {
+  list-style: none;
+  display: flex;
+  gap: clamp(20px, 3vw, 50px);
+  margin: 0;
+  padding: 0;
+}
+
+/* LINKS */
+.top-nav a {
+  text-decoration: none;
+  color: var(--text);
+  font-size: 14px;
+  transition: 0.3s;
+  white-space: nowrap;
+}
+
+/* HOVER EFFECT */
+.top-nav a:hover {
+  color: var(--accent);
+}
+
+/* OPTIONAL: active link feel */
+.top-nav a:active {
+  color: var(--accent);
+}
+
+/* ========================== */
+/* NAV CONTAINER */
+/* ========================== */
+.navbar nav {
+  display: flex;
+  justify-content: center; /* 🔥 centers links */
+  align-items: center;
+
+  gap: clamp(20px, 3vw, 50px);
+}
+
+/* ========================== */
+/* HERO SECTION */
+/* ========================== */
+#hero {
+  scroll-margin-top: 80px;
+  background: linear-gradient(to bottom, #aaabba, #0c1635);
+
+  /* 🔥 important: prevents top gap under fixed navbar */
+  padding-top: 80px;
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* key change */
+
+  gap: clamp(30px, 6vw, 80px);
+  padding: 0 clamp(10px, 6vw, 80px);
+
+  min-height: 100vh;
+}
+
+.hero-text {
+  max-width: 600px;
+}
+
+.hero-text h1 {
+  font-size: clamp(32px, 4vw, 56px);
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.15;
+  margin-bottom: 20px;
+}
+
+
+.hero-text p {
+  font-size: 14px;
+  color: var(--subtext);
+  line-height: 1.7;
+  margin-bottom: 25px;
+}
+
+.btn {
+  padding: 12px 26px;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: 0.3s;
+  font-family: 'Poppins', sans-serif;
+}
+
+.btn:hover {
+  background: var(--accent);
+  color: black;
+}
+
+.hero-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#container3D {
+  width: 100%;
+  height: 650px;
+  
+}
+
+/* ========================== */
+/* FOOTER LINE */
+/* ========================== */
+.footer-link {
+  display: flex;
+  align-items: center;
+  margin-top: 40px;
+}
+
+.footer-link span {
+  font-size: 13px;
+  margin-right: 15px;
+}
+
+.footer-link .line {
+  width: 100px;
+  height: 2px;
+  background: var(--accent);
+}
+
+
+/* ========================== */
+/* RESPONSIVE (TABLET / SMALL LAPTOP) */
+/* ========================== */
+@media (max-width: 900px) {
+
+  .hero {
+    flex-direction: column-reverse; /* 🔥 key fix */
+    text-align: center;
+
+    height: auto;
+    padding: 60px 20px;
+  }
+
+  .hero-text {
+    max-width: 90%;
+  }
+
+  .hero-image {
+    margin-bottom: 30px; /* spacing above text now */
+  }
+
+}
+
+
+/* =============================================
+   INTRO SECTION — matches hero theme (image 2)
+   Add these rules to your style.css
+   ============================================= */
+
+.intro-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: clamp(30px, 6vw, 80px);
+  padding: 0 clamp(10px, 6vw, 80px);
+
+  background: linear-gradient(135deg, #0c1635, #051030);
+}
+
+/* Subtle grid overlay for depth */
+.intro-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(30, 160, 220, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 160, 220, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+
+/* ── Left text column ── */
+.intro-content {
+  flex: 1;
+  max-width: 600px;
+}
+
+.intro-heading {
+  font-size: clamp(32px, 4vw, 56px); /* match hero h1 */
+  font-weight: 700;
+  color: #9cbfe2; /* same accent as hero */
+  line-height: 1.15;
+  margin-bottom: 20px;
+}
+
+.intro-body {
+  font-size: 14px;
+  color: #c8d8e8;
+  line-height: 1.7;
+}
+
+
+.intro-body strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.intro-btn:hover {
+  background: #ffffff;
+  color: #1a1f2e;
+}
+
+/* ── Hexagon cluster (right side) ── */
+.intro-hexagons {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  height: 400px;
+}
+
+.hex-wrap {
+  position: absolute;
+}
+
+.hex-top    { top: 0;    right: 0;   width: 240px; }
+.hex-bottom { bottom: 0; left: 0;    width: 220px; }
+
+/* CSS clip-path hexagon */
+.hex {
+  width: 100%;
+  aspect-ratio: 1 / 1.15;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  overflow: hidden;
+  border: 3px solid rgba(30, 160, 220, 0.35);
+  transition: transform 0.35s ease;
+}
+
+.hex:hover {
+  transform: scale(1.04);
+}
+
+.hex img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.75) saturate(0.85);
+  transition: filter 0.35s;
+}
+
+.hex:hover img {
+  filter: brightness(0.9) saturate(1.1);
+}
+
