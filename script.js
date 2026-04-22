@@ -125,3 +125,23 @@ window.addEventListener("resize", () => {
   camera.updateProjectionMatrix();
   renderer.setSize(w, h);
 });
+
+
+// MACHINE LEARNING 
+
+document.addEventListener('DOMContentLoaded', () => {
+  const mlTrack = document.getElementById('ml-track');
+  const mlCounter = document.getElementById('ml-counter');
+  const mlSlides = document.querySelectorAll('.carousel-slide');
+  const mlTotal = mlSlides.length;
+  let mlCurrent = 0;
+
+  function mlGoTo(index) {
+    mlCurrent = (index + mlTotal) % mlTotal;
+    mlTrack.style.transform = `translateX(-${mlCurrent * 100}%)`;
+    mlCounter.textContent = `${mlCurrent + 1} / ${mlTotal}`;
+  }
+
+  document.getElementById('ml-prev').addEventListener('click', () => mlGoTo(mlCurrent - 1));
+  document.getElementById('ml-next').addEventListener('click', () => mlGoTo(mlCurrent + 1));
+});
