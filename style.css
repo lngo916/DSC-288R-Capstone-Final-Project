@@ -110,7 +110,7 @@ body {
 /* ========================== */
 #hero {
   scroll-margin-top: 80px;
-  background: linear-gradient(to bottom, #aaabba, #11204b);
+  background: linear-gradient(to bottom, #aaabba, #1e3261);
 
   /* 🔥 important: prevents top gap under fixed navbar */
   padding-top: 80px;
@@ -129,6 +129,7 @@ body {
 
 .hero-text {
   max-width: 600px;
+
 }
 
 .hero-text h1 {
@@ -172,7 +173,7 @@ body {
 #container3D {
   width: 100%;
   height: 650px;
-  
+  padding: 0px;
 }
 
 /* ========================== */
@@ -193,6 +194,19 @@ body {
   width: 100px;
   height: 2px;
   background: var(--accent);
+}
+
+.ripple-block {
+  opacity: 0;
+  transform: translateY(25px);
+  filter: blur(8px);
+}
+
+@keyframes rippleIn {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 
@@ -228,7 +242,7 @@ body {
   display: flex;
   flex-direction: column;
 
-  background: linear-gradient(to bottom, #11204b, #0c1d4a);
+  background: linear-gradient(to bottom, #1e3261, #132652);
   position: relative;
   overflow: hidden;
   color: white;
@@ -314,10 +328,13 @@ body {
 
 /* card */
 .steam-card {
-  width: 260px;
-  flex-shrink: 0;
+  width: 280px;
+  flex: 0 0 auto;
   margin-right: 16px;
-  font-family: sans-serif;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.03);
+  transition: transform 0.25s ease;
 }
 
 .steam-card img {
@@ -334,8 +351,13 @@ body {
 }
 
 /* hover effect */
+.steam-card:hover {
+  transform: translateY(-6px);
+}
+
 .steam-card:hover img {
   transform: scale(1.05);
+
 }
 
 /* infinite animation */
@@ -352,12 +374,12 @@ body {
 .eda-section {
   min-height: 100vh;
   padding: 80px;
-  background: linear-gradient(to bottom, #0c1d4a, #020a1e);
+  background: linear-gradient(to bottom, #132652, #081535);
   color: white;
   display: flex;
   flex-direction: column;
   gap: 40px;
-  margin-top: 40px;
+  padding-top: 100px;
 }
 
 /* ── TOP ROW ── */
@@ -376,7 +398,8 @@ body {
 .eda-text h2 {
   font-size: 42px;
   color: #9cbfe2;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
+  margin-top: 60px;
 }
 
 .eda-text p {
@@ -387,33 +410,30 @@ body {
 
 /* github box */
 .eda-github {
-  width: 180px;
-  height: 90px;
+  width: 140px;
+  height: 40px;
 
-  background: #d4d6d9;
+  background: #155bc4;
   border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px;
+  border-radius: 4px;
 
-  margin-top: 60px;
-  padding: 20px;
+  margin-top: 180px;
   text-decoration: none;
-  color: white;
+  color: rgb(60, 70, 203);
 
   display: flex;
-  flex-direction: column;
+  align-items: center;
   justify-content: center;
+
+  white-space: nowrap;
 
   transition: transform 0.25s ease, border 0.25s ease;
 }
 
 .eda-github h3 {
-  margin-bottom: 10px;
-  color: #9cbfe2;
-}
-
-.eda-github p {
-  font-size: 13px;
-  opacity: 0.8;
+  margin: 0;
+  color: #f6f7f9;
+  font-size: 15px;
 }
 
 .eda-github:hover {
@@ -431,18 +451,19 @@ body {
 
 /* cards */
 .eda-card {
-  background: #e4e1e195;
+  background: #f0efef;
   border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
+  border-radius: 6px;
 
   padding: 25px;
   min-height: 180px;
+  height: 40vh;
 
   transition: transform 0.25s ease, border 0.25s ease;
 }
 
 .eda-card h3 {
-  color: #9cbfe2;
+  color: #0b447e;
   margin-bottom: 10px;
 }
 
@@ -450,6 +471,7 @@ body {
   font-size: 13px;
   opacity: 0.8;
   line-height: 1.5;
+  color: #134f8a;
 }
 
 .eda-card:hover {
@@ -540,7 +562,7 @@ body {
 #ml {
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(to bottom, #020a1e, #040404);
+  background: linear-gradient(to bottom, #081535, #030916);
   display: flex;
   flex-direction: column;
 }
@@ -573,9 +595,8 @@ body {
  
 .slide-image {
   aspect-ratio: 4/3;
-  border-radius: 14px;
+  border-radius: 3px;
   overflow: hidden;
-  background: #f9f5ef;
 }
  
 .slide-image img {
@@ -594,14 +615,14 @@ body {
 .slide-title {
   font-family: 'Poppins', serif;
   font-size: clamp(44px, 6vw, 72px);
-  color: #dde1ec;
+  color: #9cbfe2;
   line-height: 1.0;
   font-weight: 600;
 }
  
 .slide-desc {
   font-size: 17px;
-  color: #dedced;
+  color: #f2f4f6;
   line-height: 1.65;
   font-weight: 300;
 }
@@ -617,7 +638,7 @@ body {
   width: 52px;
   height: 52px;
   border-radius: 8px;
-  background: #cdcce0;
+  background: #fbfbfb;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -629,12 +650,12 @@ body {
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #ddedfc;
+  color: #eaeef3;
 }
  
 .meta-tag {
   font-size: 13px;
-  color: #8a7f72;
+  color: #eaeef3;
   margin-top: 2px;
 }
  
@@ -663,7 +684,7 @@ body {
 }
  
 .ml-arrow:hover {
-  background: #8da0ea;
+  background: #9cbfe2;
   transform: scale(1.06);
 }
  
@@ -676,4 +697,168 @@ body {
   color: #f9f5f0;
   margin-left: 4px;
   letter-spacing: 0.05em;
+}
+
+/* INSIGHTS SECTION */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap');
+
+.insights-section {
+  min-height: 100vh;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  background: linear-gradient(to bottom, #030916, #c7d1de);
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden;
+}
+
+/* ── LEFT ── */
+.insights-left {
+  padding: 80px 60px 80px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.insights-heading {
+  font-family: 'Poppins', serif;
+  font-size: clamp(36px, 4vw, 56px);
+  font-weight: 400;
+  color: #faf8f8;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.insights-subheading {
+  font-size: 15px;
+  color: #f1eded;
+  line-height: 1.7;
+  font-weight: 300;
+  max-width: 480px;
+  margin: 0;
+}
+
+.insights-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+}
+
+.insights-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 18px 0;
+  border-top: 1px solid #e8e8e8;
+}
+
+.insights-item:last-child {
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.insights-num {
+  font-size: 13px;
+  color: #f1f1f1;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  min-width: 24px;
+  padding-top: 2px;
+}
+
+.insights-item p {
+  font-size: 15px;
+  color: #f5f1f1;
+  line-height: 1.6;
+  font-weight: 400;
+  margin: 0;
+}
+
+
+/* ── RIGHT ── */
+.insights-right {
+  position: relative;
+  background: transparent;
+  border-radius: 0;
+  padding-right: 20px;
+  box-sizing: border-box;
+}
+
+.insights-carousel-outer {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.insights-carousel-track {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.insights-slide {
+  min-width: 100%;
+  width: 100%;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px 20px;
+  box-sizing: border-box; 
+}
+
+.insights-slide img {
+  max-width: 100%;
+  max-height: 100%;
+
+  width: auto;
+  height: auto;
+
+  object-fit: contain;
+  display: block;
+  border-radius: 20px;
+}
+
+.insights-image-wrapper {
+  position: relative;  /* arrows now position relative to this */
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.insights-arrows {
+  position: absolute;
+  top: 10px;       /* sits just above the image */
+  right: 0px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.insights-arrow {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.15s;
+  backdrop-filter: blur(4px);
+}
+
+.insights-arrow:hover {
+  background: #3d5fe8;
+  transform: scale(1.08);
+}
+
+.insights-arrow:active {
+  transform: scale(0.96);
 }
