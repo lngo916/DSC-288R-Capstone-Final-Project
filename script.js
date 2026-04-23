@@ -59,7 +59,7 @@ const clock = new THREE.Clock();
 
 const loader = new GLTFLoader();
 
-loader.load("/images/steam2.glb", (gltf) => {
+loader.load("images/steam2.glb", (gltf) => {
   object = gltf.scene;
   scene.add(object);
 
