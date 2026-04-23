@@ -10,13 +10,15 @@
   <link rel="stylesheet" href="style.css">
 
   <script type="importmap">
-{
-  "imports": {
-    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-    "three/examples/jsm/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-  }
-}
-</script>
+    {
+      "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/examples/jsm/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <link rel="preload" href="images/steam2.glb" as="fetch" crossorigin="anonymous">
 </head>
 
 <body>
@@ -36,11 +38,11 @@
   <section id="hero" class="hero">
 
     <div class="hero-text">
-      <h1>
+      <h1 class = 'ripple-block'>
         STEAM: PLAYER RETENTION <br> RECOMMENDER SYSTEM
       </h1>
 
-      <p>
+      <p class = 'ripple-block'>
         This project analyzes <strong>Steam</strong> player behavior, game interactions,
         and user-generated reviews to predict player retention using
         machine learning. Leveraging a large-scale multi-modal dataset,
@@ -66,7 +68,7 @@
 
   <!-- TOP: centered text -->
   <div class="intro-top">
-    <h2 class="intro-heading">INTRODUCTION</h2>
+    <h2 class="intro-heading class =">INTRODUCTION</h2>
 
     <p class="intro-body">
       Our approach to player retention integrates
@@ -159,9 +161,8 @@
     </div>
 
     <!-- GITHUB INFO BOX -->
-    <a href="https://github.com/" target="_blank" class="eda-github">
+    <a href="https://github.com/lngo916/DSC-288R-Capstone-Final-Project" target="_blank" class="eda-github">
       <h3>More Info</h3>
-      <p>View full analysis on GitHub →</p>
     </a>
 
   </div>
@@ -193,14 +194,15 @@
 
 </section>
 
-  <!-- Page 4 (Machine Learning) -->
+
+<!-- Page 4 (Machine Learning) -->
 <section id="ml" class="ml-section">
 
   <div class="carousel-outer">
     <div class="carousel-track" id="ml-track">
 
       <!-- Slide 1 -->
-      <div class="carousel-slide">
+      <div class="carousel-slide ml-reveal">
         <div class="slide-image">
           <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop" alt="EDA" />
         </div>
@@ -218,7 +220,7 @@
       </div>
 
       <!-- Slide 2 -->
-      <div class="carousel-slide">
+      <div class="carousel-slide ml-reveal">
         <div class="slide-image">
           <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&auto=format&fit=crop" alt="Churn Model" />
         </div>
@@ -236,23 +238,22 @@
       </div>
 
       <!-- Slide 3 -->
-             <div class="carousel-slide">
+      <div class="carousel-slide ml-reveal">
         <div class="slide-image">
-          <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&auto=format&fit=crop" alt="Churn Model" />
+          <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&auto=format&fit=crop" alt="Recommendation System" />
         </div>
         <div class="slide-content">
-          <h2 class="slide-title">Churn Model</h2>
-          <p class="slide-desc">Supervised learning model predicting player drop-off with feature importance and retention scoring.</p>
+          <h2 class="slide-title">Recommendation</h2>
+          <p class="slide-desc">Similarity-based system identifying competing games and optimizing player retention strategies.</p>
           <div class="slide-meta">
-            <div class="meta-icon">🤖</div>
+            <div class="meta-icon">🎯</div>
             <div class="meta-text">
-              <div class="meta-name">Supervised</div>
-              <div class="meta-tag">Machine Learning</div>
+              <div class="meta-name">Recommender</div>
+              <div class="meta-tag">Systems</div>
             </div>
           </div>
         </div>
       </div>
-
 
     </div>
   </div>
@@ -265,13 +266,67 @@
 
 </section>
 
-
   <!-- Page 5 (Insights) -->
-  <section id="insights" class="section">
-    <h2>Insights</h2>
-    <p>Key findings and conclusions.</p>
-  </section>
+<section id="insights" class="insights-section">
+
+  <!-- LEFT: text content -->
+  <div class="insights-left">
+    <h2 class="insights-heading">See the Big Picture</h2>
+    <p class="insights-subheading">Key findings from our player retention analysis — surfacing what drives churn, what keeps players engaged, and where opportunities lie.</p>
+
+    <div class="insights-list">
+      <div class="insights-item">
+        <span class="insights-num">01</span>
+        <p>Session length and frequency are the strongest predictors of long-term retention.</p>
+      </div>
+      <div class="insights-item">
+        <span class="insights-num">02</span>
+        <p>Players who churn within 7 days share distinct early behavioral patterns detectable at signup.</p>
+      </div>
+      <div class="insights-item">
+        <span class="insights-num">03</span>
+        <p>Competing game recommendations improve re-engagement rates by surfacing relevant alternatives.</p>
+      </div>
+      <div class="insights-item">
+        <span class="insights-num">04</span>
+        <p>Personalization at scale is achievable with collaborative filtering on minimal interaction data.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: image carousel -->
+
+  <div class="insights-right">
+  <div class="insights-image-wrapper">
+    <div class="insights-carousel-outer">
+      <div class="insights-carousel-track" id="insights-track">
+        <!-- Slide 1 -->
+        <div class="insights-slide">
+          <img src="/images/empty_data.gif" alt="EDA insights" />
+        </div>
+
+        <!-- Slide 2 -->
+        <div class="insights-slide">
+          <img src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=800&auto=format&fit=crop" alt="Churn model" />
+        </div>
+
+        <!-- Slide 3 -->
+        <div class="insights-slide">
+          <img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=800&auto=format&fit=crop" alt="Recommendations" />
+        </div>
+      </div>
+    </div>
+    <div class="insights-arrows">
+      <button class="insights-arrow" id="insights-prev">&#8249;</button>
+      <button class="insights-arrow" id="insights-next">&#8250;</button>
+    </div>
+  </div>
+</div>
+
+</section>
+
 
   <script type="module" src="script.js"></script>
 </body>
 </html>
+
