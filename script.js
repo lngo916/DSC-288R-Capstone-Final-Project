@@ -206,6 +206,71 @@ document.addEventListener("DOMContentLoaded", () => {
     renderer.setSize(w, h);
   });
 
+  // Overview 
+  const aboutSection = document.querySelector("#about");
+
+const aboutObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      aboutSection.classList.add("show");
+    } else {
+      aboutSection.classList.remove("show"); // allows replay
+    }
+  });
+}, { threshold: 0.3 });
+
+aboutObserver.observe(aboutSection);
+
+  // The process 
+
+const section = document.querySelector("#process");
+
+const observer2 = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      section.classList.add("show");
+    } else {
+      section.classList.remove("show"); // 
+    }
+  });
+}, { threshold: 0.3 });
+
+observer2.observe(section);
+
+const items = document.querySelectorAll(".process-item");
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, index) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => {
+        entry.target.classList.add("show");
+      }, index * 150);
+    } else {
+      entry.target.classList.remove("show"); // 
+    }
+  });
+}, { threshold: 0.2 });
+
+items.forEach(item => observer.observe(item));
+
+// EDA 
+const edaCards = document.querySelectorAll(".eda-card");
+
+const edaObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("show");
+    } else {
+      entry.target.classList.remove("show"); // replay
+    }
+  });
+}, { threshold: 0.2 });
+
+edaCards.forEach((card, index) => {
+  edaObserver.observe(card);
+  card.style.transitionDelay = `${index * 0.15}s`;
+});
+
 
   // =====================
   // MACHINE LEARNING SLIDER
