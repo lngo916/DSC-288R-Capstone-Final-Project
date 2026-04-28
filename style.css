@@ -27,7 +27,6 @@ body {
   overflow-x: hidden;
 }
 
-
 section {
   min-height: 100vh;
   width: 100%;
@@ -58,7 +57,9 @@ section {
   letter-spacing: -0.01em;
   line-height: 0.95;
   color: var(--accent);
+  text-shadow: 0 0 25px rgba(235, 238, 248, 0.315);
 }
+
 
 .body-text {
   font-size: 14px;
@@ -185,13 +186,14 @@ section {
   color: var(--accent);
   line-height: 1.15;
   margin-bottom: 20px;
+  width: 500px;
 }
 
 .hero-text p {
-  font-size: 16px;
+  font-size: 14px;
   color: rgb(248, 248, 248);
   line-height: 1.7;
-  margin-bottom: 28px;
+  margin-bottom: 15px;
 }
 
 .btn {
@@ -239,6 +241,13 @@ section {
   justify-content: space-between;
   padding: 0 clamp(20px, 6vw, 80px);
 }
+
+.hero-presented {
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+
 
 .hero-credit.right {
   text-align: right;
@@ -324,6 +333,7 @@ section {
     max-height: 35vh;
   }
 }
+
 
 /* ══════════════════════════════
   SLIDE 2: INTRODUCTION (steam slider)
@@ -496,6 +506,8 @@ section {
   background: linear-gradient(to bottom, #040c1c, #05070c);
   display: flex;
   align-items: center;
+  position: relative;
+  overflow: hidden;
 }
 
 .about-badge {
@@ -518,6 +530,9 @@ section {
   flex-direction: column;
   gap: 16px;
   align-items: flex-start;
+  transform: translateX(-60px);
+  position: relative;
+  padding-left: 30px;
 }
 
 .about-right {
@@ -527,6 +542,48 @@ section {
   padding-top: 60px;
 }
 
+.about-right {
+  background: rgba(255, 255, 255, 0.047);
+  padding: 30px;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.444);
+}
+
+.about-right:hover {
+  border-color: rgba(241, 239, 250, 0.3);
+  box-shadow: 0 10px 40px rgba(124,92,255,0.1);
+}
+
+.about-inner {
+  position: relative;
+  z-index: 2;
+}
+
+.about-left,
+.about-right {
+  opacity: 0;
+  transition: all 0.8s ease;
+}
+
+.about-left::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 2px;
+  height: 80%;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+  opacity: 0.6;
+}
+
+
+#about.show .about-left,
+#about.show .about-right {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 /* ══════════════════════════════
        SLIDE 4: THE PROCESS
     ══════════════════════════════ */
@@ -534,6 +591,17 @@ section {
   background: linear-gradient(to bottom, #05070c, #07080a);
   display: flex;
   align-items: center;
+}
+
+#process {
+  opacity: 0;
+  transform: translateY(80px);
+  transition: all 0.8s ease;
+}
+
+#process.show {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .process-inner {
@@ -546,6 +614,21 @@ section {
   padding: 120px 60px;
   position: relative;
   z-index: 2;
+}
+
+
+.process-inner::after {
+  content: "";
+  display: block;
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  margin-top: 20px;
+  transition: width 0.8s ease;
+}
+
+#process.show .process-inner::after {
+  width: 120px;
 }
 
 .process-grid {
@@ -583,6 +666,21 @@ section {
   position: relative;
 }
 
+#eda::before {
+  content: "";
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(116,148,208,0.15), transparent 70%);
+  top: -150px;
+  right: -100px;
+  z-index: 0;
+}
+
+.eda-top, .eda-grid {
+  position: relative;
+  z-index: 2;
+}
 
 .eda-top {
   display: flex;
@@ -596,10 +694,11 @@ section {
 }
 
 .eda-text h2 {
-  font-size: 50px;
+  font-size: 40px;
   color: var(--accent);
   margin-bottom: 10px;
   margin-top: 20px;
+  font-weight: 800;
 }
 
 .eda-text p {
@@ -630,11 +729,11 @@ section {
   font-size: 15px;
 }
 
-.eda-github:hover {
-  transform: translateY(-5px);
-  border: 1px solid rgba(156, 191, 226, 0.6);
+.eda-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  border: 1px solid rgba(231, 234, 237, 0.4);
+  box-shadow: 0 20px 60px rgba(116,148,208,0.15);
 }
-
 .eda-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -643,13 +742,31 @@ section {
 }
 
 .eda-card {
-  background: rgb(236, 236, 236);
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(10px);
   border: 1px solid rgba(156, 191, 226, 0.15);
-  border-radius: 6px;
+  border-radius: 10px;
   padding: 25px;
   min-height: 180px;
   height: 40vh;
-  transition: transform 0.25s ease, border 0.25s ease;
+  transition: all 0.35s ease;
+  opacity: 0;
+  transform: translateY(40px) scale(0.98);
+}
+
+.eda-card::before {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 2px;
+  background: var(--accent);
+  margin-bottom: 12px;
+  opacity: 0.6;
+}
+
+.eda-card.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 .eda-card h3 {
@@ -661,7 +778,7 @@ section {
   font-size: 13px;
   opacity: 0.8;
   line-height: 1.5;
-  color: #000000;
+  color: #ffffff;
 }
 
 .eda-card:hover {
@@ -1126,6 +1243,102 @@ section {
 .big-title { 
   margin-top: 30px;
   font-size: 80px;
+}
+
+/* ══════════════════════════════
+  TEAM SECTION
+══════════════════════════════ */
+#team {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #141415, #141415);
+  padding: 100px clamp(20px, 6vw, 80px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.team-inner {
+  max-width: 1100px;
+  width: 100%;
+  text-align: center;
+}
+
+.team-header {
+  margin-bottom: 60px;
+}
+
+.team-sub {
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--subtext);
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 30px;
+}
+
+.team-card {
+  background: rgba(255, 255, 255, 0.174);
+  padding: 30px 24px;
+  border-radius: 14px;
+  text-align: left;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.team-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent, rgba(156,191,226,0.08), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.team-card:hover::before {
+  opacity: 1;
+}
+
+.team-card:hover {
+  transform: translateY(-8px);
+}
+
+.team-card {
+  text-align: center; /* centers everything inside */
+}
+
+.team-avatar {
+  width: 190px;
+  height: 150px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+
+  border-radius: 12px; /* square with soft corners */
+  
+  margin: 12px auto 16px; /* centers horizontally */
+  display: block;
+
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 6px 20px rgba(225, 216, 216, 0.4);
+}
+
+.team-name {
+  font-size: 20px;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+.team-desc {
+  font-size: 14px;
+  color: var(--subtext);
+  line-height: 1.7;
 }
 
 /* ══════════════════════════════
