@@ -1,332 +1,714 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-  <title>Steam Retention Project</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Steam: Player Retention — Presentation</title>
 
   <link rel="stylesheet" href="style.css">
+
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 
   <script type="importmap">
     {
       "imports": {
-      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-      "three/examples/jsm/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+        "three/examples/jsm/": "https://unpkg.com/three@0.160.0/examples/jsm/"
       }
     }
   </script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+
   <link rel="preload" href="images/steam2.glb" as="fetch" crossorigin="anonymous">
+
 </head>
 
 <body>
 
-  <!-- Navigation Bar -->
+  <!-- NAV -->
   <nav class="top-nav">
     <ul>
       <li><a href="#hero">Home</a></li>
-      <li><a href="#intro">Story</a></li>
+      <li><a href="#about">Overview</a></li>
       <li><a href="#eda">EDA</a></li>
       <li><a href="#ml">Machine Learning</a></li>
       <li><a href="#insights">Insights</a></li>
+      <li><a href="#team">Team</a></li>
     </ul>
   </nav>
 
-  <!-- Page 1 (Hero) -->
+  <!-- ══ SLIDE 1: HERO ══ -->
   <section id="hero" class="hero">
-
     <div class="hero-text">
-      <h1 class = 'ripple-block'>
-        STEAM: PLAYER RETENTION <br> RECOMMENDER SYSTEM
-      </h1>
-
-      <p class = 'ripple-block'>
-        This project analyzes <strong>Steam</strong> player behavior, game interactions,
-        and user-generated reviews to predict player retention using
-        machine learning. Leveraging a large-scale multi-modal dataset,
-        we combine behavioral logs, textual data, and metadata to model
-        factors that influence a player's ongoing activity.
-      </p>
-
-      <a href="#intro" class="btn">Read More</a>
-
-      <div class="footer-link">
-        <span>Game Presentation</span>
-        <div class="line"></div>
+      <div class="badge-row">
+        <span class="year-badge">2026</span>
+        <span>UCSD DSC 288R</span>
       </div>
-    </div>
+      <h1 class="ripple-block">STEAM: PLAYER RETENTION <br> RECOMMENDER SYSTEM</h1>
+      <p class="ripple-block">This project analyzes <strong>Steam</strong> player behavior, game interactions, and
+        user-generated reviews to predict player retention using machine learning. Leveraging a large-scale multi-modal
+        dataset, we combine behavioral logs, textual data, and metadata to model factors that influence a player's
+        ongoing activity.</p>
+      <a href="#intro" class="btn ripple-block">Read More</a>
 
+    </div>
     <div class="hero-image">
       <div id="container3D"></div>
     </div>
+    <div class="hero-presented">
+      <div class="hero-credit">
+        <p>Presented by</p>
+        <p>Studio Bang Sing Se</p>
+      </div>
+      <div class="hero-credit">
+        <p>Presented to</p>
+        <p>UCSD Capstone</p>
+      </div>
+    </div>
   </section>
 
-<!-- Page 2 -->
-<section id="intro" class="intro-section">
 
-  <!-- TOP: centered text -->
-  <div class="intro-top">
-    <h2 class="intro-heading class =">INTRODUCTION</h2>
+  <!-- ══ SLIDE 2: Overview (steam slider) ══ -->
+  <section id="about">
 
-    <p class="intro-body">
-      Our approach to player retention integrates
-      <strong>supervised learning, error analysis,</strong> and a
-      <strong>similarity-based recommendation system</strong>
-      to predict churn, understand its underlying drivers, and identify
-      competing games. We will be able to observe actionable insights
-      into player <strong>engagement</strong>,
-      <strong>personalization</strong>, and
-      <strong>retention</strong> strategies in gaming ecosystems.
-    </p>
-  </div>
-
-  <!-- BOTTOM: Steam-style infinite slider -->
-  <div class="steam-slider">
-
-    <div class="steam-track">
-
-      <!-- original set -->
-      <div class="steam-card">
-        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg" />
-        <p>Counter-Strike 2</p>
+    <div class="about-inner">
+      <div class="about-left">
+        <span class="year-badge">Overview</span>
+        <p class="big-title">Player Retention</p>
       </div>
+      <div class="about-right">
+        <p class="body-text">
+          Player retention refers to a game's ability to keep its user base engaged over time. In the
+          competitive gaming market, understanding why players stay or leave is critical for studios and publishers
+          looking to maximize lifetime value and community growth.
+        </p>
 
-      <div class="steam-card">
-        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/570/header.jpg" />
-        <p>Dota 2</p>
+        <p class="body-text">
+          Our approach to player retention integrates <strong>supervised learning, error analysis,
+          </strong> and a <strong>similarity-based recommendation system</strong> to predict churn,
+          understand its underlying drivers, and identify competing games. We will be able to observe
+          actionable insights into player <strong>engagement</strong>, <strong>personalization</strong>, and
+          <strong>retention</strong> strategies in gaming ecosystems.
+        </p>
+
       </div>
-
-      <div class="steam-card">
-        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/271590/header.jpg" />
-        <p>GTA V</p>
-      </div>
-
-      <div class="steam-card">
-        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/header.jpg" />
-        <p>Apex Legends</p>
-      </div>
-
-      <div class="steam-card">
-        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1085660/header.jpg" />
-        <p>Destiny 2</p>
-      </div>
-
-      <!-- duplicate for seamless loop -->
-      <div class="steam-card">
-        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg" />
-        <p>Counter-Strike 2</p>
-      </div>
-
-      <div class="steam-card">
-        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/570/header.jpg" />
-        <p>Dota 2</p>
-      </div>
-
-      <div class="steam-card">
-        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/271590/header.jpg" />
-        <p>GTA V</p>
-      </div>
-
-      <div class="steam-card">
-        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/header.jpg" />
-        <p>Apex Legends</p>
-      </div>
-
-      <div class="steam-card">
-        <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1085660/header.jpg" />
-        <p>Destiny 2</p>
-      </div>
-
-    </div>
-  </div>
-
-</section>
-
-  <!-- Page 3 (EDA) -->
-  <section id="eda" class="eda-section">
-
-  <!-- TOP ROW -->
-  <div class="eda-top">
-
-    <!-- BIG TEXT (right-aligned) -->
-    <div class="eda-text">
-      <h2>EXPLORATORY DATA ANALYSIS</h2>
-      <p>
-        We analyze player behavior patterns, engagement distributions,
-        and churn indicators using visualization, statistical summaries,
-        and feature-level exploration across multiple dimensions of gameplay.
-      </p>
     </div>
 
-    <!-- GITHUB INFO BOX -->
-    <a href="https://github.com/lngo916/DSC-288R-Capstone-Final-Project" target="_blank" class="eda-github">
-      <h3>More Info</h3>
-    </a>
-
-  </div>
-
-  <!-- BOTTOM GRID (4 CARDS) -->
-  <div class="eda-grid">
-
-    <div class="eda-card">
-      <h3>Player Distribution</h3>
-      <p>We examine how players are distributed across engagement levels and playtime.</p>
-    </div>
-
-    <div class="eda-card">
-      <h3>Churn Patterns</h3>
-      <p>Identify when and why players stop engaging with games.</p>
-    </div>
-
-    <div class="eda-card">
-      <h3>Genre Analysis</h3>
-      <p>Compare engagement across different game genres and categories.</p>
-    </div>
-
-    <div class="eda-card">
-      <h3>Feature Correlation</h3>
-      <p>Explore relationships between in-game features and retention outcomes.</p>
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- Page 4 (Machine Learning) -->
-<section id="ml" class="ml-section">
-
-  <div class="carousel-outer">
-    <div class="carousel-track" id="ml-track">
-
-      <!-- Slide 1 -->
-      <div class="carousel-slide ml-reveal">
-        <div class="slide-image">
-          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop" alt="EDA" />
+    <div class="steam-slider">
+      <div class="steam-track">
+        <div class="steam-card"><img src="https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg" />
+          <p>Counter-Strike 2</p>
         </div>
-        <div class="slide-content">
-          <h2 class="slide-title">EDA</h2>
-          <p class="slide-desc">Exploratory analysis of player behavior and engagement patterns across sessions and cohorts.</p>
-          <div class="slide-meta">
-            <div class="meta-icon">📊</div>
-            <div class="meta-text">
-              <div class="meta-name">Exploratory</div>
-              <div class="meta-tag">Data Analysis</div>
+        <div class="steam-card"><img src="https://cdn.cloudflare.steamstatic.com/steam/apps/570/header.jpg" />
+          <p>Dota 2</p>
+        </div>
+        <div class="steam-card"><img src="https://cdn.cloudflare.steamstatic.com/steam/apps/271590/header.jpg" />
+          <p>GTA V</p>
+        </div>
+        <div class="steam-card"><img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/header.jpg" />
+          <p>Apex Legends</p>
+        </div>
+        <div class="steam-card"><img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1085660/header.jpg" />
+          <p>Destiny 2</p>
+        </div>
+        <div class="steam-card"><img src="https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg" />
+          <p>Counter-Strike 2</p>
+        </div>
+        <div class="steam-card"><img src="https://cdn.cloudflare.steamstatic.com/steam/apps/570/header.jpg" />
+          <p>Dota 2</p>
+        </div>
+        <div class="steam-card"><img src="https://cdn.cloudflare.steamstatic.com/steam/apps/271590/header.jpg" />
+          <p>GTA V</p>
+        </div>
+        <div class="steam-card"><img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/header.jpg" />
+          <p>Apex Legends</p>
+        </div>
+        <div class="steam-card"><img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1085660/header.jpg" />
+          <p>Destiny 2</p>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- ══ SLIDE 3: THE PROCESS ══ -->
+  <section id="process">
+    <div class="process-inner">
+      <div>
+        <p class="big-title">The Process</p>
+      </div>
+      <div class="process-grid">
+        <div class="process-item">
+          <h3>Data Gathering</h3>
+          <p class="body-text">Collecting Steam behavioral logs, game metadata, user reviews, and playtime data across
+            millions of player sessions and thousands of titles.</p>
+        </div>
+        <div class="process-item">
+          <h3>Reporting</h3>
+          <p class="body-text">Communicating findings through interactive dashboards and visual reports that surface
+            churn risk scores and recommendation outputs.</p>
+        </div>
+        <div class="process-item">
+          <h3>Analysis</h3>
+          <p class="body-text">Applying EDA, feature engineering, and statistical methods to identify patterns in player
+            behavior that precede disengagement.</p>
+        </div>
+        <div class="process-item">
+          <h3>Strategic Advising</h3>
+          <p class="body-text">Translating model outputs into actionable retention strategies — from personalized
+            notifications to competing game recommendations.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SLIDE 4: EDA ══ -->
+  <section id="eda">
+
+    <div class="eda-header">
+      <div class="eda-header-text">
+        <h2>EXPLORATORY DATA ANALYSIS</h2>
+        <p>We analyze player behavior patterns, engagement distributions, and churn indicators using visualization,
+          statistical summaries, and feature-level exploration across multiple dimensions of gameplay.</p>
+      </div>
+      <a href="https://github.com/lngo916/DSC-288R-Capstone-Final-Project" target="_blank" class="eda-github">
+        <h3>More Info</h3>
+      </a>
+    </div>
+
+    <!-- SCROLLING CARD STRIP -->
+    <div class="eda-strip-outer">
+      <div class="eda-strip" id="eda-strip">
+
+        <div class="eda-card">
+          <div class="eda-card-top">
+            <h3>Feature Distributions</h3>
+            <p>We analyze the distribution of numerical features such as playtime, session frequency, and review counts
+              using histograms to understand player behavior patterns and skewness.</p>
+          </div>
+          <div class="eda-card-img">
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop"
+              alt="Feature Distributions" />
+          </div>
+        </div>
+
+        <div class="eda-card">
+          <div class="eda-card-top">
+            <h3>Outlier Detection</h3>
+            <p>Box plots reveal extreme values in engagement metrics, helping identify anomalies such as unusually high
+              playtime or irregular user activity that may distort model predictions.</p>
+          </div>
+          <div class="eda-card-img">
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&auto=format&fit=crop"
+              alt="Outlier Detection" />
+          </div>
+        </div>
+
+        <div class="eda-card">
+          <div class="eda-card-top">
+            <h3>Data Sampling Strategy</h3>
+            <p>We apply random sampling (50,000 rows) to ensure computational feasibility while preserving statistically
+              representative insights across the full dataset.</p>
+          </div>
+          <div class="eda-card-img">
+            <img src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=600&auto=format&fit=crop"
+              alt="Data Sampling" />
+          </div>
+        </div>
+
+        <div class="eda-card">
+          <div class="eda-card-top">
+            <h3>Automated Profiling</h3>
+            <p>Using YData Profiling, we generate comprehensive reports covering feature distributions, correlations,
+              missing values, and data quality to accelerate exploratory analysis.</p>
+          </div>
+          <div class="eda-card-img">
+            <img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=600&auto=format&fit=crop"
+              alt="Automated Profiling" />
+          </div>
+        </div>
+
+        <div class="eda-card">
+          <div class="eda-card-top">
+            <h3>Correlation Analysis</h3>
+            <p>Heatmaps and pairplots expose relationships between features, highlighting which variables co-vary with
+              churn risk and informing feature selection for downstream models.</p>
+          </div>
+          <div class="eda-card-img">
+            <img src="https://images.unsplash.com/photo-1543286386-713bdd548da4?w=600&auto=format&fit=crop"
+              alt="Correlation Analysis" />
+          </div>
+        </div>
+
+        <div class="eda-card">
+          <div class="eda-card-top">
+            <h3>Engagement Segmentation</h3>
+            <p>Players are grouped into activity tiers based on session frequency and playtime, enabling targeted
+              analysis of behavioral differences across cohorts.</p>
+          </div>
+          <div class="eda-card-img">
+            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&auto=format&fit=crop"
+              alt="Engagement Segmentation" />
+          </div>
+        </div>
+
+        <div class="eda-card">
+          <div class="eda-card-top">
+            <h3>Review Sentiment</h3>
+            <p>Text analysis on user reviews surfaces sentiment signals that correlate with player satisfaction,
+              providing qualitative depth to complement behavioral data.</p>
+          </div>
+          <div class="eda-card-img">
+            <img src="https://images.unsplash.com/photo-1555421689-d68471e189f2?w=600&auto=format&fit=crop"
+              alt="Review Sentiment" />
+          </div>
+        </div>
+
+        <div class="eda-card">
+          <div class="eda-card-top">
+            <h3>Temporal Patterns</h3>
+            <p>Time-series decomposition reveals daily and weekly rhythms in player activity, helping identify peak
+              engagement windows and early warning signs of disengagement.</p>
+          </div>
+          <div class="eda-card-img">
+            <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop"
+              alt="Temporal Patterns" />
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- BOTTOM: dots + arrows -->
+    <div class="eda-bottom">
+      <div class="eda-dots" id="eda-dots"></div>
+      <div class="eda-nav">
+        <button class="eda-nav-btn" id="eda-prev">&#8249;</button>
+        <button class="eda-nav-btn" id="eda-next">&#8250;</button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══ SLIDE 5: ML ══ -->
+
+  <section id="ml">
+
+    <div class="ml-header">
+      <div class="ml-header-text">
+        <span class="year-badge">Machine Learning</span>
+        <h2>Model Exploration</h2>
+        <p>Interact with each model in our retention pipeline — tune parameters, inspect metrics, and simulate
+          predictions in real time.</p>
+      </div>
+      <div class="model-tabs" id="modelTabs">
+        <button class="tab-btn active" data-model="xgb">XGBoost</button>
+        <button class="tab-btn" data-model="rf">Random Forest</button>
+        <button class="tab-btn" data-model="lstm">LSTM</button>
+        <button class="tab-btn" data-model="cf">Collab Filter</button>
+      </div>
+    </div>
+
+    <div class="ml-grid">
+
+      <div class="model-card" id="modelCard">
+        <div class="model-card-header">
+          <span class="model-title" id="modelName">XGBoost Classifier</span>
+          <span class="model-tag tag-supervised" id="modelTag">SUPERVISED</span>
+        </div>
+        <p class="model-desc" id="modelDesc">Gradient-boosted decision trees trained to predict 30-day churn
+          probability. XGBoost handles feature interactions and missing values natively, making it robust to the sparse
+          Steam interaction matrix.</p>
+
+        <div class="metrics-row" id="metricsRow">
+          <div class="metric-box">
+            <div class="metric-val" id="m-auc">0.91</div>
+            <div class="metric-label">AUC-ROC</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-val" id="m-prec">87%</div>
+            <div class="metric-label">Precision</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-val" id="m-rec">83%</div>
+            <div class="metric-label">Recall</div>
+          </div>
+        </div>
+
+        <div class="params-section" id="paramsSection">
+          <div class="params-title">HYPERPARAMETERS</div>
+          <div class="param-row">
+            <div class="param-label"><span>Max Depth</span><span id="pv-depth">6</span></div>
+            <input class="param-slider" type="range" min="2" max="12" value="6" id="p-depth">
+          </div>
+          <div class="param-row">
+            <div class="param-label"><span>Learning Rate</span><span id="pv-lr">0.10</span></div>
+            <input class="param-slider" type="range" min="1" max="30" value="10" id="p-lr">
+          </div>
+          <div class="param-row">
+            <div class="param-label"><span>Estimators</span><span id="pv-est">200</span></div>
+            <input class="param-slider" type="range" min="50" max="500" step="50" value="200" id="p-est">
+          </div>
+          <button class="sim-btn" id="retrainBtn">Retrain Model ↻</button>
+        </div>
+      </div>
+
+      <!-- RIGHT: CHART PANEL -->
+      <div class="chart-panel">
+        <div class="chart-tabs" id="chartTabs">
+          <button class="chart-tab active" data-chart="roc">ROC Curve</button>
+          <button class="chart-tab" data-chart="feat">Feature Importance</button>
+          <button class="chart-tab" data-chart="cm">Confusion Matrix</button>
+          <button class="chart-tab" data-chart="learn">Learning Curve</button>
+        </div>
+
+        <div id="view-roc">
+          <div class="chart-wrap"><canvas id="rocChart" role="img" aria-label="ROC curve for the current model">ROC
+              curve showing true positive rate vs false positive rate.</canvas></div>
+        </div>
+
+        <div id="view-feat" style="display:none">
+          <div class="feat-bars" id="featBars"></div>
+        </div>
+
+        <div id="view-cm" style="display:none">
+          <div class="cm-wrap">
+            <div class="cm-axis-title">PREDICTED →</div>
+            <div class="cm-grid">
+              <div></div>
+              <div class="cm-axis">Retained</div>
+              <div class="cm-axis">Churned</div>
+              <div class="cm-axis cm-axis-vert">Retained</div>
+              <div class="cm-cell tp">
+                <div class="cm-val good" id="cm-tp">7241</div>
+                <div class="cm-label">TRUE POS</div>
+              </div>
+              <div class="cm-cell fp">
+                <div class="cm-val bad" id="cm-fp">412</div>
+                <div class="cm-label">FALSE POS</div>
+              </div>
+              <div class="cm-axis cm-axis-vert">Churned</div>
+              <div class="cm-cell fn">
+                <div class="cm-val bad" id="cm-fn">689</div>
+                <div class="cm-label">FALSE NEG</div>
+              </div>
+              <div class="cm-cell tn">
+                <div class="cm-val good" id="cm-tn">4158</div>
+                <div class="cm-label">TRUE NEG</div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Slide 2 -->
-      <div class="carousel-slide ml-reveal">
-        <div class="slide-image">
-          <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&auto=format&fit=crop" alt="Churn Model" />
+        <div id="view-learn" style="display:none">
+          <div class="chart-wrap"><canvas id="learnChart" role="img"
+              aria-label="Learning curve showing train vs validation score">Learning curve: train vs validation accuracy
+              over training set size.</canvas></div>
         </div>
-        <div class="slide-content">
-          <h2 class="slide-title">Churn Model</h2>
-          <p class="slide-desc">Supervised learning model predicting player drop-off with feature importance and retention scoring.</p>
-          <div class="slide-meta">
-            <div class="meta-icon">🤖</div>
-            <div class="meta-text">
-              <div class="meta-name">Supervised</div>
-              <div class="meta-tag">Machine Learning</div>
-            </div>
+      </div>
+    </div>
+
+    <!-- LIVE CHURN SIMULATOR -->
+  <section id="churn">
+    <div class="sim-panel">
+      <div>
+        <div class="sim-panel-title">Live Churn Simulator</div>
+        <p class="sim-panel-sub">Adjust a player's behavioral profile and watch the model update its churn probability
+          in real time.</p>
+      </div>
+      <div class="sim-inputs">
+        <div class="sim-field">
+          <label>Avg. Session Length (min) <span class="sim-val" id="sv-session">45</span></label>
+          <input type="range" min="1" max="180" value="45" id="s-session">
+        </div>
+        <div class="sim-field">
+          <label>Days Since Last Play <span class="sim-val" id="sv-days">7</span></label>
+          <input type="range" min="0" max="90" value="7" id="s-days">
+        </div>
+        <div class="sim-field">
+          <label>Games Owned <span class="sim-val" id="sv-games">12</span></label>
+          <input type="range" min="1" max="100" value="12" id="s-games">
+        </div>
+        <div class="sim-field">
+          <label>Reviews Written <span class="sim-val" id="sv-reviews">2</span></label>
+          <input type="range" min="0" max="30" value="2" id="s-reviews">
+        </div>
+        <div class="sim-field">
+          <label>Friends on Steam <span class="sim-val" id="sv-friends">8</span></label>
+          <input type="range" min="0" max="100" value="8" id="s-friends">
+        </div>
+        <div class="sim-field">
+          <label>Achievement Rate (%) <span class="sim-val" id="sv-ach">34</span></label>
+          <input type="range" min="0" max="100" value="34" id="s-ach">
+        </div>
+      </div>
+      <div class="churn-result">
+        <div>
+          <div class="churn-result-label">CHURN PROBABILITY</div>
+          <div class="churn-score" id="churnScore">28%</div>
+          <div class="churn-status" id="churnLabel">Low risk — player likely to stay</div>
+        </div>
+        <div class="churn-right">
+          <div class="churn-bar-wrap">
+            <div class="churn-bar" id="churnBar"></div>
           </div>
+          <div class="churn-reason" id="churnReason">Strong session length and recent activity suggest continued
+            engagement.</div>
         </div>
       </div>
-
-      <!-- Slide 3 -->
-      <div class="carousel-slide ml-reveal">
-        <div class="slide-image">
-          <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&auto=format&fit=crop" alt="Recommendation System" />
-        </div>
-        <div class="slide-content">
-          <h2 class="slide-title">Recommendation</h2>
-          <p class="slide-desc">Similarity-based system identifying competing games and optimizing player retention strategies.</p>
-          <div class="slide-meta">
-            <div class="meta-icon">🎯</div>
-            <div class="meta-text">
-              <div class="meta-name">Recommender</div>
-              <div class="meta-tag">Systems</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </div>
+  </section>
+
+    <!-- ================= PIPELINE EXPLORER ================= -->
+<div class="ml-graph-wrap">
+  <div class="ml-graph-toolbar">
+    <button id="zoomIn">+</button>
+    <button id="zoomOut">−</button>
+    <button id="zoomReset">Reset</button>
   </div>
 
-  <div class="ml-controls">
-    <button class="ml-arrow" id="ml-prev">‹</button>
-    <button class="ml-arrow" id="ml-next">›</button>
-    <span class="ml-counter" id="ml-counter">1 / 3</span>
+  <div id="graphViewport">
+    <svg id="mlGraph"></svg>
   </div>
 
-</section>
-
-  <!-- Page 5 (Insights) -->
-<section id="insights" class="insights-section">
-
-  <!-- LEFT: text content -->
-  <div class="insights-left">
-    <h2 class="insights-heading">See the Big Picture</h2>
-    <p class="insights-subheading">Key findings from our player retention analysis — surfacing what drives churn, what keeps players engaged, and where opportunities lie.</p>
-
-    <div class="insights-list">
-      <div class="insights-item">
-        <span class="insights-num">01</span>
-        <p>Session length and frequency are the strongest predictors of long-term retention.</p>
-      </div>
-      <div class="insights-item">
-        <span class="insights-num">02</span>
-        <p>Players who churn within 7 days share distinct early behavioral patterns detectable at signup.</p>
-      </div>
-      <div class="insights-item">
-        <span class="insights-num">03</span>
-        <p>Competing game recommendations improve re-engagement rates by surfacing relevant alternatives.</p>
-      </div>
-      <div class="insights-item">
-        <span class="insights-num">04</span>
-        <p>Personalization at scale is achievable with collaborative filtering on minimal interaction data.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- RIGHT: image carousel -->
-
-  <div class="insights-right">
-  <div class="insights-image-wrapper">
-    <div class="insights-carousel-outer">
-      <div class="insights-carousel-track" id="insights-track">
-        <!-- Slide 1 -->
-        <div class="insights-slide">
-          <img src="/images/empty_data.gif" alt="EDA insights" />
-        </div>
-
-        <!-- Slide 2 -->
-        <div class="insights-slide">
-          <img src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=800&auto=format&fit=crop" alt="Churn model" />
-        </div>
-
-        <!-- Slide 3 -->
-        <div class="insights-slide">
-          <img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=800&auto=format&fit=crop" alt="Recommendations" />
-        </div>
-      </div>
-    </div>
-    <div class="insights-arrows">
-      <button class="insights-arrow" id="insights-prev">&#8249;</button>
-      <button class="insights-arrow" id="insights-next">&#8250;</button>
-    </div>
+  <div id="nodeDetail" class="node-detail">
+    <button id="closeDetail">✕</button>
+    <h3 id="nd-title"></h3>
+    <p id="nd-desc"></p>
   </div>
 </div>
 
-</section>
+  </section>
 
+  <!-- ══ SLIDE 6: TECHNIQUES ══ -->
+  <section id="techniques">
+    <div class="diag-accent" style="border-top-color:rgba(156,191,226,0.08);"></div>
+    <div class="tech-inner">
+      <div>
+        <p class="pre-title">Analysis</p>
+        <p class="big-title">Techniques</p>
+      </div>
+      <div class="tech-grid">
+        <div class="tech-item">
+          <h3>Descriptive</h3>
+          <p class="body-text">Summarizes historical Steam behavior to characterize baseline engagement, session
+            frequency, and playtime distribution across the player base.</p>
+        </div>
+        <div class="tech-item">
+          <h3>Predictive</h3>
+          <p class="body-text">Uses gradient boosting and neural network models to forecast churn probability based on
+            early behavioral signals detected within the first 7 days.</p>
+        </div>
+        <div class="tech-item">
+          <h3>Diagnostic</h3>
+          <p class="body-text">Investigates root causes of player drop-off by drilling into cohort-level patterns, genre
+            preferences, and social graph interactions.</p>
+        </div>
+        <div class="tech-item">
+          <h3>Prescriptive</h3>
+          <p class="body-text">Drives personalized game recommendations and re-engagement triggers using collaborative
+            filtering on sparse interaction matrices.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SLIDE 7: REPORTING ══ -->
+  <section id="reporting">
+    <div class="report-inner">
+      <div class="report-left">
+        <span class="year-badge" style="align-self:flex-start;">Results</span>
+        <p class="pre-title">Data Visualization and</p>
+        <p class="big-title" style="font-size:clamp(40px,5vw,68px);">Reporting</p>
+        <p class="body-text">Model performance is tracked across precision, recall, and AUC-ROC metrics. Retention
+          curves and churn distributions are visualized over player cohorts to validate findings.</p>
+        <p class="body-text">Interactive dashboards surface at-risk players in real time, enabling studios to act on
+          predictions before churn occurs.</p>
+      </div>
+      <div class="chart-box">
+        <div class="chart-legend">
+          <span><span class="legend-dot" style="background:var(--accent);"></span>Retained</span>
+          <span><span class="legend-dot" style="background:#e8880a;"></span>Churned</span>
+          <span><span class="legend-dot" style="background:rgba(255,255,255,0.3);"></span>Predicted</span>
+        </div>
+        <div class="chart-area">
+          <svg class="chart-svg" viewBox="0 0 500 220" preserveAspectRatio="none">
+            <line x1="0" y1="0" x2="500" y2="0" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
+            <line x1="0" y1="55" x2="500" y2="55" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
+            <line x1="0" y1="110" x2="500" y2="110" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
+            <line x1="0" y1="165" x2="500" y2="165" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
+            <line x1="0" y1="220" x2="500" y2="220" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
+            <polyline points="0,165 125,110 250,55 375,22 500,0" fill="none" stroke="#9cbfe2" stroke-width="2.5" />
+            <circle cx="0" cy="165" r="4" fill="#9cbfe2" />
+            <circle cx="125" cy="110" r="4" fill="#9cbfe2" />
+            <circle cx="250" cy="55" r="4" fill="#9cbfe2" />
+            <circle cx="375" cy="22" r="4" fill="#9cbfe2" />
+            <circle cx="500" cy="0" r="4" fill="#9cbfe2" />
+            <polyline points="0,200 125,140 250,80 375,110 500,60" fill="none" stroke="#e8880a" stroke-width="2.5" />
+            <circle cx="0" cy="200" r="4" fill="#e8880a" />
+            <circle cx="125" cy="140" r="4" fill="#e8880a" />
+            <circle cx="250" cy="80" r="4" fill="#e8880a" />
+            <circle cx="375" cy="110" r="4" fill="#e8880a" />
+            <circle cx="500" cy="60" r="4" fill="#e8880a" />
+            <text x="0" y="215" fill="rgba(255,255,255,0.35)" font-size="11" font-family="Poppins">Day 1</text>
+            <text x="108" y="215" fill="rgba(255,255,255,0.35)" font-size="11" font-family="Poppins">Day 7</text>
+            <text x="225" y="215" fill="rgba(255,255,255,0.35)" font-size="11" font-family="Poppins">Day 14</text>
+            <text x="345" y="215" fill="rgba(255,255,255,0.35)" font-size="11" font-family="Poppins">Day 21</text>
+            <text x="468" y="215" fill="rgba(255,255,255,0.35)" font-size="11" font-family="Poppins">Day 30</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SLIDE 9: INSIGHTS ══ -->
+  <section id="insights">
+    <div class="insights-left">
+      <h2 class="insights-heading">See the Big Picture</h2>
+      <p class="insights-subheading">Key findings from our player retention analysis — surfacing what drives churn, what
+        keeps players engaged, and where opportunities lie.</p>
+      <div class="insights-list">
+        <div class="insights-item"><span class="insights-num">01</span>
+          <p>Session length and frequency are the strongest predictors of long-term retention.</p>
+        </div>
+        <div class="insights-item"><span class="insights-num">02</span>
+          <p>Players who churn within 7 days share distinct early behavioral patterns detectable at signup.</p>
+        </div>
+        <div class="insights-item"><span class="insights-num">03</span>
+          <p>Competing game recommendations improve re-engagement rates by surfacing relevant alternatives.</p>
+        </div>
+        <div class="insights-item"><span class="insights-num">04</span>
+          <p>Personalization at scale is achievable with collaborative filtering on minimal interaction data.</p>
+        </div>
+      </div>
+    </div>
+    <div class="insights-right">
+      <div class="insights-image-wrapper">
+        <div class="insights-carousel-outer">
+          <div class="insights-carousel-track" id="insights-track">
+            <div class="insights-slide"><img
+                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop"
+                alt="EDA insights" /></div>
+            <div class="insights-slide"><img
+                src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=800&auto=format&fit=crop"
+                alt="Churn model" /></div>
+            <div class="insights-slide"><img
+                src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=800&auto=format&fit=crop"
+                alt="Recommendations" /></div>
+          </div>
+        </div>
+        <div class="insights-arrows">
+          <button class="insights-arrow" id="insights-prev">&#8249;</button>
+          <button class="insights-arrow" id="insights-next">&#8250;</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ SLIDE 8: CHALLENGES & SOLUTIONS ══ -->
+  <section id="challenges">
+    <div class="chal-inner">
+      <div class="chal-left">
+        <div class="chal-block">
+          <h3>Challenges</h3>
+          <p class="body-text">Steam data is sparse and noisy — many players have minimal interaction histories, making
+            it difficult to build reliable behavioral profiles from limited signals.</p>
+          <p class="body-text">Class imbalance between churned and retained players requires careful handling through
+            oversampling, weighted loss functions, and threshold tuning to avoid biased predictions.</p>
+        </div>
+        <div class="chal-block">
+          <h3>Solutions</h3>
+          <p class="body-text">We apply feature imputation, temporal aggregation, and cold-start strategies to extract
+            meaningful signals even from sparse user profiles.</p>
+          <p class="body-text">Ensemble methods with calibrated probabilities and SMOTE-based resampling address class
+            imbalance while preserving model generalizability across diverse player segments.</p>
+        </div>
+      </div>
+      <div class="chal-right">
+        <p class="big-title">Challenges & Solutions</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="team">
+    <div class="team-inner">
+
+      <div class="team-header">
+        <h2 class="big-title">Meet the Team</h2>
+        <p class="team-sub">
+          The people behind the data, modeling, and design of the player retention system.
+        </p>
+      </div>
+
+      <div class="team-grid">
+
+        <!-- MEMBER 1 -->
+        <div class="team-card">
+          <div class="team-role">Project Manager</div>
+          <img src="images/data1.png" alt="Jason Limfueco" class="team-avatar">
+          <h3 class="team-name">Jason Limfueco</h3>
+          <p class="team-desc">
+            Leads project coordination, manages timelines, and ensures smooth collaboration across all components.
+            Contributes to data cleaning, exploratory analysis, and overall workflow structure.
+          </p>
+        </div>
+
+        <!-- MEMBER 2 -->
+        <div class="team-card">
+          <div class="team-role">Data Engineer</div>
+          <img src="images/data1.png" alt="Jason Limfueco" class="team-avatar">
+          <h3 class="team-name">Baixi Guo</h3>
+          <p class="team-desc">
+            Develops and maintains the data pipeline, handling preprocessing, integration, and large-scale dataset
+            management using distributed systems and notebook-based workflows.
+          </p>
+        </div>
+
+        <!-- MEMBER 3 -->
+        <div class="team-card">
+          <div class="team-role">Frontend & Presentation</div>
+          <img src="images/data1.png" alt="Jason Limfueco" class="team-avatar">
+          <h3 class="team-name">Laura Ngo</h3>
+          <p class="team-desc">
+            Designs and builds the project website, transforming technical results into clear visual narratives.
+            Focuses on user experience, layout, and presentation of insights.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ SLIDE 9: THANK YOU ══ -->
+  <section id="thankyou">
+    <div class="ty-content">
+      <h2 class="ty-heading">Thank You</h2>
+      <p>Built with Steam behavioral data, machine learning, and a
+        passion for understanding what keeps players coming back.
+      </p>
+      <a href="https://github.com/lngo916/DSC-288R-Capstone-Final-Project" target="_blank" class="btn">View on
+        GitHub</a>
+    </div>
+    <div class="ty-footer">
+      <div class="ty-credit">
+        <p>Presented by</p>
+        <p>DSC 288R Team</p>
+      </div>
+      <div class="ty-credit">
+        <p>Presented to</p>
+        <p>UCSD Capstone</p>
+      </div>
+    </div>
+
+  </section>
 
   <script type="module" src="script.js"></script>
-</body>
-</html>
 
+</body>
+
+</html>
