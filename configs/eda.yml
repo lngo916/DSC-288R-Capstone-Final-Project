@@ -1,0 +1,266 @@
+# 
+
+# Title of the document
+title: "Preliminary Exploratory Data Analysis (Sample Review Data)"
+
+# Metadata
+dataset:
+  description: "YData Profiling report generated from one fixed user-based Steam review sample."
+  creator: "Steamworks"
+  author: "KieranPO'C"
+  copyright_holder: ""
+  copyright_year: ""
+  url: "https://www.kaggle.com/datasets/kieranpoc/steam-reviews/data"
+
+variables:
+  descriptions:
+    author_steamid: "Steam user ID. Identifier; not a behavioral numeric magnitude."
+    appid: "Steam application/game ID. Identifier for the reviewed game; categorical/nominal."
+    author_num_games_owned: "Number of games owned by the user."
+    author_num_reviews: "Number of reviews written by the user."
+    author_playtime_forever: "Lifetime playtime tracked for this app, in minutes."
+    author_playtime_last_two_weeks: "Playtime tracked in the past two weeks for this app, in minutes."
+    author_playtime_at_review: "Playtime in this app when the review was written, in minutes."
+    author_last_played: "Unix timestamp for when the user last played this app."
+    voted_up: "Whether the review is a positive recommendation."
+    votes_up: "Number of users who found this review helpful."
+    votes_funny: "Number of users who found this review funny."
+    weighted_vote_score: "Weighted helpfulness score for the review."
+    comment_count: "Number of comments posted on this review."
+    written_during_early_access: "Whether the review was posted while the game was in Early Access."
+
+# infer dtypes
+infer_dtypes: false
+
+# Show the description at each variable (in addition to the overview tab)
+show_variable_description: true
+
+# Number of workers (0=multiprocessing.cpu_count())
+pool_size: 0
+
+# Show the progress bar
+progress_bar: true
+
+# Per variable type description settings
+vars:
+  num:
+    quantiles:
+      - 0.01
+      - 0.05
+      - 0.25
+      - 0.5
+      - 0.75
+      - 0.95
+      - 0.99
+    skewness_threshold: 20
+    low_categorical_threshold: 0
+    chi_squared_threshold: 0  # Slow for doing hypothesis testing on 1M rows
+
+  cat:
+    length: false
+    characters: false
+    words: false
+    cardinality_threshold: 50
+    percentage_cat_threshold: 0.5
+    imbalance_threshold: 0.5
+    n_obs: 10
+    chi_squared_threshold: 0
+    coerce_str_to_date: false
+    redact: false
+    histogram_largest: 20
+    stop_words: []
+    dirty_categories: false
+    dirty_categories_threshold: 0.85
+
+  text:
+		# Turn off for tabular data analysis
+    length: false
+    words: false
+    characters: false
+    redact: false
+
+  bool:
+    n_obs: 3
+    imbalance_threshold: 0.5
+    mappings:
+      t: true
+      f: false
+      True: true
+      False: false
+      true: true
+      false: false
+      y: true
+      n: false
+      yes: true
+      no: false
+
+  image:
+    active: false
+    exif: false
+    hash: false
+
+  path:
+    active: false
+
+  file:
+    active: false
+
+  url:
+    active: false
+
+  timeseries:
+		# Turn off for tabular data analysis
+    active: false
+    sortby: null
+    autocorrelation: 0.7
+    lags:
+      - 1
+      - 7
+      - 12
+      - 24
+      - 30
+    significance: 0.05
+    pacf_acf_lag: 100
+    autolag: "AIC"
+    maxlag: null
+
+# Sort the variables. Possible values: "ascending", "descending" or null (leaves original sorting)
+sort: null  # Keep it for my preferred order
+
+# which diagrams to show for missing values
+missing_diagrams:
+  bar: true
+  matrix: true
+  heatmap: true
+
+# which diagrams to show for correlation
+correlation_table: true
+correlations:
+	# First two types of methods are fast and relevant
+  pearson:
+    calculate: true
+    warn_high_correlations: true
+    threshold: 0.9
+    n_bins: 10
+  spearman:
+    calculate: true
+    warn_high_correlations: true
+    threshold: 0.9
+    n_bins: 10
+  kendall:
+    calculate: false
+    warn_high_correlations: false
+    threshold: 0.9
+    n_bins: 10
+  phi_k:
+    calculate: false
+    warn_high_correlations: false
+    threshold: 0.9
+    n_bins: 10
+  cramers:
+    calculate: false
+    warn_high_correlations: true
+    threshold: 0.9
+    n_bins: 10
+  auto:
+    calculate: true
+    warn_high_correlations: true
+    threshold: 0.9
+    n_bins: 10
+
+interactions:
+  continuous: true
+  targets:
+    - author_playtime_forever
+    - author_playtime_at_review
+    - weighted_vote_score
+    - review_length
+    - review_word_count
+
+# For categorical
+categorical_maximum_correlation_distinct: 100
+
+# Plot-specific settings
+plot:
+  # Image format (svg or png)
+  image_format: svg
+  dpi: 300
+
+  scatter_threshold: 1000
+
+  missing:
+    # Force labels when there are > 50 variables
+    # https://github.com/ResidentMario/missingno/issues/93#issuecomment-513322615
+    force_labels: true
+    cmap: "RdBu"
+
+  correlation:
+    cmap: "RdBu"
+    bad: "#000000"
+
+  histogram:
+		# Number of bins (set to 0 to automatically detect the bin size)
+    bins: 50
+		# Maximum number of bins (when bins=0)
+    max_bins: 250
+    x_axis_labels: true
+    density: true
+
+  cat_freq:
+    show: true  # if false, the category frequency plot is turned off
+    type: bar  # options: 'bar', 'pie'
+    max_unique: 10
+    colors: null  # use null for default or give a list of matplotlib recognized strings
+
+  font_path: null
+
+# The number of observations to show
+n_obs_unique: 5
+n_extreme_obs: 5
+n_freq_table_max: 10
+
+# Use `deep` flag for memory_usage
+# Turn off for speed, more stable for memory estimation
+memory_deep: false
+
+# Configuration related to the duplicates
+duplicates:
+  head: 0  # Do not show duplicate row examples.
+  key: "# duplicates"
+
+# Configuration related to the samples area
+samples:
+  head: 5
+  tail: 5
+  random: 0
+
+# Configuration related to the rejection of variables
+# Reject constant cols, all-missing cols, extremely high-cardinality ID cols, unsupported types
+# variables with too many distinct values for certain calculations
+reject_variables: true
+
+# Configuration related to the render options 
+report:
+  precision: 4
+
+html:
+  minify_html: true
+  use_local_assets: true
+  inline: true
+  navbar_show: true
+  assets_prefix: null
+  assets_path: null
+  full_width: false
+  style:
+    theme: null
+    logo: ""
+    primary_colors:
+      - "#0d6efd"
+      - "#dc3545"
+      - "#198754"
+
+notebook:
+  iframe:
+    height: "800px"
+    width: "100%"
+    attribute: "srcdoc"

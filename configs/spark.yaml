@@ -1,0 +1,18 @@
+# Config file for setting up Spark
+
+spark:
+  app_name: "steam_reviews_default"
+
+# (This is a template from DSC 232R final project, actual allocation TBD)
+  configs:
+    # Resources
+    spark.driver.memory: "10g"
+    spark.driver.cores: "1"
+    spark.executor.instances: "4"
+    spark.executor.cores: "2"
+    spark.executor.memory: "38g"
+
+    # Parallelism
+    spark.sql.shuffle.partitions: "32"
+    spark.default.parallelism: "32"
+    spark.driver.maxResultSize: "4g"

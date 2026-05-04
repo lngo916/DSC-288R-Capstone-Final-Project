@@ -831,22 +831,3 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Thank you 
-const thankYouSection = document.querySelector("#thankyou");
-
-const observer = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("show");
-
-        // optional: stop observing after it triggers once
-        observer.unobserve(entry.target);
-      }
-    });
-  },
-  {
-    threshold: 0.3, // triggers when 30% of section is visible
-  }
-);
-
-observer.observe(thankYouSection);
