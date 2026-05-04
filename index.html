@@ -35,7 +35,7 @@
       <li><a href="#about">Overview</a></li>
       <li><a href="#eda">EDA</a></li>
       <li><a href="#ml">Machine Learning</a></li>
-      <li><a href="#insights">Insights</a></li>
+      <li><a href="#insight">Insights</a></li>
       <li><a href="#team">Team</a></li>
     </ul>
   </nav>
@@ -52,7 +52,7 @@
         user-generated reviews to predict player retention using machine learning. Leveraging a large-scale multi-modal
         dataset, we combine behavioral logs, textual data, and metadata to model factors that influence a player's
         ongoing activity.</p>
-      <a href="#intro" class="btn ripple-block">Read More</a>
+      <a href="#about" class="btn ripple-block">Read More</a>
 
     </div>
     <div class="hero-image">
@@ -71,7 +71,7 @@
   </section>
 
 
-  <!-- ══ SLIDE 2: Overview (steam slider) ══ -->
+  <!-- ══ SLIDE 2: Overview ══ -->
   <section id="about">
 
     <div class="about-inner">
@@ -167,137 +167,36 @@
   </section>
 
   <!-- ══ SLIDE 4: EDA ══ -->
-  <section id="eda">
+<section id="eda">
 
-    <div class="eda-header">
-      <div class="eda-header-text">
-        <h2>EXPLORATORY DATA ANALYSIS</h2>
-        <p>We analyze player behavior patterns, engagement distributions, and churn indicators using visualization,
-          statistical summaries, and feature-level exploration across multiple dimensions of gameplay.</p>
-      </div>
-      <a href="https://github.com/lngo916/DSC-288R-Capstone-Final-Project" target="_blank" class="eda-github">
-        <h3>More Info</h3>
-      </a>
+  <div class="eda-header">
+    <div class="eda-header-text">
+      <span class="year-badge">Exploratory Data Analysis</span>
+      <h2>FEATURE-LEVEL BEHAVIORAL INSIGHTS</h2>
+      <p>We analyze player behavior patterns, engagement distributions, and churn indicators using visualization,
+        statistical summaries, and feature-level exploration across multiple dimensions of gameplay.</p>
     </div>
+  </div>
 
-    <!-- SCROLLING CARD STRIP -->
-    <div class="eda-strip-outer">
-      <div class="eda-strip" id="eda-strip">
+  <!-- CAROUSEL -->
+  <div class="eda-carousel-outer">
+    <div class="eda-carousel-track" id="eda-track"></div>
+  </div>
 
-        <div class="eda-card">
-          <div class="eda-card-top">
-            <h3>Feature Distributions</h3>
-            <p>We analyze the distribution of numerical features such as playtime, session frequency, and review counts
-              using histograms to understand player behavior patterns and skewness.</p>
-          </div>
-          <div class="eda-card-img">
-            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop"
-              alt="Feature Distributions" />
-          </div>
-        </div>
-
-        <div class="eda-card">
-          <div class="eda-card-top">
-            <h3>Outlier Detection</h3>
-            <p>Box plots reveal extreme values in engagement metrics, helping identify anomalies such as unusually high
-              playtime or irregular user activity that may distort model predictions.</p>
-          </div>
-          <div class="eda-card-img">
-            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&auto=format&fit=crop"
-              alt="Outlier Detection" />
-          </div>
-        </div>
-
-        <div class="eda-card">
-          <div class="eda-card-top">
-            <h3>Data Sampling Strategy</h3>
-            <p>We apply random sampling (50,000 rows) to ensure computational feasibility while preserving statistically
-              representative insights across the full dataset.</p>
-          </div>
-          <div class="eda-card-img">
-            <img src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=600&auto=format&fit=crop"
-              alt="Data Sampling" />
-          </div>
-        </div>
-
-        <div class="eda-card">
-          <div class="eda-card-top">
-            <h3>Automated Profiling</h3>
-            <p>Using YData Profiling, we generate comprehensive reports covering feature distributions, correlations,
-              missing values, and data quality to accelerate exploratory analysis.</p>
-          </div>
-          <div class="eda-card-img">
-            <img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=600&auto=format&fit=crop"
-              alt="Automated Profiling" />
-          </div>
-        </div>
-
-        <div class="eda-card">
-          <div class="eda-card-top">
-            <h3>Correlation Analysis</h3>
-            <p>Heatmaps and pairplots expose relationships between features, highlighting which variables co-vary with
-              churn risk and informing feature selection for downstream models.</p>
-          </div>
-          <div class="eda-card-img">
-            <img src="https://images.unsplash.com/photo-1543286386-713bdd548da4?w=600&auto=format&fit=crop"
-              alt="Correlation Analysis" />
-          </div>
-        </div>
-
-        <div class="eda-card">
-          <div class="eda-card-top">
-            <h3>Engagement Segmentation</h3>
-            <p>Players are grouped into activity tiers based on session frequency and playtime, enabling targeted
-              analysis of behavioral differences across cohorts.</p>
-          </div>
-          <div class="eda-card-img">
-            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?w=600&auto=format&fit=crop"
-              alt="Engagement Segmentation" />
-          </div>
-        </div>
-
-        <div class="eda-card">
-          <div class="eda-card-top">
-            <h3>Review Sentiment</h3>
-            <p>Text analysis on user reviews surfaces sentiment signals that correlate with player satisfaction,
-              providing qualitative depth to complement behavioral data.</p>
-          </div>
-          <div class="eda-card-img">
-            <img src="https://images.unsplash.com/photo-1555421689-d68471e189f2?w=600&auto=format&fit=crop"
-              alt="Review Sentiment" />
-          </div>
-        </div>
-
-        <div class="eda-card">
-          <div class="eda-card-top">
-            <h3>Temporal Patterns</h3>
-            <p>Time-series decomposition reveals daily and weekly rhythms in player activity, helping identify peak
-              engagement windows and early warning signs of disengagement.</p>
-          </div>
-          <div class="eda-card-img">
-            <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop"
-              alt="Temporal Patterns" />
-          </div>
-        </div>
-
-      </div>
+  <!-- BOTTOM: dots + arrows -->
+  <div class="eda-bottom">
+    <div class="eda-dots" id="eda-dots"></div>
+    <div class="eda-nav">
+      <button class="eda-nav-btn" id="eda-prev">&#8249;</button>
+      <button class="eda-nav-btn" id="eda-next">&#8250;</button>
     </div>
+  </div>
 
-    <!-- BOTTOM: dots + arrows -->
-    <div class="eda-bottom">
-      <div class="eda-dots" id="eda-dots"></div>
-      <div class="eda-nav">
-        <button class="eda-nav-btn" id="eda-prev">&#8249;</button>
-        <button class="eda-nav-btn" id="eda-next">&#8250;</button>
-      </div>
-    </div>
-
-  </section>
+</section>
 
   <!-- ══ SLIDE 5: ML ══ -->
 
   <section id="ml">
-
     <div class="ml-header">
       <div class="ml-header-text">
         <span class="year-badge">Machine Learning</span>
@@ -411,12 +310,13 @@
         </div>
       </div>
     </div>
+  </section>
 
-    <!-- LIVE CHURN SIMULATOR -->
+  <!-- ══ SLIDE 6: Live Churn Simulator ══ -->
   <section id="churn">
+    <h3> Live Churn Simulator</h3>
     <div class="sim-panel">
       <div>
-        <div class="sim-panel-title">Live Churn Simulator</div>
         <p class="sim-panel-sub">Adjust a player's behavioral profile and watch the model update its churn probability
           in real time.</p>
       </div>
@@ -463,28 +363,7 @@
     </div>
   </section>
 
-    <!-- ================= PIPELINE EXPLORER ================= -->
-<div class="ml-graph-wrap">
-  <div class="ml-graph-toolbar">
-    <button id="zoomIn">+</button>
-    <button id="zoomOut">−</button>
-    <button id="zoomReset">Reset</button>
-  </div>
-
-  <div id="graphViewport">
-    <svg id="mlGraph"></svg>
-  </div>
-
-  <div id="nodeDetail" class="node-detail">
-    <button id="closeDetail">✕</button>
-    <h3 id="nd-title"></h3>
-    <p id="nd-desc"></p>
-  </div>
-</div>
-
-  </section>
-
-  <!-- ══ SLIDE 6: TECHNIQUES ══ -->
+  <!-- ══ SLIDE 7: TECHNIQUES ══ -->
   <section id="techniques">
     <div class="diag-accent" style="border-top-color:rgba(156,191,226,0.08);"></div>
     <div class="tech-inner">
@@ -517,11 +396,11 @@
     </div>
   </section>
 
-  <!-- ══ SLIDE 7: REPORTING ══ -->
-  <section id="reporting">
+  <!-- ══ SLIDE 8: REPORTING ══ -->
+  <section id="insight">
     <div class="report-inner">
       <div class="report-left">
-        <span class="year-badge" style="align-self:flex-start;">Results</span>
+        <span class="year-badge" style="align-self:flex-start;">Insights</span>
         <p class="pre-title">Data Visualization and</p>
         <p class="big-title" style="font-size:clamp(40px,5vw,68px);">Reporting</p>
         <p class="body-text">Model performance is tracked across precision, recall, and AUC-ROC metrics. Retention
@@ -565,51 +444,7 @@
     </div>
   </section>
 
-  <!-- ══ SLIDE 9: INSIGHTS ══ -->
-  <section id="insights">
-    <div class="insights-left">
-      <h2 class="insights-heading">See the Big Picture</h2>
-      <p class="insights-subheading">Key findings from our player retention analysis — surfacing what drives churn, what
-        keeps players engaged, and where opportunities lie.</p>
-      <div class="insights-list">
-        <div class="insights-item"><span class="insights-num">01</span>
-          <p>Session length and frequency are the strongest predictors of long-term retention.</p>
-        </div>
-        <div class="insights-item"><span class="insights-num">02</span>
-          <p>Players who churn within 7 days share distinct early behavioral patterns detectable at signup.</p>
-        </div>
-        <div class="insights-item"><span class="insights-num">03</span>
-          <p>Competing game recommendations improve re-engagement rates by surfacing relevant alternatives.</p>
-        </div>
-        <div class="insights-item"><span class="insights-num">04</span>
-          <p>Personalization at scale is achievable with collaborative filtering on minimal interaction data.</p>
-        </div>
-      </div>
-    </div>
-    <div class="insights-right">
-      <div class="insights-image-wrapper">
-        <div class="insights-carousel-outer">
-          <div class="insights-carousel-track" id="insights-track">
-            <div class="insights-slide"><img
-                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop"
-                alt="EDA insights" /></div>
-            <div class="insights-slide"><img
-                src="https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=800&auto=format&fit=crop"
-                alt="Churn model" /></div>
-            <div class="insights-slide"><img
-                src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=800&auto=format&fit=crop"
-                alt="Recommendations" /></div>
-          </div>
-        </div>
-        <div class="insights-arrows">
-          <button class="insights-arrow" id="insights-prev">&#8249;</button>
-          <button class="insights-arrow" id="insights-next">&#8250;</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══ SLIDE 8: CHALLENGES & SOLUTIONS ══ -->
+  <!-- ══ SLIDE 9: CHALLENGES & SOLUTIONS ══ -->
   <section id="challenges">
     <div class="chal-inner">
       <div class="chal-left">
@@ -634,6 +469,7 @@
     </div>
   </section>
 
+  <!-- ══ SLIDE 10: Meet the Team ══ -->
   <section id="team">
     <div class="team-inner">
 
@@ -684,15 +520,22 @@
     </div>
   </section>
 
-  <!-- ══ SLIDE 9: THANK YOU ══ -->
+  <!-- ══ SLIDE 11: THANK YOU ══ -->
   <section id="thankyou">
     <div class="ty-content">
       <h2 class="ty-heading">Thank You</h2>
       <p>Built with Steam behavioral data, machine learning, and a
         passion for understanding what keeps players coming back.
       </p>
-      <a href="https://github.com/lngo916/DSC-288R-Capstone-Final-Project" target="_blank" class="btn">View on
-        GitHub</a>
+
+      <div class="ty-buttons">
+        <a href="https://github.com/lngo916/DSC-288R-Capstone-Final-Project" target="_blank" class="btn">
+          View on GitHub
+        </a>
+        <a href="pipeline.html" class="btn">
+          Data Pipeline
+        </a>
+      </div>
     </div>
     <div class="ty-footer">
       <div class="ty-credit">

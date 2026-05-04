@@ -133,8 +133,8 @@ document.addEventListener("DOMContentLoaded", () => {
   scene.add(rim);
 
   const fill = new THREE.DirectionalLight(0xffffff, 0.8);
-fill.position.set(0, 2, 5);
-scene.add(fill);
+  fill.position.set(0, 2, 5);
+  scene.add(fill);
 
   // Model
   let object, mixer;
@@ -259,97 +259,159 @@ scene.add(fill);
   // =====================
   // EDA
   // =====================
-  document.addEventListener('DOMContentLoaded', () => {
-  const strip = document.getElementById('eda-strip');
-  const prevBtn = document.getElementById('eda-prev');
-  const nextBtn = document.getElementById('eda-next');
 
-  let cards = Array.from(strip.children);
-  const total = cards.length;
+  (function () {
+    const EDA_CARDS = [
+      {
+        title: 'Feature Distributions', tag: 'Histograms',
+        desc: 'We analyze the distribution of numerical features such as playtime, session frequency, and review counts to understand player behavior and skewness.'
+      },
+      {
+        title: 'Outlier Detection', tag: 'Box Plots',
+        desc: 'Box plots reveal extreme values in engagement metrics, helping identify anomalies such as unusually high playtime that may distort model predictions.'
+      },
+      {
+        title: 'Data Sampling Strategy', tag: 'Sampling',
+        desc: 'We apply random sampling (50,000 rows) to ensure computational feasibility while preserving statistically representative insights across the full dataset.'
+      },
+      {
+        title: 'Automated Profiling', tag: 'YData',
+        desc: 'Using YData Profiling, we generate comprehensive reports covering feature distributions, correlations, missing values, and data quality.'
+      },
+      {
+        title: 'Correlation Analysis', tag: 'Heatmaps',
+        desc: 'Heatmaps and pairplots expose relationships between features, highlighting variables that co-vary with churn risk and informing feature selection.'
+      },
+      {
+        title: 'Engagement Segmentation', tag: 'Cohorts',
+        desc: 'Players are grouped into activity tiers based on session frequency and playtime, enabling targeted analysis of behavioral differences across cohorts.'
+      },
+      {
+        title: 'Review Sentiment', tag: 'NLP',
+        desc: 'Text analysis on user reviews surfaces sentiment signals that correlate with player satisfaction, adding qualitative depth to behavioral data.'
+      },
+      {
+        title: 'Temporal Patterns', tag: 'Time-Series',
+        desc: 'Time-series decomposition reveals daily and weekly rhythms in player activity, identifying peak engagement windows and early warning signs of churn.'
+      },
+    ];
 
-  function getVisibleCount() {
-    if (window.innerWidth < 600) return 1;
-    if (window.innerWidth < 1000) return 2;
-    return 4;
-  }
+    const TOTAL = EDA_CARDS.length;
+    const track = document.getElementById('eda-track');
+    const dotsEl = document.getElementById('eda-dots');
+    const btnPrev = document.getElementById('eda-prev');
+    const btnNext = document.getElementById('eda-next');
 
-  
+    if (!track || !btnPrev || !btnNext) return;
 
-  let VISIBLE = getVisibleCount();
-
-  // clone for infinite loop
-  const clonesBefore = cards.slice(-VISIBLE).map(c => c.cloneNode(true));
-  const clonesAfter = cards.slice(0, VISIBLE).map(c => c.cloneNode(true));
-
-  clonesBefore.forEach(c => strip.prepend(c));
-  clonesAfter.forEach(c => strip.appendChild(c));
-
-  cards = Array.from(strip.children);
-
-  let current = VISIBLE;
-
-  function getStep() {
-  const container = document.querySelector('.eda-strip-outer');
-  return container.offsetWidth / getVisibleCount();
-}
-
-  function updatePosition(animate = true) {
-    const step = getStep();
-
-    strip.style.transition = animate
-      ? "transform 0.55s cubic-bezier(0.65, 0, 0.35, 1)"
-      : "none";
-
-    strip.style.transform = `translateX(-${current * step}px)`;
-  }
-
-  // NAVIGATION
-  nextBtn.addEventListener('click', () => {
-    current++;
-    updatePosition(true);
-  });
-
-  prevBtn.addEventListener('click', () => {
-    current--;
-    updatePosition(true);
-  });
-
-  // LOOP FIX
-  strip.addEventListener('transitionend', () => {
-    if (current >= total + VISIBLE) {
-      current = VISIBLE;
-      updatePosition(false);
+    function getVisible() {
+      if (window.innerWidth < 600) return 1;
+      if (window.innerWidth < 1000) return 2;
+      return 4;
     }
 
-    if (current < VISIBLE) {
-      current = total + VISIBLE - 1;
-      updatePosition(false);
+    let VISIBLE = getVisible();
+    let current = VISIBLE;
+
+    // ── Build one card DOM element ──
+    function makeCard(cardData, realIdx) {
+      const el = document.createElement('div');
+      el.className = 'eda-card';
+      el.dataset.i = realIdx;
+      el.innerHTML = `
+      <div class="eda-card-bg"></div>
+      <div class="eda-card-overlay"></div>
+      <div class="eda-card-inner">
+        <div>
+          <div class="eda-card-title">${cardData.title}</div>
+          <div class="eda-card-desc">${cardData.desc}</div>
+        </div>
+        <div><span class="eda-card-tag">${cardData.tag}</span></div>
+      </div>`;
+      return el;
     }
-  });
 
-  // HANDLE RESIZE
-  window.addEventListener('resize', () => {
-    VISIBLE = getVisibleCount();
-    updatePosition(false);
-  });
+    // ── Populate track with clones on each side for infinite loop ──
+    function buildTrack() {
+      track.innerHTML = '';
+      // clones of last VISIBLE cards prepended
+      EDA_CARDS.slice(TOTAL - VISIBLE).forEach((c, i) => {
+        track.appendChild(makeCard(c, TOTAL - VISIBLE + i));
+      });
+      // real cards
+      EDA_CARDS.forEach((c, i) => track.appendChild(makeCard(c, i)));
+      // clones of first VISIBLE cards appended
+      EDA_CARDS.slice(0, VISIBLE).forEach((c, i) => {
+        track.appendChild(makeCard(c, i));
+      });
+    }
 
-  updatePosition(false);
-});
+    // ── Dots ──
+    function buildDots() {
+      dotsEl.innerHTML = '';
+      EDA_CARDS.forEach((_, i) => {
+        const d = document.createElement('div');
+        d.className = 'eda-dot';
+        d.addEventListener('click', () => goTo(i + VISIBLE));
+        dotsEl.appendChild(d);
+      });
+    }
 
-nextBtn.addEventListener('click', () => {
-  current++;
-  console.log("CLICK", current);
-  updatePosition(true);
-});
+    function updateDots() {
+      const real = ((current - VISIBLE) % TOTAL + TOTAL) % TOTAL;
+      dotsEl.querySelectorAll('.eda-dot').forEach((d, i) =>
+        d.classList.toggle('active', i === real)
+      );
+    }
 
-  // =====================
-  // Machine Learning 
-  // =====================
-  const mlTrack = document.getElementById('ml-track');
-  const mlCounter = document.getElementById('ml-counter');
-  const mlSlides = document.querySelectorAll('.carousel-slide');
+    // ── Step: one card width + gap ──
+    function getStep() {
+      const first = track.children[0];
+      if (!first) return 0;
+      const gap = parseFloat(getComputedStyle(track).gap) || 20;
+      return first.offsetWidth + gap;
+    }
 
-  
+    // ── Navigate ──
+    function goTo(idx, animate = true) {
+      current = idx;
+      track.style.transition = animate
+        ? 'transform 0.55s cubic-bezier(0.65, 0, 0.35, 1)'
+        : 'none';
+      track.style.transform = `translateX(-${current * getStep()}px)`;
+      updateDots();
+    }
+
+    // ── Silent snap after transition ──
+    track.addEventListener('transitionend', () => {
+      if (current >= TOTAL + VISIBLE) goTo(current - TOTAL, false);
+      else if (current < VISIBLE) goTo(current + TOTAL, false);
+    });
+
+    btnNext.addEventListener('click', () => goTo(current + 1));
+    btnPrev.addEventListener('click', () => goTo(current - 1));
+
+    // ── Rebuild on resize if visible count changes ──
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const v = getVisible();
+        if (v !== VISIBLE) {
+          VISIBLE = v;
+          current = VISIBLE;
+          buildTrack();
+          buildDots();
+        }
+        goTo(current, false);
+      }, 100);
+    });
+
+    // ── Init ──
+    buildTrack();
+    buildDots();
+    goTo(VISIBLE, false);
+  })();
 
 });
 
@@ -363,61 +425,61 @@ const ML_MODELS = {
     desc: "Gradient-boosted decision trees trained to predict 30-day churn probability. XGBoost handles feature interactions and missing values natively, making it robust to the sparse Steam interaction matrix.",
     auc: "0.91", prec: "87%", rec: "83%", params: true,
     cm: { tp: 7241, fp: 412, fn: 689, tn: 4158 },
-    roc: [[0,0],[0.05,0.62],[0.10,0.75],[0.18,0.83],[0.28,0.88],[0.40,0.91],[0.55,0.94],[0.70,0.96],[0.85,0.98],[1,1]],
-    feat: [["Playtime (7d)",0.22],["Days Inactive",0.19],["Session Freq.",0.16],["Games Owned",0.12],["Friends Count",0.09],["Review Count",0.08],["Achievement %",0.07],["Wishlist Size",0.05],["Price Paid",0.02]]
+    roc: [[0, 0], [0.05, 0.62], [0.10, 0.75], [0.18, 0.83], [0.28, 0.88], [0.40, 0.91], [0.55, 0.94], [0.70, 0.96], [0.85, 0.98], [1, 1]],
+    feat: [["Playtime (7d)", 0.22], ["Days Inactive", 0.19], ["Session Freq.", 0.16], ["Games Owned", 0.12], ["Friends Count", 0.09], ["Review Count", 0.08], ["Achievement %", 0.07], ["Wishlist Size", 0.05], ["Price Paid", 0.02]]
   },
   rf: {
     name: "Random Forest", tag: "SUPERVISED", tagClass: "tag-supervised",
     desc: "Ensemble of 300 decision trees with bootstrapped sampling. Provides probability calibration and interpretable feature importances, serving as a robust baseline for the churn prediction task.",
     auc: "0.88", prec: "84%", rec: "80%", params: true,
     cm: { tp: 6980, fp: 520, fn: 890, tn: 4110 },
-    roc: [[0,0],[0.06,0.55],[0.12,0.68],[0.20,0.78],[0.32,0.84],[0.44,0.88],[0.58,0.91],[0.72,0.94],[0.86,0.97],[1,1]],
-    feat: [["Days Inactive",0.20],["Playtime (7d)",0.18],["Session Freq.",0.15],["Games Owned",0.13],["Achievement %",0.10],["Friends Count",0.09],["Review Count",0.07],["Wishlist Size",0.05],["Price Paid",0.03]]
+    roc: [[0, 0], [0.06, 0.55], [0.12, 0.68], [0.20, 0.78], [0.32, 0.84], [0.44, 0.88], [0.58, 0.91], [0.72, 0.94], [0.86, 0.97], [1, 1]],
+    feat: [["Days Inactive", 0.20], ["Playtime (7d)", 0.18], ["Session Freq.", 0.15], ["Games Owned", 0.13], ["Achievement %", 0.10], ["Friends Count", 0.09], ["Review Count", 0.07], ["Wishlist Size", 0.05], ["Price Paid", 0.03]]
   },
   lstm: {
     name: "LSTM Network", tag: "SEQUENTIAL", tagClass: "tag-nlp",
     desc: "Long Short-Term Memory network that models temporal sequences of player sessions over a 30-day window. Captures recency decay patterns and behavioral rhythm shifts that tree-based models miss.",
     auc: "0.89", prec: "85%", rec: "82%", params: false,
     cm: { tp: 7100, fp: 480, fn: 760, tn: 4160 },
-    roc: [[0,0],[0.04,0.58],[0.10,0.72],[0.18,0.81],[0.30,0.87],[0.42,0.90],[0.56,0.93],[0.70,0.95],[0.84,0.97],[1,1]],
-    feat: [["Session Recency",0.24],["Playtime Trend",0.20],["Session Gaps",0.17],["Activity Decay",0.15],["Genre Shift",0.11],["Time of Day",0.08],["Weekend Ratio",0.05]]
+    roc: [[0, 0], [0.04, 0.58], [0.10, 0.72], [0.18, 0.81], [0.30, 0.87], [0.42, 0.90], [0.56, 0.93], [0.70, 0.95], [0.84, 0.97], [1, 1]],
+    feat: [["Session Recency", 0.24], ["Playtime Trend", 0.20], ["Session Gaps", 0.17], ["Activity Decay", 0.15], ["Genre Shift", 0.11], ["Time of Day", 0.08], ["Weekend Ratio", 0.05]]
   },
   cf: {
     name: "Collaborative Filter", tag: "UNSUPERVISED", tagClass: "tag-unsupervised",
     desc: "Matrix factorization (SVD++) on the sparse user-game interaction matrix. Generates latent player embeddings used for recommendation: given a churned player, surface the top-K similar games most likely to re-engage them.",
     auc: "0.82", prec: "79%", rec: "76%", params: false,
     cm: { tp: 6540, fp: 730, fn: 1100, tn: 4130 },
-    roc: [[0,0],[0.08,0.48],[0.15,0.62],[0.25,0.73],[0.36,0.79],[0.48,0.83],[0.62,0.87],[0.76,0.91],[0.88,0.95],[1,1]],
-    feat: [["Genre Overlap",0.26],["Tag Similarity",0.22],["Play Duration",0.18],["Price Range",0.13],["Rating Match",0.10],["Release Year",0.07],["Multiplayer",0.04]]
+    roc: [[0, 0], [0.08, 0.48], [0.15, 0.62], [0.25, 0.73], [0.36, 0.79], [0.48, 0.83], [0.62, 0.87], [0.76, 0.91], [0.88, 0.95], [1, 1]],
+    feat: [["Genre Overlap", 0.26], ["Tag Similarity", 0.22], ["Play Duration", 0.18], ["Price Range", 0.13], ["Rating Match", 0.10], ["Release Year", 0.07], ["Multiplayer", 0.04]]
   }
 };
 
 const ML_STEPS = [
-  { title: "Raw Data",         text: "Steam behavioral logs, game metadata, playtime, session timestamps, and user reviews collected across millions of player sessions. Data is stored as columnar Parquet files for efficient downstream processing." },
+  { title: "Raw Data", text: "Steam behavioral logs, game metadata, playtime, session timestamps, and user reviews collected across millions of player sessions. Data is stored as columnar Parquet files for efficient downstream processing." },
   { title: "Feature Engineering", text: "Session-level features are aggregated to player level: 7-day playtime sums, inactivity windows, session frequency, genre diversity scores, social graph features, and review sentiment scores." },
-  { title: "Sampling",         text: "The dataset suffers from class imbalance (~70% retained, ~30% churned). SMOTE oversamples the minority class in feature space, while stratified k-fold ensures both classes appear equally in each validation fold." },
-  { title: "Training",         text: "Models are trained with 5-fold cross-validation. Hyperparameters are tuned via Optuna Bayesian search. Early stopping prevents overfitting on the XGBoost and LSTM models." },
-  { title: "Prediction",       text: "The trained model outputs a calibrated churn probability [0,1] for each player. A threshold of 0.45 was chosen via Youden's J statistic to balance precision and recall on the held-out test set." },
-  { title: "Recommendation",   text: "Players flagged as high churn risk are passed to the collaborative filter. The top-K games most similar to their historical preferences are ranked by cosine similarity in the latent embedding space." }
+  { title: "Sampling", text: "The dataset suffers from class imbalance (~70% retained, ~30% churned). SMOTE oversamples the minority class in feature space, while stratified k-fold ensures both classes appear equally in each validation fold." },
+  { title: "Training", text: "Models are trained with 5-fold cross-validation. Hyperparameters are tuned via Optuna Bayesian search. Early stopping prevents overfitting on the XGBoost and LSTM models." },
+  { title: "Prediction", text: "The trained model outputs a calibrated churn probability [0,1] for each player. A threshold of 0.45 was chosen via Youden's J statistic to balance precision and recall on the held-out test set." },
+  { title: "Recommendation", text: "Players flagged as high churn risk are passed to the collaborative filter. The top-K games most similar to their historical preferences are ranked by cosine similarity in the latent embedding space." }
 ];
 
 let mlActiveModel = 'xgb';
 let mlActiveChart = 'roc';
-let rocChartInst  = null;
+let rocChartInst = null;
 let learnChartInst = null;
 
 // ── Model switching ──
 function mlSwitchModel(key) {
   mlActiveModel = key;
   const m = ML_MODELS[key];
-  document.getElementById('modelName').textContent    = m.name;
+  document.getElementById('modelName').textContent = m.name;
   const tag = document.getElementById('modelTag');
   tag.textContent = m.tag;
-  tag.className   = 'model-tag ' + m.tagClass;
-  document.getElementById('modelDesc').textContent    = m.desc;
-  document.getElementById('m-auc').textContent        = m.auc;
-  document.getElementById('m-prec').textContent       = m.prec;
-  document.getElementById('m-rec').textContent        = m.rec;
+  tag.className = 'model-tag ' + m.tagClass;
+  document.getElementById('modelDesc').textContent = m.desc;
+  document.getElementById('m-auc').textContent = m.auc;
+  document.getElementById('m-prec').textContent = m.prec;
+  document.getElementById('m-rec').textContent = m.rec;
   document.getElementById('paramsSection').style.display = m.params ? 'flex' : 'none';
   document.querySelectorAll('#modelTabs .tab-btn').forEach(b =>
     b.classList.toggle('active', b.dataset.model === key)
@@ -444,9 +506,9 @@ function mlUpdateChart(type) {
   ['roc', 'feat', 'cm', 'learn'].forEach(v =>
     document.getElementById('view-' + v).style.display = v === type ? '' : 'none'
   );
-  if (type === 'roc')   mlDrawROC();
-  if (type === 'feat')  mlDrawFeat();
-  if (type === 'cm')    mlUpdateCM();
+  if (type === 'roc') mlDrawROC();
+  if (type === 'feat') mlDrawFeat();
+  if (type === 'cm') mlUpdateCM();
   if (type === 'learn') mlDrawLearn();
 }
 
@@ -457,16 +519,18 @@ function mlDrawROC() {
   if (rocChartInst) { rocChartInst.destroy(); rocChartInst = null; }
   rocChartInst = new Chart(document.getElementById('rocChart'), {
     type: 'scatter',
-    data: { datasets: [
-      { label: 'Model',  data, showLine: true, borderColor: '#9cbfe2', backgroundColor: 'rgba(156,191,226,0.15)', borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#9cbfe2', tension: 0.4 },
-      { label: 'Random', data: [{x:0,y:0},{x:1,y:1}], showLine: true, borderColor: 'rgba(255,255,255,0.2)', borderWidth: 1, borderDash: [5,5], pointRadius: 0 }
-    ]},
+    data: {
+      datasets: [
+        { label: 'Model', data, showLine: true, borderColor: '#9cbfe2', backgroundColor: 'rgba(156,191,226,0.15)', borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#9cbfe2', tension: 0.4 },
+        { label: 'Random', data: [{ x: 0, y: 0 }, { x: 1, y: 1 }], showLine: true, borderColor: 'rgba(255,255,255,0.2)', borderWidth: 1, borderDash: [5, 5], pointRadius: 0 }
+      ]
+    },
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
         x: { title: { display: true, text: 'False Positive Rate', color: '#c8d8e8', font: { size: 11 } }, ticks: { color: '#c8d8e8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' }, min: 0, max: 1 },
-        y: { title: { display: true, text: 'True Positive Rate',  color: '#c8d8e8', font: { size: 11 } }, ticks: { color: '#c8d8e8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' }, min: 0, max: 1 }
+        y: { title: { display: true, text: 'True Positive Rate', color: '#c8d8e8', font: { size: 11 } }, ticks: { color: '#c8d8e8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' }, min: 0, max: 1 }
       }
     }
   });
@@ -486,9 +550,9 @@ function mlDrawFeat() {
 
 // ── Learning curve ──
 function mlDrawLearn() {
-  const sizes = [1000,3000,6000,12000,20000,30000,42000,50000];
-  const train = [0.71,0.79,0.83,0.86,0.88,0.89,0.90,0.91];
-  const val   = [0.62,0.72,0.78,0.82,0.85,0.87,0.88,0.89];
+  const sizes = [1000, 3000, 6000, 12000, 20000, 30000, 42000, 50000];
+  const train = [0.71, 0.79, 0.83, 0.86, 0.88, 0.89, 0.90, 0.91];
+  const val = [0.62, 0.72, 0.78, 0.82, 0.85, 0.87, 0.88, 0.89];
   const jitter = () => (Math.random() - 0.5) * 0.008;
   if (learnChartInst) { learnChartInst.destroy(); learnChartInst = null; }
   learnChartInst = new Chart(document.getElementById('learnChart'), {
@@ -496,8 +560,8 @@ function mlDrawLearn() {
     data: {
       labels: sizes.map(s => s >= 1000 ? (s / 1000) + 'k' : s),
       datasets: [
-        { label: 'Train',      data: train.map(v => +(v + jitter()).toFixed(3)), borderColor: '#9cbfe2', backgroundColor: 'rgba(156,191,226,0.1)', borderWidth: 2, pointRadius: 4, fill: false, tension: 0.4 },
-        { label: 'Validation', data: val.map(v   => +(v + jitter()).toFixed(3)), borderColor: '#f2994a', backgroundColor: 'rgba(242,153,74,0.1)',   borderWidth: 2, pointRadius: 4, borderDash: [4,4], fill: false, tension: 0.4 }
+        { label: 'Train', data: train.map(v => +(v + jitter()).toFixed(3)), borderColor: '#9cbfe2', backgroundColor: 'rgba(156,191,226,0.1)', borderWidth: 2, pointRadius: 4, fill: false, tension: 0.4 },
+        { label: 'Validation', data: val.map(v => +(v + jitter()).toFixed(3)), borderColor: '#f2994a', backgroundColor: 'rgba(242,153,74,0.1)', borderWidth: 2, pointRadius: 4, borderDash: [4, 4], fill: false, tension: 0.4 }
       ]
     },
     options: {
@@ -505,7 +569,7 @@ function mlDrawLearn() {
       plugins: { legend: { labels: { color: '#c8d8e8', font: { size: 11 } } } },
       scales: {
         x: { title: { display: true, text: 'Training samples', color: '#c8d8e8', font: { size: 11 } }, ticks: { color: '#c8d8e8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
-        y: { title: { display: true, text: 'AUC-ROC',          color: '#c8d8e8', font: { size: 11 } }, ticks: { color: '#c8d8e8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' }, min: 0.55, max: 0.96 }
+        y: { title: { display: true, text: 'AUC-ROC', color: '#c8d8e8', font: { size: 11 } }, ticks: { color: '#c8d8e8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' }, min: 0.55, max: 0.96 }
       }
     }
   });
@@ -513,19 +577,19 @@ function mlDrawLearn() {
 
 // ── Churn simulator ──
 function mlCalcChurn() {
-  const sess    = +document.getElementById('s-session').value;
-  const days    = +document.getElementById('s-days').value;
-  const games   = +document.getElementById('s-games').value;
+  const sess = +document.getElementById('s-session').value;
+  const days = +document.getElementById('s-days').value;
+  const games = +document.getElementById('s-games').value;
   const reviews = +document.getElementById('s-reviews').value;
   const friends = +document.getElementById('s-friends').value;
-  const ach     = +document.getElementById('s-ach').value;
+  const ach = +document.getElementById('s-ach').value;
 
   document.getElementById('sv-session').textContent = sess;
-  document.getElementById('sv-days').textContent    = days;
-  document.getElementById('sv-games').textContent   = games;
+  document.getElementById('sv-days').textContent = days;
+  document.getElementById('sv-games').textContent = games;
   document.getElementById('sv-reviews').textContent = reviews;
   document.getElementById('sv-friends').textContent = friends;
-  document.getElementById('sv-ach').textContent     = ach;
+  document.getElementById('sv-ach').textContent = ach;
 
   let risk = 0;
   risk += Math.max(0, (14 - days / 6)) * 0.025;
@@ -539,32 +603,32 @@ function mlCalcChurn() {
   const pct = Math.round(Math.max(3, Math.min(97, risk * 100)));
 
   document.getElementById('churnScore').textContent = pct + '%';
-  document.getElementById('churnBar').style.width   = pct + '%';
+  document.getElementById('churnBar').style.width = pct + '%';
 
   let color, label, reason;
   if (pct < 30) {
-    color  = '#6fcf97';
-    label  = 'Low risk — player likely to stay';
+    color = '#6fcf97';
+    label = 'Low risk — player likely to stay';
     reason = 'Strong session length and recent activity suggest continued engagement.';
   } else if (pct < 55) {
-    color  = '#f2994a';
-    label  = 'Moderate risk — monitor closely';
+    color = '#f2994a';
+    label = 'Moderate risk — monitor closely';
     reason = 'Some signals of reduced engagement. Consider targeted re-engagement.';
   } else if (pct < 75) {
-    color  = '#eb5757';
-    label  = 'High risk — intervention recommended';
+    color = '#eb5757';
+    label = 'High risk — intervention recommended';
     reason = 'Multiple churn signals detected. Recommend game suggestions now.';
   } else {
-    color  = '#ff4444';
-    label  = 'Critical — player likely churned';
+    color = '#ff4444';
+    label = 'Critical — player likely churned';
     reason = 'Severe inactivity and low engagement. Automated re-engagement triggered.';
   }
 
-  document.getElementById('churnBar').style.background   = color;
-  document.getElementById('churnScore').style.color       = color;
-  document.getElementById('churnLabel').style.color       = color;
-  document.getElementById('churnLabel').textContent       = label;
-  document.getElementById('churnReason').textContent      = reason;
+  document.getElementById('churnBar').style.background = color;
+  document.getElementById('churnScore').style.color = color;
+  document.getElementById('churnLabel').style.color = color;
+  document.getElementById('churnLabel').textContent = label;
+  document.getElementById('churnReason').textContent = reason;
 }
 
 // ── Init (call inside your DOMContentLoaded block) ──
@@ -606,24 +670,24 @@ document.addEventListener('DOMContentLoaded', () => {
     this.textContent = 'Training…';
     this.disabled = true;
     const base = { xgb: { auc: 0.91, prec: 87, rec: 83 }, rf: { auc: 0.88, prec: 84, rec: 80 } }[mlActiveModel]
-               || { auc: 0.89, prec: 85, rec: 82 };
-    const d   = +document.getElementById('p-depth').value;
-    const lr  = +document.getElementById('p-lr').value / 100;
+      || { auc: 0.89, prec: 85, rec: 82 };
+    const d = +document.getElementById('p-depth').value;
+    const lr = +document.getElementById('p-lr').value / 100;
     const est = +document.getElementById('p-est').value;
     setTimeout(() => {
-      const aucAdj  = Math.min(0.97, base.auc + (d > 8 ? -0.01 : 0) + (lr > 0.2 ? -0.02 : 0) + (est >= 300 ? 0.01 : 0) + (Math.random() - 0.5) * 0.015);
+      const aucAdj = Math.min(0.97, base.auc + (d > 8 ? -0.01 : 0) + (lr > 0.2 ? -0.02 : 0) + (est >= 300 ? 0.01 : 0) + (Math.random() - 0.5) * 0.015);
       const precAdj = Math.min(99, Math.max(70, base.prec + (est >= 300 ? 1 : 0) + (d < 5 ? -2 : 0) + Math.round((Math.random() - 0.5) * 4)));
-      const recAdj  = Math.min(99, Math.max(70, base.rec  + (lr < 0.05 ? -2 : 0) + (d > 10 ? -1 : 0) + Math.round((Math.random() - 0.5) * 4)));
-      document.getElementById('m-auc').textContent  = aucAdj.toFixed(2);
+      const recAdj = Math.min(99, Math.max(70, base.rec + (lr < 0.05 ? -2 : 0) + (d > 10 ? -1 : 0) + Math.round((Math.random() - 0.5) * 4)));
+      document.getElementById('m-auc').textContent = aucAdj.toFixed(2);
       document.getElementById('m-prec').textContent = precAdj + '%';
-      document.getElementById('m-rec').textContent  = recAdj + '%';
+      document.getElementById('m-rec').textContent = recAdj + '%';
       this.textContent = 'Retrain Model ↻';
       this.disabled = false;
     }, 1200);
   });
 
   // Churn simulator sliders
-  ['s-session','s-days','s-games','s-reviews','s-friends','s-ach'].forEach(id => {
+  ['s-session', 's-days', 's-games', 's-reviews', 's-friends', 's-ach'].forEach(id => {
     document.getElementById(id).addEventListener('input', mlCalcChurn);
   });
 
@@ -633,18 +697,18 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 const nodes = [
-  { id:"data", x:200, y:200, title:"Raw Data", desc:"Steam logs + metadata" },
-  { id:"feat", x:500, y:200, title:"Feature Engineering", desc:"Session + encoding" },
-  { id:"train", x:800, y:200, title:"Training", desc:"XGBoost / RF / LSTM" },
-  { id:"pred", x:1100, y:200, title:"Prediction", desc:"Churn probability output" },
-  { id:"rec", x:1400, y:200, title:"Recommender", desc:"Game ranking system" }
+  { id: "data", x: 200, y: 200, title: "Raw Data", desc: "Steam logs + metadata" },
+  { id: "feat", x: 500, y: 200, title: "Feature Engineering", desc: "Session + encoding" },
+  { id: "train", x: 800, y: 200, title: "Training", desc: "XGBoost / RF / LSTM" },
+  { id: "pred", x: 1100, y: 200, title: "Prediction", desc: "Churn probability output" },
+  { id: "rec", x: 1400, y: 200, title: "Recommender", desc: "Game ranking system" }
 ];
 
 const edges = [
-  ["data","feat"],
-  ["feat","train"],
-  ["train","pred"],
-  ["pred","rec"]
+  ["data", "feat"],
+  ["feat", "train"],
+  ["train", "pred"],
+  ["pred", "rec"]
 ];
 
 const svg = document.getElementById("mlGraph");
@@ -655,19 +719,27 @@ let offsetY = 0;
 
 // DRAW EDGES
 function drawEdges() {
-  return edges.map(([a,b]) => {
+  return edges.map(([a, b]) => {
     const n1 = nodes.find(n => n.id === a);
     const n2 = nodes.find(n => n.id === b);
 
     return `
       <path class="edge"
         d="M ${n1.x} ${n1.y}
-           C ${(n1.x+n2.x)/2} ${n1.y},
-             ${(n1.x+n2.x)/2} ${n2.y},
+           C ${(n1.x + n2.x) / 2} ${n1.y},
+             ${(n1.x + n2.x) / 2} ${n2.y},
              ${n2.x} ${n2.y}" />
     `;
   }).join("");
 }
+
+function resize() {
+  const canvas = document.getElementById("c");
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight - 56; // subtract topbar
+}
+resize();
 
 // DRAW NODES
 function drawNodes() {
@@ -743,68 +815,38 @@ document.getElementById("zoomReset").onclick = () => {
   svg.style.transform = `translate(0px,0px) scale(1)`;
 };
 
+// Techniques 
+document.addEventListener("DOMContentLoaded", () => {
+  const items = document.querySelectorAll(".tech-item");
 
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+      }
+    });
+  }, { threshold: 0.15 });
 
-// =====================
-// Insights
-// =====================
-document.addEventListener('DOMContentLoaded', () => {
-  const track = document.getElementById('insights-track');
-  const slides = track.querySelectorAll('.insights-slide'); // scope to track, not document
-  const total = slides.length;
-  let current = 0;
-
-  console.log('insights slides found:', total); // check this in browser console
-
-  function goTo(index) {
-    current = (index + total) % total;
-    track.style.transform = `translateX(-${current * 100}%)`;
-  }
-
-  document.getElementById('insights-prev').addEventListener('click', () => goTo(current - 1));
-  document.getElementById('insights-next').addEventListener('click', () => goTo(current + 1));
+  items.forEach((item) => observer.observe(item));
 });
 
-// Testing 
-const cards = document.querySelectorAll(".card");
+// Thank you 
+const thankYouSection = document.querySelector("#thankyou");
 
-const VISIBLE = 4;
-let index = 0;
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("show");
 
-function layout() {
-  cards.forEach((card, i) => {
+        // optional: stop observing after it triggers once
+        observer.unobserve(entry.target);
+      }
+    });
+  },
+  {
+    threshold: 0.3, // triggers when 30% of section is visible
+  }
+);
 
-    // infinite wrap logic
-    let offset = i - index;
-
-    // wrap around for smooth infinite feel
-    if (offset > cards.length / 2) offset -= cards.length;
-    if (offset < -cards.length / 2) offset += cards.length;
-
-    card.style.left = `calc(50% + ${offset * 340}px)`;
-
-    card.style.transform = `
-      translateX(-50%)
-      scale(${offset === 0 ? 1 : 0.9})
-    `;
-
-    card.style.opacity = Math.abs(offset) > VISIBLE ? 0 : 1;
-
-    card.style.zIndex = 100 - Math.abs(offset);
-  });
-}
-
-// NEXT
-document.getElementById("next").onclick = () => {
-  index = (index + 1) % cards.length;
-  layout();
-};
-
-// PREV
-document.getElementById("prev").onclick = () => {
-  index = (index - 1 + cards.length) % cards.length;
-  layout();
-};
-
-layout();
-
+observer.observe(thankYouSection);
