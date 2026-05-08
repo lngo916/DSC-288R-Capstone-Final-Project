@@ -26,9 +26,29 @@
 
 </head>
 
-<body>
+<body class="locked">
+
+  <canvas id="road-canvas"></canvas>
+    <canvas id="overlay-canvas"></canvas>
+    <div id="crt"></div>
+
+    <!-- PRESS START -->
+    <div id="start-screen">
+        <div class="press-badge">DSC 288R · UCSD Capstone · 2026</div>
+        <div class="game-logo"><span>STEAM</span> RETENTION</div>
+        <div class="game-sub">Player Churn Analysis System v1.0</div>
+        <div class="press-start" id="press-start">▶ PRESS START</div>
+    </div>
+
+  <div id="boot-screen">
+    <div class="boot-text">Initializing website...</div>
+    <div class="boot-bar">
+      <div class="boot-fill"></div>
+    </div>
+  </div>
 
   <!-- NAV -->
+
   <nav class="top-nav">
     <ul>
       <li><a href="#hero">Home</a></li>
@@ -73,7 +93,6 @@
 
   <!-- ══ SLIDE 2: Overview ══ -->
   <section id="about">
-
     <div class="about-inner">
       <div class="about-left">
         <span class="year-badge">Overview</span>
@@ -138,8 +157,12 @@
   <!-- ══ SLIDE 3: THE PROCESS ══ -->
   <section id="process">
     <div class="process-inner">
-      <div>
+
+      <div class="process-header">
         <p class="big-title">The Process</p>
+        <p class="process-sub">
+          From raw player data to actionable retention strategies
+        </p>
       </div>
       <div class="process-grid">
         <div class="process-item">
@@ -167,32 +190,32 @@
   </section>
 
   <!-- ══ SLIDE 4: EDA ══ -->
-<section id="eda">
+  <section id="eda">
 
-  <div class="eda-header">
-    <div class="eda-header-text">
-      <span class="year-badge">Exploratory Data Analysis</span>
-      <h2>FEATURE-LEVEL BEHAVIORAL INSIGHTS</h2>
-      <p>We analyze player behavior patterns, engagement distributions, and churn indicators using visualization,
-        statistical summaries, and feature-level exploration across multiple dimensions of gameplay.</p>
+    <div class="eda-header">
+      <div class="eda-header-text">
+        <span class="year-badge">Exploratory Data Analysis</span>
+        <h2>FEATURE-LEVEL BEHAVIORAL INSIGHTS</h2>
+        <p>We analyze player behavior patterns, engagement distributions, and churn indicators using visualization,
+          statistical summaries, and feature-level exploration across multiple dimensions of gameplay.</p>
+      </div>
     </div>
-  </div>
 
-  <!-- CAROUSEL -->
-  <div class="eda-carousel-outer">
-    <div class="eda-carousel-track" id="eda-track"></div>
-  </div>
-
-  <!-- BOTTOM: dots + arrows -->
-  <div class="eda-bottom">
-    <div class="eda-dots" id="eda-dots"></div>
-    <div class="eda-nav">
-      <button class="eda-nav-btn" id="eda-prev">&#8249;</button>
-      <button class="eda-nav-btn" id="eda-next">&#8250;</button>
+    <!-- CAROUSEL -->
+    <div class="eda-carousel-outer">
+      <div class="eda-carousel-track" id="eda-track"></div>
     </div>
-  </div>
 
-</section>
+    <!-- BOTTOM: dots + arrows -->
+    <div class="eda-bottom">
+      <div class="eda-dots" id="eda-dots"></div>
+      <div class="eda-nav">
+        <button class="eda-nav-btn" id="eda-prev">&#8249;</button>
+        <button class="eda-nav-btn" id="eda-next">&#8250;</button>
+      </div>
+    </div>
+
+  </section>
 
   <!-- ══ SLIDE 5: ML ══ -->
 
@@ -314,7 +337,7 @@
 
   <!-- ══ SLIDE 6: Live Churn Simulator ══ -->
   <section id="churn">
-    <h3> Live Churn Simulator</h3>
+    <h2 class="section-title">Live Churn Simulator</h2>
     <div class="sim-panel">
       <div>
         <p class="sim-panel-sub">Adjust a player's behavioral profile and watch the model update its churn probability
@@ -365,33 +388,45 @@
 
   <!-- ══ SLIDE 7: TECHNIQUES ══ -->
   <section id="techniques">
-    <div class="diag-accent" style="border-top-color:rgba(156,191,226,0.08);"></div>
     <div class="tech-inner">
-      <div>
-        <p class="pre-title">Analysis</p>
-        <p class="big-title">Techniques</p>
+
+      <div class="tech-heading">
+        <p class="big-title">Model Comparison</p>
+        <p class="tech-sub">Our end-to-end analytical workflow — from raw behavioral data to actionable
+          retention strategies — broken down into four core stages.</p>
       </div>
+
       <div class="tech-grid">
+
         <div class="tech-item">
-          <h3>Descriptive</h3>
-          <p class="body-text">Summarizes historical Steam behavior to characterize baseline engagement, session
-            frequency, and playtime distribution across the player base.</p>
+          <h3>XGBoost</h3>
+          <p class="body-text">
+            Collecting Steam behavioral logs, game metadata, user reviews, and playtime data across millions of
+            sessions.
+          </p>
         </div>
+
         <div class="tech-item">
-          <h3>Predictive</h3>
-          <p class="body-text">Uses gradient boosting and neural network models to forecast churn probability based on
-            early behavioral signals detected within the first 7 days.</p>
+          <h3>Random Forest</h3>
+          <p class="body-text">
+            Communicating findings through dashboards and visual reports that surface churn risk scores.
+          </p>
         </div>
+
         <div class="tech-item">
-          <h3>Diagnostic</h3>
-          <p class="body-text">Investigates root causes of player drop-off by drilling into cohort-level patterns, genre
-            preferences, and social graph interactions.</p>
+          <h3>LSTM</h3>
+          <p class="body-text">
+            Applying EDA, feature engineering, and statistical methods to identify disengagement patterns.
+          </p>
         </div>
+
         <div class="tech-item">
-          <h3>Prescriptive</h3>
-          <p class="body-text">Drives personalized game recommendations and re-engagement triggers using collaborative
-            filtering on sparse interaction matrices.</p>
+          <h3>Collaborative Filtering</h3>
+          <p class="body-text">
+            Translating outputs into retention strategies like recommendations and re-engagement triggers.
+          </p>
         </div>
+
       </div>
     </div>
   </section>
@@ -493,25 +528,25 @@
           </p>
         </div>
 
-        <!-- MEMBER 2 -->
-        <div class="team-card">
-          <div class="team-role">Data Engineer</div>
-          <img src="images/data1.png" alt="Jason Limfueco" class="team-avatar">
-          <h3 class="team-name">Baixi Guo</h3>
-          <p class="team-desc">
-            Develops and maintains the data pipeline, handling preprocessing, integration, and large-scale dataset
-            management using distributed systems and notebook-based workflows.
-          </p>
-        </div>
-
         <!-- MEMBER 3 -->
         <div class="team-card">
           <div class="team-role">Frontend & Presentation</div>
-          <img src="images/data1.png" alt="Jason Limfueco" class="team-avatar">
+          <img src="images/laura.jpeg" alt="Laura Ngo" class="team-avatar">
           <h3 class="team-name">Laura Ngo</h3>
           <p class="team-desc">
             Designs and builds the project website, transforming technical results into clear visual narratives.
             Focuses on user experience, layout, and presentation of insights.
+          </p>
+        </div>
+
+        <!-- MEMBER 2 -->
+        <div class="team-card">
+          <div class="team-role">Data Engineer</div>
+          <img src="images/data1.png" alt="Baixi Guo" class="team-avatar">
+          <h3 class="team-name">Baixi Guo</h3>
+          <p class="team-desc">
+            Develops and maintains the data pipeline, handling preprocessing, integration, and large-scale dataset
+            management using distributed systems and notebook-based workflows.
           </p>
         </div>
 
@@ -549,6 +584,7 @@
     </div>
 
   </section>
+  
 
   <script type="module" src="script.js"></script>
 

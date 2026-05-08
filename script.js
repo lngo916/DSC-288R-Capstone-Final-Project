@@ -1,4 +1,52 @@
 // =====================
+// Start Loading
+// =====================
+const startBtn = document.getElementById("press-start");
+const startScreen = document.getElementById("start-screen");
+const bootScreen = document.getElementById("boot-screen");
+
+startBtn.addEventListener("click", () => {
+
+  // prevent double click spam
+  startBtn.style.pointerEvents = "none";
+
+  // 1. fade out start screen
+  startScreen.classList.add("gone");
+
+  // 2. show boot screen AFTER fade
+  setTimeout(() => {
+    bootScreen.classList.add("active");
+
+    const fill = document.querySelector(".boot-fill");
+
+    // reset in case of refresh
+    fill.style.width = "0%";
+
+    setTimeout(() => fill.style.width = "30%", 200);
+    setTimeout(() => fill.style.width = "65%", 700);
+    setTimeout(() => fill.style.width = "100%", 1400);
+
+  }, 600);
+
+  // 3. finish boot → reveal site
+  setTimeout(() => {
+    bootScreen.classList.remove("active");
+
+    document.body.classList.remove("locked");
+
+    // reveal content
+    document.querySelector(".top-nav").style.opacity = "1";
+    document.querySelector("#hero").style.opacity = "1";
+
+    // ONLY scroll AFTER everything is done
+    document.querySelector("#hero").scrollIntoView({
+      behavior: "smooth"
+    });
+
+  }, 2200);
+});
+
+// =====================
 // Hero
 // =====================
 import * as THREE from "three";
@@ -415,6 +463,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+const edaSection = document.querySelector("#eda");
+const edaCards = document.querySelectorAll(".eda-card");
+
+// section observer (show/hide)
+const edaObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      edaSection.classList.add("show");
+    } else {
+      edaSection.classList.remove("show"); // re-trigger on re-scroll
+    }
+  });
+}, { threshold: 0.3 });
+
+edaObserver.observe(edaSection);
+
+// optional: individual card observer (extra polish)
+const cardObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("show");
+    } else {
+      entry.target.classList.remove("show");
+    }
+  });
+}, { threshold: 0.2 });
+
+edaCards.forEach(card => cardObserver.observe(card));
+
 // =====================
 // Machine Learning
 // =====================
@@ -575,7 +652,38 @@ function mlDrawLearn() {
   });
 }
 
-// ── Churn simulator ──
+// =====================
+// CHURN SIMULATOR
+// =====================
+
+const churnSection = document.querySelector("#churn");
+const churnFields = document.querySelectorAll(".sim-field");
+
+const churnObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      churnSection.classList.add("show");
+    } else {
+      churnSection.classList.remove("show"); // re-trigger on scroll
+    }
+  });
+}, { threshold: 0.3 });
+
+churnObserver.observe(churnSection);
+
+// optional: per-field stagger control (extra polish)
+const fieldObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("show");
+    } else {
+      entry.target.classList.remove("show");
+    }
+  });
+}, { threshold: 0.2 });
+
+churnFields.forEach(field => fieldObserver.observe(field));
+
 function mlCalcChurn() {
   const sess = +document.getElementById('s-session').value;
   const days = +document.getElementById('s-days').value;
@@ -734,7 +842,9 @@ function drawEdges() {
 }
 
 function resize() {
-  const canvas = document.getElementById("c");
+  const canvas = document.getElementById("canvas");
+
+  if (!canvas) return;
 
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight - 56; // subtract topbar
@@ -815,7 +925,7 @@ document.getElementById("zoomReset").onclick = () => {
   svg.style.transform = `translate(0px,0px) scale(1)`;
 };
 
-// Techniques 
+// Model Performance 
 document.addEventListener("DOMContentLoaded", () => {
   const items = document.querySelectorAll(".tech-item");
 
@@ -830,4 +940,18 @@ document.addEventListener("DOMContentLoaded", () => {
   items.forEach((item) => observer.observe(item));
 });
 
-// Thank you 
+// =====================
+// TECHNIQUES SECTION
+// =====================
+
+  
+
+// =====================
+// INSIGHT SECTION
+// =====================
+
+
+// =====================
+// THANK YOU 
+// =====================
+

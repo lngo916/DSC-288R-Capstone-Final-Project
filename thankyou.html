@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Thank You — Steam Player Retention</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        :root {
+            --accent: #9cbfe2;
+            --green: #6fcf97;
+            --red: #eb5757;
+            --yellow: #f2c94c;
+            --bg: #02050c
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+            font-family: 'Poppins', sans-serif;
+            color: #fff
+        }
+
+        /* canvas layers */
+        #road-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0
+        }
+
+        #overlay-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none
+        }
+
+        /* CRT scanlines */
+        #crt {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+            background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0, 0, 0, .06) 3px, rgba(0, 0, 0, .06) 4px);
+        }
+
+        /* vignette */
+        #crt::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, .6) 100%);
+        }
+
+        /* ── PRESS START SCREEN ── */
+        #start-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, .85);
+            transition: opacity .6s ease;
+        }
+
+        #start-screen.gone {
+            opacity: 0;
+            pointer-events: none
+        }
+
+        .press-badge {
+            font-size: 11px;
+            color: var(--accent);
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            opacity: .7;
+        }
+
+        .game-logo {
+            font-size: clamp(40px, 8vw, 80px);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -.01em;
+            line-height: 1;
+            margin-bottom: 8px;
+            color: var(--accent);
+            text-shadow: 0 0 40px rgba(156, 191, 226, .6), 0 0 80px rgba(156, 191, 226, .2);
+        }
+
+        .game-logo span {
+            color: #fff
+        }
+
+        .game-sub {
+            font-size: 13px;
+            color: rgba(200, 216, 232, .5);
+            margin-bottom: 48px;
+            letter-spacing: .06em
+        }
+
+        .press-start {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            animation: blink-text 1.1s ease-in-out infinite;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, .2);
+            padding: 14px 40px;
+            transition: border .2s, background .2s;
+        }
+
+        .press-start:hover {
+            border-color: var(--accent);
+            background: rgba(156, 191, 226, .08);
+            color: var(--accent)
+        }
+
+        @keyframes blink-text {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .25
+            }
+        }
+
+        /* ── MAIN HUD ── */
+        #hud {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity .8s ease;
+            pointer-events: none;
+        }
+
+        #hud.visible {
+            opacity: 1;
+            pointer-events: all
+        }
+
+        .hud-tag {
+            font-size: 10px;
+            color: var(--accent);
+            letter-spacing: .15em;
+            text-transform: uppercase
+        }
+
+        .hud-score {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: .05em;
+            font-variant-numeric: tabular-nums;
+        }
+
+
+        /* speedometer (top right) */
+        .speedo {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 2px;
+        }
+
+        .speedo-val {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--accent);
+            line-height: 1
+        }
+
+        .speedo-unit {
+            font-size: 9px;
+            color: rgba(156, 191, 226, .5);
+            letter-spacing: .1em
+        }
+
+        .ty-heading {
+            font-size: clamp(72px, 13vw, 150px);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -.02em;
+            line-height: .86;
+            margin-bottom: 24px;
+            opacity: 0;
+            animation: slide-up .8s .55s cubic-bezier(.16, 1, .3, 1) both;
+        }
+
+        .ty-line1 {
+            display: block;
+            color: #fff;
+            text-shadow: 0 0 60px rgba(255, 255, 255, .2), 3px 3px 0 rgba(0, 0, 0, .6);
+        }
+
+        .ty-line2 {
+            display: block;
+            color: var(--accent);
+            text-shadow: 0 0 40px rgba(156, 191, 226, .8), 0 0 80px rgba(156, 191, 226, .3);
+            -webkit-text-stroke: 1px rgba(255, 255, 255, .08);
+        }
+
+        .ty-sub {
+            font-size: 13px;
+            font-weight: 300;
+            color: rgba(200, 216, 232, .65);
+            line-height: 1.75;
+            max-width: 440px;
+            margin-bottom: 36px;
+            opacity: 0;
+            animation: fade-in .7s .85s ease both;
+        }
+
+        /* mission complete card */
+        .mission-card {
+            background: rgba(10, 20, 35, .8);
+            border: 1px solid rgba(156, 191, 226, .15);
+            border-radius: 12px;
+            padding: 20px 32px;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            opacity: 0;
+            animation: slide-up .7s .7s ease both;
+        }
+
+        .mission-icon {
+            font-size: 32px
+        }
+
+        .mission-text {
+            text-align: left
+        }
+
+        .mission-title {
+            font-size: 11px;
+            color: var(--green);
+            letter-spacing: .1em;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 4px
+        }
+
+        .mission-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff
+        }
+
+        .mission-sub {
+            font-size: 12px;
+            color: rgba(200, 216, 232, .5);
+            margin-top: 2px
+        }
+
+        .mission-check {
+            font-size: 28px;
+            margin-left: auto;
+            color: var(--green)
+        }
+
+        /* progress bar */
+        .prog-wrap {
+            width: 100%;
+            max-width: 380px;
+            margin-bottom: 32px;
+            opacity: 0;
+            animation: fade-in .7s .9s ease both;
+        }
+
+        .prog-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: rgba(200, 216, 232, .5);
+            letter-spacing: .06em;
+            margin-bottom: 7px;
+            text-transform: uppercase
+        }
+
+        .prog-track {
+            height: 6px;
+            background: rgba(255, 255, 255, .07);
+            border-radius: 999px;
+            overflow: hidden
+        }
+
+        .prog-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #3a6fa8, var(--accent), #6ba8d4);
+            background-size: 200% 100%;
+            animation: shimmer 2s linear infinite;
+            transition: width 1.8s cubic-bezier(.2, .8, .2, 1);
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0
+            }
+
+            100% {
+                background-position: -200% 0
+            }
+        }
+
+        /* buttons */
+        .btns {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+            opacity: 0;
+            animation: fade-in .7s 1.05s ease both;
+        }
+
+        .btn {
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 28px;
+            border: 1px solid var(--accent);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            letter-spacing: .04em;
+            cursor: pointer;
+            background: transparent;
+            transition: transform .2s, box-shadow .2s, background .2s;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, .1) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform .45s;
+        }
+
+        .btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(156, 191, 226, .35);
+            background: rgba(156, 191, 226, .09)
+        }
+
+        .btn:hover::after {
+            transform: translateX(100%)
+        }
+
+        /* footer */
+        .footer {
+            position: fixed;
+            bottom: 24px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 0 clamp(20px, 5vw, 60px);
+            z-index: 12;
+            opacity: 0;
+            animation: fade-in .7s 1.2s ease both;
+        }
+
+        .credit p:first-child {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: 2px
+        }
+
+        .credit p:last-child {
+            font-size: 12px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, .6)
+        }
+
+        .credit:last-child {
+            text-align: right
+        }
+
+        /* achievement toast */
+        .toast {
+            position: fixed;
+            top: 80px;
+            right: 24px;
+            z-index: 60;
+            background: rgba(8, 16, 30, .96);
+            border: 1px solid var(--green);
+            border-radius: 10px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 240px;
+            transform: translateX(300px);
+            transition: transform .45s cubic-bezier(.2, .8, .2, 1);
+            box-shadow: 0 0 20px rgba(111, 207, 151, .15);
+        }
+
+        .toast.show {
+            transform: translateX(0)
+        }
+
+        .toast-icon {
+            font-size: 22px
+        }
+
+        .toast-label {
+            font-size: 9px;
+            color: var(--green);
+            letter-spacing: .1em;
+            font-weight: 700;
+            text-transform: uppercase
+        }
+
+        .toast-name {
+            font-size: 13px;
+            font-weight: 600
+        }
+
+        /* burst */
+        .burst {
+            position: fixed;
+            pointer-events: none;
+            z-index: 60;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent);
+            animation: burst-up .9s ease forwards;
+        }
+
+        @keyframes burst-up {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1)
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-70px) scale(.6)
+            }
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(40px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="road-canvas"></canvas>
+    <canvas id="overlay-canvas"></canvas>
+    <div id="crt"></div>
+
+    <!-- PRESS START -->
+    <div id="start-screen">
+        <div class="press-badge">DSC 288R · UCSD Capstone · 2026</div>
+        <div class="game-logo"><span>STEAM</span> RETENTION</div>
+        <div class="game-sub">Player Churn Analysis System v1.0</div>
+        <div class="press-start" id="press-start">▶ PRESS START</div>
+    </div>
+
+    <!-- ACHIEVEMENT TOAST -->
+    <div class="toast" id="toast">
+        <div class="toast-icon" id="t-icon">🏆</div>
+        <div>
+            <div class="toast-label">Achievement Unlocked</div>
+            <div class="toast-name" id="t-name">Data Scientist</div>
+        </div>
+    </div>
+
+ 
+
+    <!-- MAIN HUD -->
+    <div id="hud">
+
+        <h2 class="ty-heading">
+            <span class="ty-line1">THANK</span>
+            <span class="ty-line2">YOU</span>
+        </h2>
+
+        <p class="ty-sub">
+            Built with Steam behavioral data, machine learning, and a<br>
+            passion for understanding what keeps players coming back.
+        </p>
+
+        <div class="mission-card">
+            <div class="mission-icon">🎮</div>
+            <div class="mission-text">
+                <div class="mission-title">Mission Objective</div>
+                <div class="mission-name">Predict Player Churn</div>
+                <div class="mission-sub">XGBoost · Random Forest · LSTM · Collab Filter</div>
+            </div>
+            <div class="mission-check">✓</div>
+        </div>
+
+        <div class="prog-wrap">
+            <div class="prog-label">
+                <span>Project Progress</span>
+                <span id="prog-pct">0%</span>
+            </div>
+            <div class="prog-track">
+                <div class="prog-fill" id="prog-fill"></div>
+            </div>
+        </div>
+
+        <div class="btns">
+            <a href="https://github.com/lngo916/DSC-288R-Capstone-Final-Project" target="_blank" class="btn">
+                ⚡ View on GitHub
+            </a>
+            <a href="pipeline.html" class="btn">
+                🗺 Data Pipeline
+            </a>
+        </div>
+    </div>
+
+    <div class="footer" id="footer">
+        <div class="credit">
+            <p>Presented by</p>
+            <p>DSC 288R Team</p>
+        </div>
+        <div class="credit">
+            <p>Presented to</p>
+            <p>UCSD Capstone</p>
+        </div>
+    </div>
+
+    <script>
+        /* ════════════════════════════════════════════
+           CANVAS SETUP
+        ════════════════════════════════════════════ */
+        const RC = document.getElementById('road-canvas');
+        const rct = RC.getContext('2d');
+        const OC = document.getElementById('overlay-canvas');
+        const oct = OC.getContext('2d');
+
+        function resize() { RC.width = OC.width = innerWidth; RC.height = OC.height = innerHeight }
+        resize(); window.addEventListener('resize', resize);
+        const W = () => RC.width, H = () => RC.height;
+
+        /* ════════════════════════════════════════════
+           ROAD / SCENE
+        ════════════════════════════════════════════ */
+        let roadOffset = 0;
+        const NEONS = ['#9cbfe2', '#ff2244', '#ffcc00', '#6fcf97', '#cc44ff'];
+
+        function drawRoad() {
+            const w = W(), h = H();
+            const vpx = w / 2, vpy = h * .42;
+
+            // Sky gradient
+            const sky = rct.createLinearGradient(0, 0, 0, vpy);
+            sky.addColorStop(0, '#000008'); sky.addColorStop(1, '#010b1a');
+            rct.fillStyle = sky; rct.fillRect(0, 0, w, vpy + 2);
+
+            // City silhouette
+            const bldgs = [
+                [.04, .25, .05], [.11, .18, .04], [.17, .30, .06], [.25, .15, .05],
+                [.32, .22, .04], [.40, .28, .07], [.50, .12, .03], [.56, .24, .06],
+                [.65, .19, .05], [.73, .30, .07], [.82, .16, .04], [.89, .22, .05], [.95, .27, .04]
+            ];
+            rct.fillStyle = '#050c18';
+            bldgs.forEach(([l, ht, wd]) => {
+                rct.fillRect(w * l, vpy - vpy * ht, w * wd, vpy * ht + 2);
+            });
+            // tiny windows
+            bldgs.forEach(([l, ht, wd]) => {
+                const bx = w * l, bw = w * wd, by = vpy - vpy * ht, bh = vpy * ht;
+                for (let r = 1; r < ht * 16; r++) for (let c = 1; c < wd * 18; c++) {
+                    if (Math.random() > .62) {
+                        rct.fillStyle = `rgba(${180 + Math.random() * 70},${190 + Math.random() * 50},${230},${.2 + Math.random() * .4})`;
+                        rct.fillRect(bx + c * (bw / (wd * 18)), by + r * (bh / (ht * 16)), 2, 3);
+                    }
+                }
+            });
+
+            // Horizon glow
+            const hg = rct.createLinearGradient(0, vpy - 10, 0, vpy + 10);
+            hg.addColorStop(0, 'transparent'); hg.addColorStop(.5, 'rgba(156,191,226,.22)'); hg.addColorStop(1, 'transparent');
+            rct.fillStyle = hg; rct.fillRect(0, vpy - 10, w, 20);
+
+            // Road surface
+            const road = rct.createLinearGradient(0, vpy, 0, h);
+            road.addColorStop(0, '#070e1c'); road.addColorStop(1, '#05091a');
+            rct.fillStyle = road;
+            rct.beginPath(); rct.moveTo(vpx, vpy); rct.lineTo(0, h); rct.lineTo(w, h); rct.closePath(); rct.fill();
+
+            // Wet reflection shimmer
+            const refl = rct.createLinearGradient(0, vpy, 0, h);
+            refl.addColorStop(0, 'rgba(156,191,226,.06)'); refl.addColorStop(.4, 'rgba(156,191,226,.02)'); refl.addColorStop(1, 'transparent');
+            rct.fillStyle = refl;
+            rct.beginPath(); rct.moveTo(vpx, vpy); rct.lineTo(0, h); rct.lineTo(w, h); rct.closePath(); rct.fill();
+
+            // Road edge neon lines
+            function edge(side, col, blur) {
+                rct.strokeStyle = col; rct.lineWidth = 1.5; rct.shadowColor = col; rct.shadowBlur = blur;
+                rct.beginPath(); rct.moveTo(vpx, vpy); rct.lineTo(vpx + side * w * .54, h); rct.stroke(); rct.shadowBlur = 0;
+            }
+            edge(-1, 'rgba(156,191,226,.65)', 10); edge(1, 'rgba(156,191,226,.65)', 10);
+            edge(-1.14, 'rgba(255,34,68,.3)', 6); edge(1.14, 'rgba(255,34,68,.3)', 6);
+
+            // Lane dashes (animated)
+            const dashN = 13;
+            for (let i = 0; i < dashN; i++) {
+                const t1 = (i / dashN + roadOffset) % 1;
+                const t2 = ((i + .42) / dashN + roadOffset) % 1;
+                if (t1 > t2) continue;
+                const y1 = vpy + (h - vpy) * t1, y2 = vpy + (h - vpy) * t2;
+                const alpha = .07 + .6 * t1;
+                rct.globalAlpha = alpha;
+                rct.strokeStyle = 'rgba(255,255,255,.85)'; rct.lineWidth = 1 + 2.5 * t1;
+                rct.shadowColor = 'rgba(255,255,255,.4)'; rct.shadowBlur = 3 * t1;
+                rct.beginPath(); rct.moveTo(vpx, y1); rct.lineTo(vpx, y2); rct.stroke();
+                // side lanes
+                [-1, 1].forEach(s => {
+                    const lx = w * .36 * t1;
+                    rct.beginPath(); rct.moveTo(vpx + s * lx, y1); rct.lineTo(vpx + s * lx * (t2 / Math.max(t1, .001)), y2); rct.stroke();
+                });
+            }
+            rct.globalAlpha = 1; rct.shadowBlur = 0;
+        }
+
+        /* ════════════════════════════════════════════
+           CARS
+        ════════════════════════════════════════════ */
+        class Car {
+            constructor() { this.spawn() }
+            spawn() {
+                const vpy = H() * .42;
+                this.x = W() / 2 + (Math.random() > .5 ? 1 : -1) * (10 + Math.random() * 25);
+                this.y = vpy + 4;
+                this.scale = .03;
+                this.speed = 1.2 + Math.random() * 1.4;
+                this.angle = (Math.random() - .5) * .3;
+                this.color = NEONS[Math.floor(Math.random() * NEONS.length)];
+                this.trail = []; this.done = false; this.smokeT = 0;
+            }
+            update() {
+                const vpx = W() / 2, vpy = H() * .42;
+                this.trail.push({ x: this.x, y: this.y, s: this.scale });
+                if (this.trail.length > 32) this.trail.shift();
+                this.x += (this.x - vpx) * .02 * this.speed;
+                this.y += (this.y - vpy) * .02 * this.speed + this.speed * .5;
+                this.scale = Math.min(this.scale + .0025, 1.4);
+                this.smokeT++;
+                if (this.smokeT % 14 === 0) spawnSmoke(this.x, this.y, this.color);
+                if (this.y > H() + 80) this.done = true;
+            }
+            draw() {
+                // tyre trail
+                for (let i = 0; i < this.trail.length; i++) {
+                    const t = this.trail[i], a = (i / this.trail.length) * .45;
+                    rct.save(); rct.globalAlpha = a; rct.fillStyle = this.color;
+                    rct.shadowColor = this.color; rct.shadowBlur = 8;
+                    rct.beginPath(); rct.ellipse(t.x, t.y, t.s * 18, t.s * 5, this.angle, 0, Math.PI * 2); rct.fill(); rct.restore();
+                }
+                const s = this.scale * 26;
+                rct.save(); rct.translate(this.x, this.y); rct.rotate(this.angle);
+                rct.shadowColor = this.color; rct.shadowBlur = 18 * this.scale;
+                // body
+                rct.fillStyle = '#111220'; rct.beginPath(); rct.roundRect(-s * .52, -s * .28, s * 1.04, s * .56, s * .12); rct.fill();
+                // roof
+                rct.fillStyle = '#0a0a16'; rct.beginPath(); rct.roundRect(-s * .3, -s * .5, s * .6, s * .22, s * .08); rct.fill();
+                // neon underline
+                rct.strokeStyle = this.color; rct.lineWidth = s * .07; rct.globalAlpha = .9;
+                rct.beginPath(); rct.moveTo(-s * .5, s * .22); rct.lineTo(s * .5, s * .22); rct.stroke();
+                // windshield
+                rct.fillStyle = 'rgba(156,191,226,.1)'; rct.beginPath(); rct.roundRect(-s * .26, -s * .44, s * .52, s * .18, s * .04); rct.fill();
+                // headlights
+                [[-.46, true], [.46, false]].forEach(([lx, front]) => {
+                    rct.globalAlpha = .9; rct.fillStyle = front ? '#fff' : this.color;
+                    rct.shadowColor = front ? '#fff' : this.color; rct.shadowBlur = front ? 14 : 8;
+                    rct.beginPath(); rct.ellipse(lx * s, 0, s * .08, s * .05, 0, 0, Math.PI * 2); rct.fill();
+                });
+                // wheels
+                [-1, 1].forEach(sd => {
+                    rct.globalAlpha = 1; rct.fillStyle = '#1a1a2a'; rct.shadowBlur = 0;
+                    rct.beginPath(); rct.ellipse(sd * s * .38, s * .28, s * .13, s * .09, 0, 0, Math.PI * 2); rct.fill();
+                    rct.strokeStyle = '#444'; rct.lineWidth = 1.5; rct.stroke();
+                });
+                rct.restore();
+            }
+        }
+
+        function spawnSmoke(x, y, color) {
+            const el = document.createElement('div');
+            el.style.cssText = `position:fixed;pointer-events:none;z-index:3;border-radius:50%;
+    left:${x - 10}px;top:${y - 10}px;width:20px;height:20px;
+    background:radial-gradient(circle,${color}20,transparent 70%);
+    animation:smoke-puff 1.6s ease-out forwards;`;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1600);
+        }
+        const smokeStyle = document.createElement('style');
+        smokeStyle.textContent = '@keyframes smoke-puff{0%{transform:scale(.3);opacity:.6}100%{transform:scale(2.8);opacity:0}}';
+        document.head.appendChild(smokeStyle);
+
+        /* ════════════════════════════════════════════
+           OVERLAY — floating data particles
+        ════════════════════════════════════════════ */
+        const DATA_WORDS = ['XGBoost', 'LSTM', 'AUC .91', 'Churn', 'Pandas', 'Spark', 'SVD++', 'p=.83', 'Random Forest', 'Steam API'];
+        const floaters = [];
+        class Floater {
+            constructor() { this.reset(true) }
+            reset(init = false) {
+                this.x = Math.random() * innerWidth;
+                this.y = init ? Math.random() * innerHeight : innerHeight + 20;
+                this.vy = -.25 - Math.random() * .3;
+                this.vx = (Math.random() - .5) * .15;
+                this.life = 1; this.decay = .0015 + Math.random() * .002;
+                this.text = DATA_WORDS[Math.floor(Math.random() * DATA_WORDS.length)];
+                this.size = 9 + Math.random() * 5;
+                this.color = `rgba(156,191,226,${.15 + Math.random() * .3})`;
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy; this.life -= this.decay;
+                if (this.life <= 0 || this.y < -20) this.reset();
+            }
+            draw() {
+                oct.save(); oct.globalAlpha = this.life * .8;
+                oct.fillStyle = this.color;
+                oct.font = `${this.size}px 'Poppins',monospace`;
+                oct.fillText(this.text, this.x, this.y); oct.restore();
+            }
+        }
+        for (let i = 0; i < 18; i++) floaters.push(new Floater());
+
+        /* star field */
+        const STARS = Array.from({ length: 180 }, () => ({
+            x: Math.random() * 3000, y: Math.random() * 2000,
+            r: .3 + Math.random() * 1.2, a: Math.random()
+        }));
+
+        /* ════════════════════════════════════════════
+           SCORE & HUD LOGIC
+        ════════════════════════════════════════════ */
+        let score = 0, speed = 0, targetSpeed = 240;
+        const scoreEl = document.getElementById('score');
+        const speedEl = document.getElementById('speedo-val');
+
+        function updateHUD() {
+            score += Math.floor(speed / 60);
+            scoreEl.textContent = String(Math.min(score, 999999)).padStart(6, '0');
+            speed += (targetSpeed - speed) * .015;
+            speedEl.textContent = Math.round(speed);
+            // oscillate speed
+            targetSpeed = 200 + 40 * Math.sin(Date.now() * .0003);
+        }
+
+        /* ════════════════════════════════════════════
+           PROGRESS BAR
+        ════════════════════════════════════════════ */
+        function animateProgress() {
+            const fill = document.getElementById('prog-fill');
+            const pct = document.getElementById('prog-pct');
+            let p = 0;
+            const iv = setInterval(() => {
+                p = Math.min(p + .8, 100);
+                fill.style.width = p + '%';
+                pct.textContent = Math.round(p) + '%';
+                if (p >= 100) clearInterval(iv);
+            }, 18);
+        }
+
+        /* ════════════════════════════════════════════
+           TOAST
+        ════════════════════════════════════════════ */
+        const toast = document.getElementById('toast');
+        let toastTimer;
+        function showToast(icon, name) {
+            document.getElementById('t-icon').textContent = icon;
+            document.getElementById('t-name').textContent = name;
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+        }
+
+        /* ════════════════════════════════════════════
+           BURST
+        ════════════════════════════════════════════ */
+        function burst(x, y, txt) {
+            const el = document.createElement('div');
+            el.className = 'burst'; el.textContent = txt;
+            el.style.left = (x - 20) + 'px'; el.style.top = (y - 20) + 'px';
+            document.body.appendChild(el); setTimeout(() => el.remove(), 900);
+        }
+
+        /* ════════════════════════════════════════════
+           CARS POOL
+        ════════════════════════════════════════════ */
+        let cars = [], carT = 0;
+        cars.push(new Car(), new Car());
+
+        /* ════════════════════════════════════════════
+           START SCREEN
+        ════════════════════════════════════════════ */
+        let started = false;
+        document.getElementById('press-start').addEventListener('click', () => {
+            document.getElementById('start-screen').classList.add('gone');
+            document.getElementById('hud').classList.add('visible');
+            document.getElementById('footer').style.opacity = '1';
+            started = true;
+            setTimeout(() => animateProgress(), 1000);
+            setTimeout(() => showToast('🏆', 'Mission Complete — DSC 288R'), 1800);
+            setTimeout(() => showToast('📊', '91% AUC-ROC achieved'), 5200);
+        });
+
+        /* ════════════════════════════════════════════
+           MAIN LOOP
+        ════════════════════════════════════════════ */
+        let frame = 0;
+        function loop() {
+            requestAnimationFrame(loop);
+            frame++;
+
+            // road bg
+            rct.clearRect(0, 0, W(), H());
+            if (started) roadOffset = (roadOffset + .008) % 1;
+            drawRoad();
+
+            // draw stars in sky area
+            const vpy = H() * .42;
+            STARS.forEach(s => {
+                const sx = s.x % W(), sy = s.y % vpy;
+                const ta = .3 + .7 * Math.abs(Math.sin(frame * .02 + s.x));
+                rct.globalAlpha = ta * s.a; rct.fillStyle = '#fff';
+                rct.beginPath(); rct.arc(sx, sy, s.r, 0, Math.PI * 2); rct.fill();
+            });
+            rct.globalAlpha = 1;
+
+            // cars
+            if (started) {
+                carT++;
+                if (carT % 65 === 0) { cars.push(new Car()); }
+                cars = cars.filter(c => !c.done);
+                cars.forEach(c => { c.update(); c.draw(); });
+            }
+
+            // overlay
+            oct.clearRect(0, 0, W(), H());
+            floaters.forEach(f => { if (started) f.update(); f.draw(); });
+
+            if (started) updateHUD();
+        }
+        loop();
+
+        /* click anywhere for mini burst */
+        document.addEventListener('click', e => {
+            if (!started) return;
+            const words = ['+XP', 'GG', 'EZ', '⭐', '🔥'];
+            burst(e.clientX, e.clientY, words[Math.floor(Math.random() * words.length)]);
+        });
+
+        /* Konami */
+        const K = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; let ki = 0;
+        window.addEventListener('keydown', e => {
+            ki = e.keyCode === K[ki] ? ki + 1 : 0;
+            if (ki === K.length) {
+                ki = 0; showToast('💀', 'KONAMI CODE — LEGEND');
+                for (let i = 0; i < 10; i++) setTimeout(() => burst(50 + Math.random() * (innerWidth - 100), 50 + Math.random() * (innerHeight - 100), '🔥'), i * 100);
+            }
+        });
+    </script>
+</body>
+
+</html>

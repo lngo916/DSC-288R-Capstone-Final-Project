@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Steam Player Retention — UCSD DSC 288R</title>
+<link href="https://fonts.googleapis.com/css2?family=Calibri:wght@400;700&family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#00223E;
+  --gold:#C69214;
+  --blue:#006198;
+  --white:#ffffff;
+  --light:#f4f5f7;
+  --body-text:#1a2a3a;
+  --sub-text:#4a5a6a;
+  --accent-blue:#006198;
+}
+
+html,body{width:100%;height:100%;background:#2a2a2a;font-family:'Poppins',sans-serif;overflow:hidden}
+
+/* ══ SLIDE SHELL ══════════════════════════════════════ */
+#deck{width:100vw;height:100vh;position:relative;overflow:hidden}
+
+.slide{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  opacity:0;pointer-events:none;
+  transition:opacity .45s ease, transform .45s cubic-bezier(.2,.8,.2,1);
+  transform:translateX(40px);
+  background:#fff;
+}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0)}
+.slide.exit-left{opacity:0;transform:translateX(-40px)}
+
+/* ══ UCSD HEADER (gold bar + wordmark) ═══════════════ */
+.ucsd-header{
+  position:relative;
+  height:72px;
+  flex-shrink:0;
+  background:#fff;
+  border-bottom:4px solid var(--gold);
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  padding:0 32px;
+}
+
+/* gold swoosh top-right (like the PDF template) */
+.ucsd-header::before{
+  content:'';
+  position:absolute;
+  top:0;right:0;
+  width:260px;height:72px;
+  background:var(--gold);
+  clip-path:polygon(18% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+.ucsd-wordmark{
+  position:relative;z-index:2;
+  font-size:26px;
+  font-weight:700;
+  color:var(--navy);
+  font-family:'Poppins',sans-serif;
+  letter-spacing:-.01em;
+  text-decoration:underline;
+  text-decoration-color:var(--gold);
+  text-underline-offset:4px;
+}
+
+/* ══ UCSD FOOTER (navy bar with gold chevron) ════════ */
+.ucsd-footer{
+  height:36px;flex-shrink:0;
+  background:var(--navy);
+  display:flex;align-items:center;
+  padding:0 0 0 0;
+  position:relative;
+  overflow:hidden;
+}
+.ucsd-footer::before{
+  content:'';
+  position:absolute;bottom:0;left:0;
+  width:120px;height:36px;
+  background:var(--gold);
+  clip-path:polygon(0 0, 80% 0, 100% 100%, 0 100%);
+}
+.footer-text{
+  position:relative;z-index:2;
+  font-size:10px;color:var(--gold);
+  font-weight:600;letter-spacing:.08em;
+  padding-left:14px;
+}
+.footer-right{
+  margin-left:auto;padding-right:20px;
+  font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.06em;
+  position:relative;z-index:2;
+}
+
+/* ══ SLIDE BODY ═══════════════════════════════════════ */
+.slide-body{
+  flex:1;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+
+/* ══ TYPOGRAPHY ════════════════════════════════════════ */
+.slide-title{
+  font-size:clamp(22px,3.5vw,40px);
+  font-weight:700;
+  color:var(--navy);
+  text-transform:uppercase;
+  letter-spacing:.01em;
+  line-height:1.1;
+}
+.slide-title .gold{color:var(--gold)}
+.slide-subtitle{
+  font-size:clamp(14px,1.8vw,20px);
+  font-weight:600;color:var(--gold);
+  margin-top:6px;
+}
+.body-text{
+  font-size:clamp(12px,1.3vw,16px);
+  color:var(--body-text);
+  line-height:1.7;
+}
+.small-text{font-size:12px;color:var(--sub-text);line-height:1.6}
+
+/* gold accent rule */
+.gold-rule{
+  width:56px;height:4px;
+  background:var(--gold);
+  border-radius:2px;
+  margin:12px 0 16px;
+}
+
+/* ══ SLIDE 1 — COVER (navy bg like PDF hero) ═════════ */
+#s1 .slide-body{background:var(--navy)}
+.cover-inner{
+  flex:1;display:flex;flex-direction:column;
+  justify-content:flex-end;
+  padding:0 60px 52px;
+}
+.cover-tag{
+  font-size:11px;font-weight:400;
+  color:rgba(255,255,255,.55);
+  letter-spacing:.1em;margin-bottom:20px;
+}
+.cover-h1{
+  font-size:clamp(40px,7vw,88px);
+  font-weight:900;text-transform:uppercase;
+  color:#fff;letter-spacing:-.02em;line-height:.88;
+  margin-bottom:16px;
+}
+.cover-h1 span{color:var(--gold)}
+.cover-sub{
+  font-size:clamp(13px,1.5vw,18px);
+  font-weight:600;color:var(--gold);
+  margin-bottom:4px;
+}
+.cover-by{font-size:12px;color:rgba(255,255,255,.45);margin-top:8px}
+
+/* ══ SLIDE 2 — PHOTO + CONTENTS ════════════════════ */
+#s2 .slide-body{
+  display:grid;grid-template-columns:44% 56%;
+}
+.s2-photo{
+  background-image:url('https://images.unsplash.com/photo-1580752300992-559f8e0734e0?w=800&auto=format&fit=crop');
+  background-size:cover;background-position:center;
+}
+.s2-right{
+  padding:44px 48px;
+  display:flex;flex-direction:column;justify-content:center;gap:18px;
+}
+.agenda-item{
+  display:flex;align-items:center;gap:16px;
+  padding:10px 0;border-bottom:1px solid rgba(0,34,62,.08);
+}
+.agenda-item:last-child{border-bottom:none}
+.agenda-num{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:#fff;flex-shrink:0;
+}
+.agenda-label{font-size:14px;color:var(--body-text);font-weight:400}
+
+/* ══ SLIDE 3 — SECTION BREAK (full navy) ═════════════ */
+#s3 .slide-body{
+  background:var(--navy);
+  display:flex;align-items:center;justify-content:center;
+}
+.section-text{
+  font-size:clamp(36px,6vw,72px);
+  font-weight:700;color:#fff;
+  text-transform:uppercase;
+  letter-spacing:-.01em;text-align:center;
+  padding:0 60px;line-height:1.1;
+}
+.section-text span{color:var(--gold)}
+
+/* ══ SLIDE 4 — TITLE + BULLETS ══════════════════════ */
+.std-slide{padding:36px 60px;}
+.bullet-list{
+  display:flex;flex-direction:column;gap:14px;
+  margin-top:8px;
+}
+.bullet-item{
+  display:flex;align-items:flex-start;gap:12px;
+  font-size:clamp(12px,1.3vw,15px);color:var(--body-text);line-height:1.65;
+}
+.bullet-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--gold);flex-shrink:0;margin-top:6px;
+}
+
+/* ══ SLIDE 5 — TWO COLUMN ════════════════════════════ */
+.two-col{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:40px;
+  padding:32px 60px;
+  flex:1;
+}
+.col-card{
+  background:var(--light);
+  border-left:4px solid var(--gold);
+  border-radius:0 8px 8px 0;
+  padding:24px 22px;
+  display:flex;flex-direction:column;gap:10px;
+}
+.col-num{font-size:32px;font-weight:900;color:var(--gold);line-height:1}
+.col-label{font-size:13px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.05em}
+.col-desc{font-size:12px;color:var(--sub-text);line-height:1.6}
+
+/* ══ SLIDE 6 — PHOTO RIGHT ═══════════════════════════ */
+#s6 .slide-body{display:grid;grid-template-columns:55% 45%}
+.s6-left{padding:36px 48px;display:flex;flex-direction:column;justify-content:center}
+.s6-photo{
+  background-image:url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop');
+  background-size:cover;background-position:center;
+}
+
+/* ══ SLIDE 7 — BIG STAT ══════════════════════════════ */
+#s7 .slide-body{
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:40px 60px;gap:8px;
+}
+.big-stat{
+  font-size:clamp(80px,16vw,180px);
+  font-weight:900;color:var(--navy);
+  line-height:.88;letter-spacing:-.03em;
+}
+.big-stat span{color:var(--gold)}
+.big-stat-label{
+  font-size:clamp(16px,2.5vw,28px);
+  color:var(--sub-text);font-weight:300;
+  text-align:center;max-width:500px;
+}
+
+/* ══ SLIDE 8 — ML MODEL TABLE ════════════════════════ */
+.model-table{
+  width:100%;border-collapse:collapse;
+  font-size:13px;
+}
+.model-table th{
+  background:var(--navy);color:#fff;
+  padding:10px 16px;text-align:left;
+  font-weight:600;letter-spacing:.04em;font-size:11px;text-transform:uppercase;
+}
+.model-table td{
+  padding:10px 16px;border-bottom:1px solid rgba(0,34,62,.08);
+  color:var(--body-text);
+}
+.model-table tr:hover td{background:rgba(0,97,152,.04)}
+.auc-pill{
+  display:inline-block;
+  padding:3px 10px;border-radius:999px;
+  font-size:11px;font-weight:700;
+  background:var(--gold);color:#fff;
+}
+.bar-cell{display:flex;align-items:center;gap:8px}
+.mini-bar{height:6px;border-radius:3px;background:var(--gold);flex-shrink:0}
+
+/* ══ SLIDE 9 — QUOTE ════════════════════════════════ */
+#s9 .slide-body{
+  display:flex;align-items:center;justify-content:center;
+  padding:60px;
+}
+.quote-block{max-width:820px;text-align:left}
+.quote-mark{font-size:80px;color:var(--gold);line-height:.7;font-weight:900;margin-bottom:12px}
+.quote-text{
+  font-size:clamp(18px,2.5vw,30px);
+  font-weight:700;color:var(--navy);
+  line-height:1.35;margin-bottom:20px;
+}
+.quote-source{font-size:13px;color:var(--sub-text)}
+
+/* ══ SLIDE 10 — TEAM ════════════════════════════════ */
+.team-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:20px;padding:28px 60px;
+}
+.team-card{
+  border:1px solid rgba(0,34,62,.12);
+  border-top:4px solid var(--gold);
+  border-radius:0 0 8px 8px;
+  padding:24px 20px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.team-card:hover{background:var(--light)}
+.team-avatar{
+  width:56px;height:56px;border-radius:8px;
+  background:var(--navy);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;margin-bottom:4px;
+}
+.team-role{font-size:9px;font-weight:700;color:var(--gold);letter-spacing:.1em;text-transform:uppercase}
+.team-name{font-size:15px;font-weight:700;color:var(--navy)}
+.team-desc{font-size:11px;color:var(--sub-text);line-height:1.6}
+
+/* ══ SLIDE 11 — INSIGHTS ════════════════════════════ */
+.insights-wrap{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:20px;padding:28px 60px;
+}
+.insight-card{
+  background:var(--light);
+  border-radius:8px;padding:22px 20px;
+  display:flex;gap:14px;
+}
+.insight-num{
+  font-size:28px;font-weight:900;color:var(--gold);
+  line-height:1;flex-shrink:0;
+}
+.insight-body{}
+.insight-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:5px}
+.insight-desc{font-size:12px;color:var(--sub-text);line-height:1.6}
+
+/* ══ SLIDE 12 — THANK YOU (navy like PDF) ════════════ */
+#s12 .slide-body{
+  background:var(--navy);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;padding:40px;gap:0;
+}
+.ty-eyebrow{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.18em;text-transform:uppercase;margin-bottom:28px}
+.ty-h1{
+  font-size:clamp(56px,10vw,120px);
+  font-weight:700;color:#fff;
+  text-transform:uppercase;letter-spacing:-.01em;
+  line-height:.9;margin-bottom:24px;
+}
+.ty-h1 span{color:var(--gold)}
+.ty-sub{font-size:14px;color:rgba(255,255,255,.55);max-width:440px;line-height:1.7;margin-bottom:32px}
+.ty-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.ty-btn{
+  padding:11px 26px;
+  font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;
+  text-decoration:none;letter-spacing:.04em;
+  transition:transform .2s,box-shadow .2s;
+  cursor:pointer;
+}
+.ty-btn-gold{background:var(--gold);color:#fff;border:none}
+.ty-btn-gold:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(198,146,20,.4)}
+.ty-btn-outline{background:transparent;border:1px solid rgba(255,255,255,.3);color:#fff}
+.ty-btn-outline:hover{border-color:#fff;transform:translateY(-3px)}
+.ty-team{margin-top:28px;font-size:11px;color:rgba(255,255,255,.3);letter-spacing:.1em}
+
+/* ══ ANIMATIONS ══════════════════════════════════════ */
+@keyframes fade-up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.slide.active .au{animation:fade-up .55s ease both}
+.slide.active .au1{animation-delay:.05s}
+.slide.active .au2{animation-delay:.15s}
+.slide.active .au3{animation-delay:.25s}
+.slide.active .au4{animation-delay:.35s}
+.slide.active .au5{animation-delay:.45s}
+
+/* ══ NAV BAR ══════════════════════════════════════════ */
+#nav{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:10px;z-index:100;
+  background:rgba(0,34,62,.92);border:1px solid rgba(198,146,20,.25);
+  border-radius:999px;padding:8px 18px;
+}
+.nav-btn{
+  width:30px;height:30px;border-radius:50%;
+  border:1px solid rgba(198,146,20,.3);
+  background:transparent;color:rgba(255,255,255,.7);
+  font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:.2s;line-height:1;
+}
+.nav-btn:hover{background:var(--gold);color:#fff;border-color:var(--gold)}
+.nav-dots{display:flex;gap:5px;align-items:center}
+.nav-dot{
+  width:6px;height:6px;border-radius:999px;
+  background:rgba(255,255,255,.2);transition:all .3s;cursor:pointer;
+}
+.nav-dot.active{width:20px;background:var(--gold)}
+.nav-dot:hover:not(.active){background:rgba(198,146,20,.5)}
+.nav-label{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.08em;min-width:90px;text-align:center}
+</style>
+</head>
+<body>
+<div id="deck">
+
+<!-- ══ S1: COVER ══════════════════════════════════════ -->
+<div class="slide active" id="s1">
+  <div class="ucsd-header">
+    <div class="ucsd-wordmark">UC San Diego</div>
+  </div>
+  <div class="slide-body">
+    <div class="cover-inner">
+      <div class="cover-tag au au1">Studio Bang Sing Se &nbsp;|&nbsp; DSC 288R &nbsp;|&nbsp; UCSD Capstone &nbsp;|&nbsp; 2026</div>
+      <div class="cover-h1 au au2">STEAM<br><span>PLAYER</span><br>RETENTION</div>
+      <div class="cover-sub au au3">Recommender System & Churn Prediction</div>
+      <div class="body-text au au4" style="color:rgba(255,255,255,.6);max-width:480px;font-size:13px">A multi-modal machine learning system to predict player churn, understand behavioral drivers, and recommend competing games at scale.</div>
+      <div class="cover-by au au5">Halicioglu Data Science Institute &nbsp;·&nbsp; UC San Diego</div>
+    </div>
+  </div>
+  <div class="ucsd-footer">
+    <div class="footer-text">Blue and Gold Template</div>
+    <div class="footer-right">01 / 12</div>
+  </div>
+</div>
+
+<!-- ══ S2: AGENDA ══════════════════════════════════════ -->
+<div class="slide" id="s2">
+  <div class="ucsd-header"><div class="ucsd-wordmark">UC San Diego</div></div>
+  <div class="slide-body">
+    <div class="s2-photo"></div>
+    <div class="s2-right">
+      <div class="slide-title au au1">CONTENTS</div>
+      <div class="gold-rule au au1"></div>
+      <div class="agenda-item au au2"><div class="agenda-num">1</div><div class="agenda-label">Project Overview & Motivation</div></div>
+      <div class="agenda-item au au2"><div class="agenda-num">2</div><div class="agenda-label">Dataset & Data Pipeline</div></div>
+      <div class="agenda-item au au3"><div class="agenda-num">3</div><div class="agenda-label">Exploratory Data Analysis</div></div>
+      <div class="agenda-item au au3"><div class="agenda-num">4</div><div class="agenda-label">Machine Learning Models</div></div>
+      <div class="agenda-item au au4"><div class="agenda-num">5</div><div class="agenda-label">Results & Key Insights</div></div>
+      <div class="agenda-item au au4"><div class="agenda-num">6</div><div class="agenda-label">Team & Acknowledgements</div></div>
+    </div>
+  </div>
+  <div class="ucsd-footer"><div class="footer-text">Steam Player Retention</div><div class="footer-right">02 / 12</div></div>
+</div>
+
+<!-- ══ S3: SECTION BREAK — OVERVIEW ══════════════════ -->
+<div class="slide" id="s3">
+  <div class="ucsd-header"><div class="ucsd-wordmark">UC San Diego</div></div>
+  <div class="slide-body">
+    <div class="section-text au au1">PROJECT<br><span>OVERVIEW</span></div>
+  </div>
+  <div class="ucsd-footer"><div class="footer-text">Steam Player Retention</div><div class="footer-right">03 / 12</div></div>
+</div>
+
+<!-- ══ S4: OVERVIEW BULLETS ═══════════════════════════ -->
+<div class="slide" id="s4">
+  <div class="ucsd-header"><div class="ucsd-wordmark">UC San Diego</div></div>
+  <div class="slide-body std-slide">
+    <div class="slide-title au au1">WHY PLAYER RETENTION?</div>
+    <div class="gold-rule au au1"></div>
+    <div class="slide-subtitle au au2">Motivation & Problem Statement</div>
+    <div class="bullet-list au au3">
+      <div class="bullet-item"><div class="bullet-dot"></div><div>Steam hosts over <strong>50,000 games</strong> and 132 million active users — understanding churn is critical for publishers maximizing lifetime value.</div></div>
+      <div class="bullet-item"><div class="bullet-dot"></div><div>Most players who churn do so <strong>within the first 7 days</strong>, making early detection essential for timely intervention.</div></div>
+      <div class="bullet-item"><div class="bullet-dot"></div><div>Existing approaches rely on aggregate metrics — we combine <strong>behavioral logs, text, and metadata</strong> for a multi-modal signal.</div></div>
+      <div class="bullet-item"><div class="bullet-dot"></div><div>Our system predicts churn probability <strong>and</strong> recommends competing games — closing the re-engagement loop.</div></div>
+    </div>
+  </div>
+  <div class="ucsd-footer"><div class="footer-text">Steam Player Retention</div><div class="footer-right">04 / 12</div></div>
+</div>
+
+<!-- ══ S5: DATASET STATS (two-col cards) ══════════════ -->
+<div class="slide" id="s5">
+  <div class="ucsd-header"><div class="ucsd-wordmark">UC San Diego</div></div>
+  <div class="slide-body std-slide" style="padding-bottom:16px">
+    <div class="slide-title au au1">DATASET AT A GLANCE</div>
+    <div class="gold-rule au au1"></div>
+    <div class="two-col" style="padding:0;margin-top:8px">
+      <div class="col-card au au2"><div class="col-num">1.2M+</div><div class="col-label">Player Profiles</div><div class="col-desc">Behavioral logs, session data, and purchase histories across thousands of Steam titles.</div></div>
+      <div class="col-card au au2"><div class="col-num">11K+</div><div class="col-label">Steam Games</div><div class="col-desc">Multi-genre metadata, tags, pricing, user reviews, and release info from Kaggle.</div></div>
+      <div class="col-card au au3"><div class="col-num">~43 GB</div><div class="col-label">Per Dataset</div><div class="col-desc">Three Kaggle CSVs (game, multimodal, reviews) + Steam API JSON feeds.</div></div>
+      <div class="col-card au au3"><div class="col-num">5M+</div><div class="col-label">User Reviews</div><div class="col-desc">Review text processed with sentiment analysis for qualitative behavioral signals.</div></div>
+    </div>
+  </div>
+  <div class="ucsd-footer"><div class="footer-text">Steam Player Retention</div><div class="footer-right">05 / 12</div></div>
+</div>
+
+<!-- ══ S6: PHOTO RIGHT — EDA ══════════════════════════ -->
+<div class="slide" id="s6">
+  <div class="ucsd-header"><div class="ucsd-wordmark">UC San Diego</div></div>
+  <div class="slide-body">
+    <div class="s6-left">
+      <div class="slide-title au au1">EXPLORATORY DATA ANALYSIS</div>
+      <div class="gold-rule au au1"></div>
+      <div class="bullet-list au au2">
+        <div class="bullet-item"><div class="bullet-dot"></div><div><strong>Feature Distributions:</strong> Playtime, session frequency, and review counts show strong right skew — most players have minimal histories.</div></div>
+        <div class="bullet-item"><div class="bullet-dot"></div><div><strong>Correlation Analysis:</strong> Session length and frequency are most correlated with 30-day retention. Social connections amplify this effect.</div></div>
+        <div class="bullet-item"><div class="bullet-dot"></div><div><strong>Temporal Patterns:</strong> Churn signatures are detectable within the first login session using early behavioral proxies.</div></div>
+        <div class="bullet-item"><div class="bullet-dot"></div><div><strong>Engagement Tiers:</strong> High-engagement cohort shows 3× lower churn within 30 days versus low-engagement cohort.</div></div>
+      </div>
+    </div>
+    <div class="s6-photo"></div>
+  </div>
+  <div class="ucsd-footer"><div class="footer-text">Steam Player Retention</div><div class="footer-right">06 / 12</div></div>
+</div>
+
+<!-- ══ S7: BIG STAT ════════════════════════════════════ -->
+<div class="slide" id="s7">
+  <div class="ucsd-header"><div class="ucsd-wordmark">UC San Diego</div></div>
+  <div class="slide-body">
+    <div class="big-stat au au1"><span>0.91</span></div>
+    <div class="big-stat-label au au2">AUC-ROC score achieved by our best model — XGBoost Classifier with 5-fold cross-validation on a 60/20/20 train-val-test split.</div>
+  </div>
+  <div class="ucsd-footer"><div class="footer-text">Steam Player Retention</div><div class="footer-right">07 / 12</div></div>
+</div>
+
+<!-- ══ S8: ML MODEL TABLE ═════════════════════════════ -->
+<div class="slide" id="s8">
+  <div class="ucsd-header"><div class="ucsd-wordmark">UC San Diego</div></div>
+  <div class="slide-body std-slide">
+    <div class="slide-title au au1">MACHINE LEARNING MODELS</div>
+    <div class="gold-rule au au1"></div>
+    <div class="au au2" style="margin-top:8px;overflow:auto">
+      <table class="model-table">
+        <thead>
+          <tr>
+            <th>Model</th><th>Framework</th><th>AUC-ROC</th><th>Precision</th><th>Recall</th><th>Use Case</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>XGBoost</strong></td><td>Spark</td>
+            <td><span class="auc-pill">0.91</span></td>
+            <td><div class="bar-cell"><div class="mini-bar" style="width:52px"></div>87%</div></td>
+            <td><div class="bar-cell"><div class="mini-bar" style="width:50px"></div>83%</div></td>
+            <td>Churn prediction — best overall</td>
+          </tr>
+          <tr>
+            <td><strong>Random Forest</strong></td><td>Spark</td>
+            <td><span class="auc-pill" style="background:#6a7a8a">0.88</span></td>
+            <td><div class="bar-cell"><div class="mini-bar" style="width:50px;background:#6a7a8a"></div>84%</div></td>
+            <td><div class="bar-cell"><div class="mini-bar" style="width:48px;background:#6a7a8a"></div>80%</div></td>
+            <td>Baseline & feature importance</td>
+          </tr>
+          <tr>
+            <td><strong>LSTM Network</strong></td><td>Spark</td>
+            <td><span class="auc-pill" style="background:#6a7a8a">0.89</span></td>
+            <td><div class="bar-cell"><div class="mini-bar" style="width:51px;background:#6a7a8a"></div>85%</div></td>
+            <td><div class="bar-cell"><div class="mini-bar" style="width:49px;background:#6a7a8a"></div>82%</div></td>
+            <td>Sequential session modeling</td>
+          </tr>
+          <tr>
+            <td><strong>Collab. Filter (SVD++)</strong></td><td>Pandas</td>
+            <td><span class="auc-pill" style="background:#00223E">Rec</span></td>
+            <td>—</td><td>—</td>
+            <td>Game recommendations</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="small-text au au3" style="margin-top:14px">Top SHAP features: Playtime (7-day) 22% · Days Inactive 19% · Session Frequency 16% · Games Owned 12%</div>
+  </div>
+  <div class="ucsd-footer"><div class="footer-text">Steam Player Retention</div><div class="footer-right">08 / 12</div></div>
+</div>
+
+<!-- ══ S9: QUOTE ══════════════════════════════════════ -->
+<div class="slide" id="s9">
+  <div class="ucsd-header"><div class="ucsd-wordmark">UC San Diego</div></div>
+  <div class="slide-body">
+    <div class="quote-block">
+      <div class="quote-mark au au1">"</div>
+      <div class="quote-text au au2">Session length and frequency are the strongest predictors of long-term retention — prioritize early engagement loops.</div>
+      <div class="quote-source au au3">Key Finding — Steam Player Retention, DSC 288R 2026</div>
+    </div>
+  </div>
+  <div class="ucsd-footer"><div class="footer-text">Steam Player Retention</div><div class="footer-right">09 / 12</div></div>
+</div>
+
+<!-- ══ S10: KEY INSIGHTS ══════════════════════════════ -->
+<div class="slide" id="s10">
+  <div class="ucsd-header"><div class="ucsd-wordmark">UC San Diego</div></div>
+  <div class="slide-body std-slide" style="padding-bottom:16px">
+    <div class="slide-title au au1">KEY FINDINGS & RECOMMENDATIONS</div>
+    <div class="gold-rule au au1"></div>
+    <div class="insights-wrap" style="padding:0;margin-top:12px">
+      <div class="insight-card au au2"><div class="insight-num">01</div><div class="insight-body"><div class="insight-title">Early Churn Detection</div><div class="insight-desc">Players who churn within 7 days show distinct behavioral signatures at first login — enabling proactive intervention.</div></div></div>
+      <div class="insight-card au au2"><div class="insight-num">02</div><div class="insight-body"><div class="insight-title">Session Quality > Quantity</div><div class="insight-desc">Session length is more predictive than total session count — deeper engagement per visit drives long-term retention.</div></div></div>
+      <div class="insight-card au au3"><div class="insight-num">03</div><div class="insight-body"><div class="insight-title">Recommendation Re-engagement</div><div class="insight-desc">Competing game recommendations via collaborative filtering improve re-engagement rates at high-risk churn moments.</div></div></div>
+      <div class="insight-card au au3"><div class="insight-num">04</div><div class="insight-body"><div class="insight-title">Scalable Personalization</div><div class="insight-desc">SVD++ collaborative filtering achieves personalization on minimal interaction data — effective for cold-start players.</div></div></div>
+    </div>
+  </div>
+  <div class="ucsd-footer"><div class="footer-text">Steam Player Retention</div><div class="footer-right">10 / 12</div></div>
+</div>
+
+<!-- ══ S11: TEAM ══════════════════════════════════════ -->
+<div class="slide" id="s11">
+  <div class="ucsd-header"><div class="ucsd-wordmark">UC San Diego</div></div>
+  <div class="slide-body std-slide" style="padding-bottom:16px">
+    <div class="slide-title au au1">MEET THE TEAM</div>
+    <div class="gold-rule au au1"></div>
+    <div class="slide-subtitle au au2" style="margin-bottom:16px">Studio Bang Sing Se &nbsp;·&nbsp; DSC 288R &nbsp;·&nbsp; 2026</div>
+    <div class="team-grid" style="padding:0">
+      <div class="team-card au au2">
+        <div class="team-avatar">👨‍💼</div>
+        <div class="team-role">Project Manager</div>
+        <div class="team-name">Jason Limfueco</div>
+        <div class="team-desc">Leads coordination, manages timelines, contributes to data cleaning and exploratory analysis across all pipeline stages.</div>
+      </div>
+      <div class="team-card au au3">
+        <div class="team-avatar">⚙️</div>
+        <div class="team-role">Data Engineer</div>
+        <div class="team-name">Baixi Guo</div>
+        <div class="team-desc">Develops and maintains the data pipeline, handling preprocessing and large-scale dataset management using Spark.</div>
+      </div>
+      <div class="team-card au au4">
+        <div class="team-avatar">🎨</div>
+        <div class="team-role">Frontend & Presentation</div>
+        <div class="team-name">Laura Ngo</div>
+        <div class="team-desc">Designs and builds the project website and presentation, transforming technical findings into visual narratives.</div>
+      </div>
+    </div>
+  </div>
+  <div class="ucsd-footer"><div class="footer-text">Steam Player Retention</div><div class="footer-right">11 / 12</div></div>
+</div>
+
+<!-- ══ S12: THANK YOU ══════════════════════════════════ -->
+<div class="slide" id="s12">
+  <div class="ucsd-header"><div class="ucsd-wordmark">UC San Diego</div></div>
+  <div class="slide-body">
+    <div class="ty-eyebrow au au1">Halicioglu Data Science Institute &nbsp;·&nbsp; DSC 288R Capstone</div>
+    <div class="ty-h1 au au2">THANK<br><span>YOU!</span></div>
+    <div class="ty-sub au au3">Built with Steam behavioral data, machine learning, and a passion for understanding what keeps players coming back.</div>
+    <div class="ty-btns au au4">
+      <a href="https://github.com/lngo916/DSC-288R-Capstone-Final-Project" target="_blank" class="ty-btn ty-btn-gold">View on GitHub</a>
+      <a href="pipeline.html" class="ty-btn ty-btn-outline">Data Pipeline</a>
+    </div>
+    <div class="ty-team au au5">Studio Bang Sing Se &nbsp;·&nbsp; Jason Limfueco &nbsp;·&nbsp; Baixi Guo &nbsp;·&nbsp; Laura Ngo</div>
+  </div>
+  <div class="ucsd-footer"><div class="footer-text">Steam Player Retention</div><div class="footer-right">12 / 12</div></div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- NAV -->
+<div id="nav">
+  <button class="nav-btn" id="np">‹</button>
+  <div class="nav-dots" id="ndots"></div>
+  <div class="nav-label" id="nlabel">Cover</div>
+  <button class="nav-btn" id="nn">›</button>
+</div>
+
+<script>
+const SLIDES=[
+  {id:'s1', label:'Cover'},
+  {id:'s2', label:'Contents'},
+  {id:'s3', label:'Overview'},
+  {id:'s4', label:'Motivation'},
+  {id:'s5', label:'Dataset'},
+  {id:'s6', label:'EDA'},
+  {id:'s7', label:'AUC Score'},
+  {id:'s8', label:'ML Models'},
+  {id:'s9', label:'Key Quote'},
+  {id:'s10',label:'Insights'},
+  {id:'s11',label:'Team'},
+  {id:'s12',label:'Thank You'},
+];
+
+const els=SLIDES.map(s=>document.getElementById(s.id));
+const dotsEl=document.getElementById('ndots');
+const labelEl=document.getElementById('nlabel');
+let cur=0;
+
+SLIDES.forEach((_,i)=>{
+  const d=document.createElement('div');
+  d.className='nav-dot'+(i===0?' active':'');
+  d.addEventListener('click',()=>goTo(i));
+  dotsEl.appendChild(d);
+});
+
+function goTo(idx){
+  if(idx===cur) return;
+  els[cur].classList.remove('active');
+  els[cur].classList.add('exit-left');
+  setTimeout(()=>els[cur].classList.remove('exit-left'),450);
+  cur=Math.max(0,Math.min(SLIDES.length-1,idx));
+  els[cur].classList.add('active');
+  dotsEl.querySelectorAll('.nav-dot').forEach((d,i)=>d.classList.toggle('active',i===cur));
+  labelEl.textContent=SLIDES[cur].label;
+
+  // animate metric bars on slide 8
+  if(cur===7){
+    setTimeout(()=>{
+      document.querySelectorAll('.mini-bar').forEach(b=>{
+        const w=b.style.width;b.style.width='0';
+        setTimeout(()=>b.style.width=w,50);
+        b.style.transition='width .8s ease';
+      });
+    },300);
+  }
+}
+
+document.getElementById('np').addEventListener('click',()=>goTo(cur-1));
+document.getElementById('nn').addEventListener('click',()=>goTo(cur+1));
+window.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' ') goTo(cur+1);
+  if(e.key==='ArrowLeft') goTo(cur-1);
+});
+</script>
+</body>
+</html>
