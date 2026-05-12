@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Pipeline — Steam Player Retention</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="pipeline.css">
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="pg-topbar">
+    <div class="pg-topbar-left">
+      <a href="index.html" class="pg-back">← Back</a>
+      <div>
+        <div class="pg-title">Data Pipeline</div>
+        <div class="pg-subtitle">Steam Player Retention — DSC 288R</div>
+      </div>
+    </div>
+
+    <div class="pg-topbar-right">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="source">Sources</button>
+      <button class="filter-btn" data-filter="process">Processing</button>
+      <button class="filter-btn" data-filter="eda">EDA</button>
+      <button class="filter-btn" data-filter="ml">ML</button>
+      <button class="filter-btn" data-filter="output">Outputs</button>
+      <button class="filter-btn" data-filter="infra">Infra</button>
+      <div class="ctrl-sep"></div>
+      <button class="zoom-btn" id="zin">+</button>
+      <button class="zoom-btn" id="zout">−</button>
+      <button class="zoom-btn" id="zreset">⌂</button>
+      <span class="hint">Drag · Scroll · Click</span>
+    </div>
+  </div>
+
+  <!-- CANVAS -->
+  <div id="canvas-wrap">
+    <canvas id="c"></canvas>
+    <canvas id="minimap" width="180" height="90"></canvas>
+  </div>
+
+  <!-- LEGEND -->
+  <div id="legend">
+    <div class="leg-title">NODE TYPE</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#4a9eca"></div>Data Source</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#6fcf97"></div>Branch / Ingest</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#f2994a"></div>Processing</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#bb86fc"></div>EDA / Analysis</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#e8880a"></div>ML / Modeling</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#eb5757"></div>Output</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#9cbfe2"></div>Infra / DevOps</div>
+  </div>
+
+  <!-- DETAIL PANEL -->
+  <div id="detail">
+    <button id="detail-close">✕</button>
+    <span id="detail-tag"></span>
+    <div id="detail-name"></div>
+    <div id="detail-desc"></div>
+    <div id="detail-meta"></div>
+  </div>
+
+    <script src="pipeline.js"></script>
+
+</body>
+</html>
