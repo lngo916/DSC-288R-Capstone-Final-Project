@@ -12,13 +12,11 @@ from pyspark.sql import (
 
 # Other libs
 import pandas as pd
-from typing import Iterable, Union, Any, TypeAlias
-from src.utils.pyspark_helper import (
-    BASE_SCHEMA
-)
+from typing import Union, Any, TypeAlias
+from src.utils.pyspark_helper import BASE_SCHEMA
 
 # -----------------------------
-# Define Parameters
+# Audit constants
 # -----------------------------
 # Reusable columns
 NUMERIC_COLS = [
@@ -58,6 +56,7 @@ IssueDfType: TypeAlias = dict[str, SparkDataFrame]
 # -----------------------------
 # Health audit logic
 # -----------------------------
+# Inpsect the dimension & cell counts
 def structure_report(df: SparkDataFrame, row_count: int) -> ReportReturnType:
     """
     TBD
@@ -73,6 +72,7 @@ def structure_report(df: SparkDataFrame, row_count: int) -> ReportReturnType:
         "cell_count": cell_count
     }])
 
+# Check how the data type deviate from the expected schema
 def schema_audit(df: SparkDataFrame) -> ReportReturnType:
     """
     TBD
@@ -96,6 +96,7 @@ def schema_audit(df: SparkDataFrame) -> ReportReturnType:
 
     return pd.DataFrame(rows)
 
+# Check missing rows
 def null_report(df: SparkDataFrame, row_count: int) -> ReportReturnType:
     """
     TBD
@@ -121,6 +122,7 @@ def null_report(df: SparkDataFrame, row_count: int) -> ReportReturnType:
             .orderBy(F.desc("null_rate"), F.desc("null_count"))
     )
 
+# Check logical consistency in data
 def consistency_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnType]:
     """
     Run logical cross-column / over-time consistency checks.
@@ -313,6 +315,7 @@ def consistency_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnT
         "issue_dfs": issue_dfs,
     }
 
+# Check validity/egde case in data
 def validity_report(df: SparkDataFrame, row_count)-> dict[str, ReportReturnType]:
     """
     Run single-column or bounded-range validity checks.
@@ -404,6 +407,7 @@ def validity_report(df: SparkDataFrame, row_count)-> dict[str, ReportReturnType]
         "issue_dfs": issue_dfs,
     }
 
+# Check for statistical outlier & anomaly
 def anomaly_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnType]:
     """
     Build an anomaly report for the requested edge cases only.
@@ -626,6 +630,7 @@ def anomaly_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnType]
         "vote_max_non_artifact": (max_non_artifact_votes_funny, max_non_artifact_as_percent_of_uint32_max)
     }
 
+# Check zero value in columns
 def noise_report(df: SparkDataFrame, row_count: int) -> ReportReturnType:
     """
     Check how often selected numeric columns are zero
@@ -656,6 +661,7 @@ def noise_report(df: SparkDataFrame, row_count: int) -> ReportReturnType:
             .orderBy(F.desc("zero_or_false_rate"), F.desc("zero_or_false_count"))
     )
 
+# Check unique value set in columns
 def uniqueness_report(df: SparkDataFrame, row_count: int) -> ReportReturnType:
     """
     TBD
@@ -685,6 +691,7 @@ def uniqueness_report(df: SparkDataFrame, row_count: int) -> ReportReturnType:
             .orderBy(F.asc("n_unique"), F.asc("unique_rate"))
     )
 
+# Check duplicate rows & duplicate review by same user on same game
 def duplicate_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnType]:
     # ============================================================
     # Set up for reuse
@@ -758,7 +765,9 @@ def duplicate_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnTyp
         "issue_dfs": issue_dfs
     }
 
+# -----------------------------
 # Other helpers
+# -----------------------------
 def print_section(title: str) -> None:
     print("\n" + "=" * 70)
     print(title)
