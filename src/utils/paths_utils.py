@@ -75,17 +75,94 @@ class ProjectPaths:
     def cleaned_sample_parquet(self) -> Path:
         return self.data_root / "cleaned_sampled.parquet"
     
+    # ------------------------------------------------------------------
+    # Train / validation / test split root
+    # ------------------------------------------------------------------
     @property
-    def train_sample_parquet(self) -> Path:
-        return self.data_root / "train_sampled.parquet"
+    def splits_root(self) -> Path:
+        return self.data_root / "splits"
+
+    @property
+    def random_row_split_root(self) -> Path:
+        return self.splits_root / "random_row"
+
+    @property
+    def random_user_split_root(self) -> Path:
+        return self.splits_root / "random_user"
+
+    @property
+    def time_aware_row_split_root(self) -> Path:
+        return self.splits_root / "time_aware_row"
+
+    # Random row split paths
+    @property
+    def random_row_train_parquet(self) -> Path:
+        return self.random_row_split_root / "train.parquet"
+
+    @property
+    def random_row_val_parquet(self) -> Path:
+        return self.random_row_split_root / "val.parquet"
+
+    @property
+    def random_row_test_parquet(self) -> Path:
+        return self.random_row_split_root / "test.parquet"
+
+    # Random user split paths
+    @property
+    def random_user_train_parquet(self) -> Path:
+        return self.random_user_split_root / "train.parquet"
+
+    @property
+    def random_user_val_parquet(self) -> Path:
+        return self.random_user_split_root / "val.parquet"
+
+    @property
+    def random_user_test_parquet(self) -> Path:
+        return self.random_user_split_root / "test.parquet"
+
+    # Time-aware row split paths
+    @property
+    def time_aware_row_train_parquet(self) -> Path:
+        return self.time_aware_row_split_root / "train.parquet"
+
+    @property
+    def time_aware_row_val_parquet(self) -> Path:
+        return self.time_aware_row_split_root / "val.parquet"
+
+    @property
+    def time_aware_row_test_parquet(self) -> Path:
+        return self.time_aware_row_split_root / "test.parquet"
     
-    @property
-    def validate_sample_parquet(self) -> Path:
-        return self.data_root / "validate_sampled.parquet"
-    
-    @property
-    def test_sample_parquet(self) -> Path:
-        return self.data_root / "test_sampled.parquet"
+    # --------------------------------- IN DEVELOPMENT -------------------------------------
+    # @property
+    # def time_aware_churn_split_root(self) -> Path:
+    #     return self.splits_root / "time_aware_churn"
+
+    # # Time-aware churn snapshot split paths
+    # @property
+    # def time_aware_churn_train_parquet(self) -> Path:
+    #     return self.time_aware_churn_split_root / "train.parquet"
+
+    # @property
+    # def time_aware_churn_val_parquet(self) -> Path:
+    #     return self.time_aware_churn_split_root / "val.parquet"
+
+    # @property
+    # def time_aware_churn_test_parquet(self) -> Path:
+    #     return self.time_aware_churn_split_root / "test.parquet"
+
+    # @property
+    # def time_aware_churn_train_parquet_spark(self) -> str:
+    #     return self.spark_path(self.time_aware_churn_train_parquet)
+
+    # @property
+    # def time_aware_churn_val_parquet_spark(self) -> str:
+    #     return self.spark_path(self.time_aware_churn_val_parquet)
+
+    # @property
+    # def time_aware_churn_test_parquet_spark(self) -> str:
+    #     return self.spark_path(self.time_aware_churn_test_parquet)
+    # --------------------------------- IN DEVELOPMENT -------------------------------------
     
     # ------------------------------------------------------------------
     # Spark path helpers, used for writing parquet files in Spark
@@ -115,3 +192,42 @@ class ProjectPaths:
     @property
     def cleaned_sample_parquet_spark(self) -> str:
         return self.spark_path(self.cleaned_sample_parquet)
+    
+    # ------------------------------------------------------------------
+    # Spark split output paths
+    # ------------------------------------------------------------------
+    @property
+    def random_row_train_parquet_spark(self) -> str:
+        return self.spark_path(self.random_row_train_parquet)
+
+    @property
+    def random_row_val_parquet_spark(self) -> str:
+        return self.spark_path(self.random_row_val_parquet)
+
+    @property
+    def random_row_test_parquet_spark(self) -> str:
+        return self.spark_path(self.random_row_test_parquet)
+
+    @property
+    def random_user_train_parquet_spark(self) -> str:
+        return self.spark_path(self.random_user_train_parquet)
+
+    @property
+    def random_user_val_parquet_spark(self) -> str:
+        return self.spark_path(self.random_user_val_parquet)
+
+    @property
+    def random_user_test_parquet_spark(self) -> str:
+        return self.spark_path(self.random_user_test_parquet)
+
+    @property
+    def time_aware_row_train_parquet_spark(self) -> str:
+        return self.spark_path(self.time_aware_row_train_parquet)
+
+    @property
+    def time_aware_row_val_parquet_spark(self) -> str:
+        return self.spark_path(self.time_aware_row_val_parquet)
+
+    @property
+    def time_aware_row_test_parquet_spark(self) -> str:
+        return self.spark_path(self.time_aware_row_test_parquet)

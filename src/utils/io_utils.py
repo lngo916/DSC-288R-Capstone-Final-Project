@@ -53,6 +53,39 @@ def write_spark_parquet(
     )
     print(f"Saved Spark parquet to: {path}")
 
+def write_spark_split_parquets(
+    train_df: SparkDataFrame,
+    val_df: SparkDataFrame,
+    test_df: SparkDataFrame,
+    train_path: str,
+    val_path: str,
+    test_path: str,
+    mode: str = "overwrite",
+    compression: str = "snappy",
+) -> None:
+    """
+    Write train, validation, and test Spark DataFrames to parquet.
+    """
+    write_spark_parquet(
+        train_df,
+        train_path,
+        mode=mode,
+        compression=compression,
+    )
+
+    write_spark_parquet(
+        val_df,
+        val_path,
+        mode=mode,
+        compression=compression,
+    )
+
+    write_spark_parquet(
+        test_df,
+        test_path,
+        mode=mode,
+        compression=compression,
+    )
 
 # ---------------------------------------------------------------------
 # Pandas IO
