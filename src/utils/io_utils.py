@@ -7,6 +7,14 @@ import json
 import pandas as pd
 from pyspark.sql import DataFrame as SparkDataFrame
 
+# ---------------------------------------------------------------------
+# Default Parameters
+# ---------------------------------------------------------------------
+DEFAULT_CSV_OPTIONS = {
+    "header": "true",
+    "inferSchema": "false",
+}
+
 
 # ---------------------------------------------------------------------
 # Spark IO
@@ -25,14 +33,18 @@ def read_spark_csv(
     options: dict | None = None,
 ) -> SparkDataFrame:
     """
-    Read a CSV file/folder using Spark.
-    """
-    options = options or {
-        "header": "true",
-        "inferSchema": "false",
-    }
+    Read a CSV file or folder using Spark.
 
-    df = spark.read.options(**options).csv(path)
+    This function only loads the raw CSV.
+    Project-specific schema casting should happen after loading.
+    """
+    csv_options = DEFAULT_CSV_OPTIONS.copy()
+
+    if options:
+        csv_options.update(options)
+
+    df = spark.read.options(**csv_options).csv(path)
+
     print(f"Read Spark CSV from: {path}")
     return df
 
