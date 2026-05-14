@@ -13,7 +13,7 @@ from pyspark.sql.types import DataType
 
 # Other libs
 from typing import Iterable
-from src.utils.pyspark_helper import BASE_SCHEMA
+from src.utils.pyspark_utils import BASE_SCHEMA
 
 # -----------------------------
 # Preparation constants

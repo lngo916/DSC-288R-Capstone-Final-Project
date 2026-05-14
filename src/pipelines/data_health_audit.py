@@ -13,7 +13,7 @@ from pyspark.sql import (
 # Other libs
 import pandas as pd
 from typing import Union, Any, TypeAlias
-from src.utils.pyspark_helper import BASE_SCHEMA
+from src.utils.pyspark_utils import BASE_SCHEMA
 
 # -----------------------------
 # Audit constants
