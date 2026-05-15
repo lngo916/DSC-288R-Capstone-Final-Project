@@ -15,6 +15,7 @@ import pandas as pd
 from typing import Union, Any, TypeAlias
 from src.utils.pyspark_utils import BASE_SCHEMA
 
+
 # -----------------------------
 # Audit constants
 # -----------------------------
@@ -52,6 +53,7 @@ ReportReturnType: TypeAlias = (
 )
 SummaryType: TypeAlias = list[dict[str, Any]]
 IssueDfType: TypeAlias = dict[str, SparkDataFrame]
+
 
 # -----------------------------
 # Health audit logic
@@ -764,6 +766,7 @@ def duplicate_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnTyp
         "summary_rows": summary_rows,
         "issue_dfs": issue_dfs
     }
+
 
 # -----------------------------
 # Other helpers
