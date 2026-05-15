@@ -88,6 +88,8 @@ def time_aware_row_split(
     This is useful when we want to evaluate how well a model trained on the past
     generalizes to future data.
     """
+    df = df.withColumn(timestamp_col, F.col(timestamp_col)
+    
     # Find 2 cutoff points that cutt the range into three pieces
     train_cutoff, val_cutoff = df.approxQuantile(
         timestamp_col,
@@ -128,6 +130,9 @@ def build_churn_snapshot(
 
     horizon_seconds = horizon_days * SECONDS_PER_DAY
     label_end_ts = cutoff_ts + horizon_seconds
+
+    for time_col in [event_ts_col, last_played_col]: 
+        df = df.withColumn(time_col, F.col(time_col)
 
     features = (
         df
