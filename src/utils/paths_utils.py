@@ -204,12 +204,16 @@ class ProjectPaths:
         return self.spark_path(self.full_parquet)
 
     @property
+    def clean_parquet_spark(self) -> str:
+        return self.spark_path(self.clean_parquet)
+
+    @property
     def sampled_parquet_spark(self) -> str:
         return self.spark_path(self.sampled_parquet)
 
     @property
-    def cleaned_sample_parquet_spark(self) -> str:
-        return self.spark_path(self.cleaned_sample_parquet)
+    def cleaned_sampled_parquet_spark(self) -> str:
+        return self.spark_path(self.cleaned_sampled_parquet)
     
     # ------------------------------------------------------------------
     # Spark split output paths

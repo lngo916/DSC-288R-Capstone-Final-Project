@@ -108,6 +108,11 @@ def write_spark_split_parquets(
         compression=compression,
     )
 
+    print("Saved Spark parquet to:")
+    print(f"Train path: {train_path}")
+    print(f"Validation path: {val_path}")
+    print(f"Test path: {test_path}")
+
 # ---------------------------------------------------------------------
 # Pandas IO
 # ---------------------------------------------------------------------
@@ -142,3 +147,42 @@ def write_pandas_parquet(
     )
 
     print(f"Saved Pandas parquet to: {path}")
+
+def write_pandas_split_parquets(
+    train_df: pd.DataFrame,
+    val_df: pd.DataFrame,
+    test_df: pd.DataFrame,
+    train_path: str | Path,
+    val_path: str | Path,
+    test_path: str | Path,
+    index: bool = False,
+    engine: str = "pyarrow",
+) -> None:
+    """
+    Write train, validation, and test Pandas DataFrames to parquet.
+    """
+    write_pandas_parquet(
+        train_df,
+        train_path,
+        index=index,
+        engine=engine,
+    )
+
+    write_pandas_parquet(
+        val_df,
+        val_path,
+        index=index,
+        engine=engine,
+    )
+    
+    write_pandas_parquet(
+        test_df,
+        test_path,
+        index=index,
+        engine=engine,
+    )
+
+    print("Saved Pandas parquet to:")
+    print(f"Train path: {train_path}")
+    print(f"Validation path: {val_path}")
+    print(f"Test path: {test_path}")
