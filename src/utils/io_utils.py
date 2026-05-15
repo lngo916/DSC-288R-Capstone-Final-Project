@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-import json
 import pandas as pd
 from pyspark.sql import DataFrame as SparkDataFrame
 
@@ -19,17 +18,22 @@ DEFAULT_CSV_OPTIONS = {
 # ---------------------------------------------------------------------
 # Spark IO
 # ---------------------------------------------------------------------
-def read_spark_parquet(spark, path: str) -> SparkDataFrame:
+def read_spark_parquet(
+    spark, 
+    path: str | Path
+) -> SparkDataFrame:
     """
     Read a Spark parquet dataset.
     """
+    path = str(path)
     df = spark.read.parquet(path)
+
     print(f"Read Spark parquet from: {path}")
     return df
 
 def read_spark_csv(
     spark,
-    path: str,
+    path: str | Path,
     options: dict | None = None,
 ) -> SparkDataFrame:
     """
@@ -38,11 +42,10 @@ def read_spark_csv(
     This function only loads the raw CSV.
     Project-specific schema casting should happen after loading.
     """
+    path = str(path)
     csv_options = DEFAULT_CSV_OPTIONS.copy()
-
     if options:
         csv_options.update(options)
-
     df = spark.read.options(**csv_options).csv(path)
 
     print(f"Read Spark CSV from: {path}")
@@ -50,34 +53,40 @@ def read_spark_csv(
 
 def write_spark_parquet(
     df: SparkDataFrame,
-    path: str,
+    path: str | Path,
     mode: str = "overwrite",
     compression: str = "snappy",
 ) -> None:
     """
     Write a Spark DataFrame to parquet.
     """
+    path = str(path)
     (
         df.write
         .mode(mode)
         .option("compression", compression)
         .parquet(path)
     )
+
     print(f"Saved Spark parquet to: {path}")
 
 def write_spark_split_parquets(
     train_df: SparkDataFrame,
     val_df: SparkDataFrame,
     test_df: SparkDataFrame,
-    train_path: str,
-    val_path: str,
-    test_path: str,
+    train_path: str | Path,
+    val_path: str | Path,
+    test_path: str | Path,
     mode: str = "overwrite",
     compression: str = "snappy",
 ) -> None:
     """
     Write train, validation, and test Spark DataFrames to parquet.
     """
+    train_path = str(train_path)
+    val_path = str(val_path)
+    test_path = str(test_path)
+
     write_spark_parquet(
         train_df,
         train_path,
@@ -102,13 +111,16 @@ def write_spark_split_parquets(
 # ---------------------------------------------------------------------
 # Pandas IO
 # ---------------------------------------------------------------------
-def read_pandas_parquet(path: str | Path) -> pd.DataFrame:
+def read_pandas_parquet(
+    path: str | Path
+) -> pd.DataFrame:
     """
     Read a Pandas parquet file/folder.
     Do NOT pass file:/ paths here.
     """
     path = Path(path)
     df = pd.read_parquet(path)
+
     print(f"Read Pandas parquet from: {path}")
     return df
 
@@ -123,7 +135,6 @@ def write_pandas_parquet(
     """
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-
     df.to_parquet(
         path,
         index=index,
