@@ -166,3 +166,8 @@ print("T_test:", T_test)
 train_df = build_churn_snapshot(df, cutoff_ts=T_train, horizon_days=30)
 val_df   = build_churn_snapshot(df, cutoff_ts=T_val,   horizon_days=30)
 test_df  = build_churn_snapshot(df, cutoff_ts=T_test,  horizon_days=30)
+
+
+# # Set up a dedicated job-running spill storage directory
+# SPARK_LOCAL_DIR = f"/scratch/{os.environ['USER']}/job_{os.environ['SLURM_JOB_ID']}/spark-local"
+# os.makedirs(SPARK_LOCAL_DIR, exist_ok=True)
