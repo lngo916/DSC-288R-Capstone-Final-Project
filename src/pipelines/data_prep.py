@@ -99,7 +99,7 @@ def remove_missing(
     df: DataFrame
 ) -> DataFrame:
     """
-    Remove rows missing the minimum keys needed for review/user/time-level modeling.
+    Remove rows where one of its columns has null values
     """
     
     # Initialize the binary mask as all ones vector
@@ -167,9 +167,10 @@ def remove_duplicate_reviews(
 
     # For each duplicate group, choose the top 1 version and discard other version
     return (
-        df.withColumn("_dup_rank", F.row_number().over(w))
-            .filter(F.col("_dup_rank") == 1)
-            .drop("_dup_rank")
+        df
+        .withColumn("_dup_rank", F.row_number().over(w))
+        .filter(F.col("_dup_rank") == 1)
+        .drop("_dup_rank")
     )
 
 # Consistency cleaning
@@ -177,14 +178,7 @@ def remove_playtime_consistency(
     df: DataFrame, 
     playtime_cols: Iterable[str] = PLAYTIME_COLS
 ) -> DataFrame:
-    """
-    Handle rows where:
-      - author_playtime_at_review > author_playtime_forever
-      - author_playtime_last_two_weeks > author_playtime_forever
-
-    Default is flag instead of drop because these can reflect API timing issues.
-    """
-
+ 
     # Ensure columns exist in the input df
     if not set(playtime_cols).issubset(set(df.columns)):
         return df
@@ -252,7 +246,8 @@ def remove_playtime_forever_decreases_over_time(
     # Create fields to compute binary vector based on 
     # whether invalid player time decrease over time
     marked = (
-        df.withColumn(
+        df
+        .withColumn(
             "_prev_playtime_forever",
             F.lag("author_playtime_forever").over(w)
         )
@@ -279,14 +274,15 @@ def remove_users_with_zero_min_reviews(df: DataFrame) -> DataFrame:
 
     # A bad user mean a user whose minimum observed author_num_reviews is <= 0
     bad_users = (
-        df.groupBy("author_steamid")
-          .agg(F.min("author_num_reviews").alias("min_author_num_reviews"))
-          .filter(
-              F.col("author_steamid").isNotNull()
-              & F.col("min_author_num_reviews").isNotNull()
-              & (F.col("min_author_num_reviews") <= 0)
-          )
-          .select("author_steamid")
+        df
+        .groupBy("author_steamid")
+        .agg(F.min("author_num_reviews").alias("min_author_num_reviews"))
+        .filter(
+          F.col("author_steamid").isNotNull()
+          & F.col("min_author_num_reviews").isNotNull()
+          & (F.col("min_author_num_reviews") <= 0)
+        )
+        .select("author_steamid")
     )
 
     
@@ -372,13 +368,6 @@ def remove_impossible_vote_funny(
     df: DataFrame, 
     threshold: int = VOTES_FUNNY_ARTIFACT_THRESHOLD
 ) -> DataFrame:
-    """
-    Handle votes_funny values likely caused by unsigned 32-bit/API artifacts.
-
-    Recommended default:
-      - null the bad value, keep the row.
-    This preserves the review while preventing the artifact from poisoning features.
-    """
 
     # Define the column on which you are removing outliers
     c = "votes_funny"
@@ -397,12 +386,6 @@ def remove_impossible_vote_funny(
 def remove_impossible_two_week_playtime(
     df: DataFrame
 ) -> DataFrame:
-    """
-    Handle author_playtime_last_two_weeks > 14 days of minutes.
-
-    Default is flag, because near-limit values may reflect Steam runtime,
-    not necessarily active human gameplay.
-    """
 
     # Ensure columns exist in the input df
     c = "author_playtime_last_two_weeks"

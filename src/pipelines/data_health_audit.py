@@ -116,12 +116,13 @@ def null_report(df: SparkDataFrame, row_count: int) -> ReportReturnType:
     
     return (
         # Count missing value counts per column
-        df.select(exprs)
-            # Organize it to format (column name, count)
-            .selectExpr(f"stack({len(df.columns)}, {stack_expr}) as (column_name, null_count)")
-            # Compute percentage of missing values
-            .withColumn("null_rate", F.col("null_count") / row_count)
-            .orderBy(F.desc("null_rate"), F.desc("null_count"))
+        df
+        .select(exprs)
+        # Organize it to format (column name, count)
+        .selectExpr(f"stack({len(df.columns)}, {stack_expr}) as (column_name, null_count)")
+        # Compute percentage of missing values
+        .withColumn("null_rate", F.col("null_count") / row_count)
+        .orderBy(F.desc("null_rate"), F.desc("null_count"))
     )
 
 # Check logical consistency in data
@@ -140,10 +141,11 @@ def consistency_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnT
     ## Set up for reuse
     # Count total distinct users once for user-level rates
     total_users = (
-        df.select("author_steamid")
-          .where(F.col("author_steamid").isNotNull())
-          .distinct()
-          .count()
+        df
+        .select("author_steamid")
+        .where(F.col("author_steamid").isNotNull())
+        .distinct()
+        .count()
     )
 
     # ============================================================
@@ -151,7 +153,8 @@ def consistency_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnT
     # ============================================================
     # Filter rows where both timestamps exist, and the updated time is earlier than the created time
     issue_ts_order = (
-        df.filter(
+        df
+        .filter(
             F.col("timestamp_created").isNotNull() &
             F.col("timestamp_updated").isNotNull() &
             (F.col("timestamp_created") > F.col("timestamp_updated"))
@@ -171,7 +174,8 @@ def consistency_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnT
     # ============================================================
     # Check rows where playtime_at_review is greater than lifetime playtime
     issue_playtime_review_gt_forever = (
-        df.filter(
+        df
+        .filter(
             F.col("author_playtime_at_review").isNotNull() &
             F.col("author_playtime_forever").isNotNull() &
             (F.col("author_playtime_at_review") > F.col("author_playtime_forever"))
@@ -192,7 +196,8 @@ def consistency_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnT
     # ================================================================
     # Check rows where last_two_weeks playtime is greater than lifetime playtime
     issue_playtime_2w_gt_forever = (
-        df.filter(
+        df
+        .filter(
             F.col("author_playtime_last_two_weeks").isNotNull() &
             F.col("author_playtime_forever").isNotNull() &
             (F.col("author_playtime_last_two_weeks") > F.col("author_playtime_forever"))
@@ -215,13 +220,14 @@ def consistency_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnT
     # Group by user and compute the minimum author_num_reviews seen for that user
     # If the minimum is 0, then that user has at least one suspicious row
     issue_user_zero_reviews = (
-        df.groupBy("author_steamid")
-          .agg(F.min("author_num_reviews").alias("min_author_num_reviews"))
-          .filter(
-              F.col("author_steamid").isNotNull() &
-              F.col("min_author_num_reviews").isNotNull() &
-              (F.col("min_author_num_reviews") <= 0)
-          )
+        df
+        .groupBy("author_steamid")
+        .agg(F.min("author_num_reviews").alias("min_author_num_reviews"))
+        .filter(
+          F.col("author_steamid").isNotNull() &
+          F.col("min_author_num_reviews").isNotNull() &
+          (F.col("min_author_num_reviews") <= 0)
+        )
     )
     # Count suspicious users
     count_user_zero_reviews = issue_user_zero_reviews.count()
@@ -238,22 +244,23 @@ def consistency_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnT
 
     # Add previous playtime_forever for comparison against the current row
     df_with_prev = (
-        df.select(
+        df
+        .select(
             "author_steamid",
             "appid",
             "timestamp_created",
             "author_playtime_forever"
         )
-            .filter(
-                F.col("author_steamid").isNotNull() &
-                F.col("appid").isNotNull() &
-                F.col("timestamp_created").isNotNull() &
-                F.col("author_playtime_forever").isNotNull()
-            )
-            .withColumn(
-                "prev_playtime_forever",
-                F.lag("author_playtime_forever").over(w)
-            )
+        .filter(
+            F.col("author_steamid").isNotNull() &
+            F.col("appid").isNotNull() &
+            F.col("timestamp_created").isNotNull() &
+            F.col("author_playtime_forever").isNotNull()
+        )
+        .withColumn(
+            "prev_playtime_forever",
+            F.lag("author_playtime_forever").over(w)
+        )
     )
 
     # Find rows where current lifetime playtime is lower than the previous lifetime playtime
@@ -343,7 +350,8 @@ def validity_report(df: SparkDataFrame, row_count)-> dict[str, ReportReturnType]
     for col_name in NUMERIC_COLS[:-1]:
         # Filter column that has negative counts.
         issue_df = (
-            df.filter(
+            df
+            .filter(
                 F.col(col_name).isNotNull() &
                 (F.col(col_name) < 0)
             )
@@ -369,7 +377,8 @@ def validity_report(df: SparkDataFrame, row_count)-> dict[str, ReportReturnType]
     # - not null
     # - less than 0 or greater than 1
     issue_weighted_vote_score = (
-        df.filter(
+        df
+        .filter(
             F.col("weighted_vote_score").isNotNull() &
             (
                 (F.col("weighted_vote_score") < 0) |
@@ -460,7 +469,8 @@ def anomaly_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnType]
     #     Suspicious, but not automatically wrong
     # ========================================================
     issue_playtime_2w_near_limit = (
-        df.filter(
+        df
+        .filter(
             F.col("author_playtime_last_two_weeks").isNotNull() &
             (F.col("author_playtime_last_two_weeks") >= F.lit(PLAYTIME_2W_NEAR_LIMIT_THRESHOLD))
         )
@@ -486,7 +496,8 @@ def anomaly_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnType]
     #     This is stronger than "near limit"
     # ========================================================
     issue_playtime_2w_exceeds_limit = (
-        df.filter(
+        df
+        .filter(
             F.col("author_playtime_last_two_weeks").isNotNull() &
             (F.col("author_playtime_last_two_weeks") > F.lit(MAX_2W_MINUTES))
         )
@@ -512,7 +523,8 @@ def anomaly_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnType]
     #     Broad suspicious zone
     # ========================================================
     issue_votes_funny_is_uint32_artifact = (
-        df.filter(
+        df
+        .filter(
             F.col("votes_funny").isNotNull() &
             (F.col("votes_funny") >= F.lit(VOTES_FUNNY_ARTIFACT_THRESHOLD))
         )
@@ -541,7 +553,8 @@ def anomaly_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnType]
     # 3. Check for instances where votes_funny reached max value (Pandas)
     # ========================================================
     issue_votes_funny_near_exact_uint32_artifact_max = (
-        df.filter(
+        df
+        .filter(
             F.col("votes_funny").isNotNull() &
             F.col("votes_funny").between(
                 VOTES_FUNNY_ARTIFACT_THRESHOLD,
@@ -573,7 +586,8 @@ def anomaly_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnType]
     # 4. Check for instances where votes_funny near max value (Pandas)
     # ========================================================
     issue_votes_funny_exact_uint32_max = (
-        df.filter(
+        df
+        .filter(
             F.col("votes_funny").isNotNull() &
             (F.col("votes_funny") == F.lit(VOTES_FUNNY_MAX))
         )
@@ -603,7 +617,8 @@ def anomaly_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnType]
     # If it's between 60% - 95%, it will indicate broader range of artifact from API and we will need to dive deeper (Pandas)
     # ========================================================
     max_non_artifact_votes_funny = (
-        df.filter(
+        df
+        .filter(
             F.col("votes_funny").isNotNull() &
             (F.col("votes_funny") < F.lit(VOTES_FUNNY_ARTIFACT_THRESHOLD))
         )
@@ -654,13 +669,14 @@ def noise_report(df: SparkDataFrame, row_count: int) -> ReportReturnType:
     ])
 
     return (
-        df.select(exprs)
-            # Organize it to format (column name, count)
-            .selectExpr(
-                f"stack({len(columns)}, {stack_expr}) as (column_name, zero_or_false_count)"
-            )
-            .withColumn("zero_or_false_rate", F.col("zero_or_false_count") / row_count)
-            .orderBy(F.desc("zero_or_false_rate"), F.desc("zero_or_false_count"))
+        df
+        .select(exprs)
+        # Organize it to format (column name, count)
+        .selectExpr(
+            f"stack({len(columns)}, {stack_expr}) as (column_name, zero_or_false_count)"
+        )
+        .withColumn("zero_or_false_rate", F.col("zero_or_false_count") / row_count)
+        .orderBy(F.desc("zero_or_false_rate"), F.desc("zero_or_false_count"))
     )
 
 # Check unique value set in columns
@@ -683,14 +699,15 @@ def uniqueness_report(df: SparkDataFrame, row_count: int) -> ReportReturnType:
 
     return (
         # Aggregate distinct count
-        df.agg(*exprs)
-            # Organize it to format (column name, count)
-            .selectExpr(
-                f"stack({len(list(columns))}, {stack_expr}) as (column_name, n_unique)"
-            )
-            # Unique count & unique rate
-            .withColumn("unique_rate", F.col("n_unique") / row_count)
-            .orderBy(F.asc("n_unique"), F.asc("unique_rate"))
+        df
+        .agg(*exprs)
+        # Organize it to format (column name, count)
+        .selectExpr(
+            f"stack({len(list(columns))}, {stack_expr}) as (column_name, n_unique)"
+        )
+        # Unique count & unique rate
+        .withColumn("unique_rate", F.col("n_unique") / row_count)
+        .orderBy(F.asc("n_unique"), F.asc("unique_rate"))
     )
 
 # Check duplicate rows & duplicate review by same user on same game
@@ -707,10 +724,11 @@ def duplicate_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnTyp
     # Compute duplicate counts per columns
     # ============================================================
     exact_dup_df = (
-        df.groupBy(*df.columns)
-            .count()
-            .filter(F.col("count") > 1)
-            .orderBy(F.desc("count"))
+        df
+        .groupBy(*df.columns)
+        .count()
+        .filter(F.col("count") > 1)
+        .orderBy(F.desc("count"))
     )
     # Register report
     issue_content = {
@@ -733,10 +751,11 @@ def duplicate_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnTyp
     # Compute duplicate counts per key columns group
     # ============================================================
     combo_dup_df = (
-        df.groupBy(*DUP_KEY_COLS)
-            .count()
-            .filter(F.col("count") > 1)
-            .orderBy(F.desc("count"))
+        df
+        .groupBy(*DUP_KEY_COLS)
+        .count()
+        .filter(F.col("count") > 1)
+        .orderBy(F.desc("count"))
     )
     dup_key_group_count = combo_dup_df.count()
     dup_key_row_count = (

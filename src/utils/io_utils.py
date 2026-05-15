@@ -1,4 +1,6 @@
-# src/utils/io_utils.py
+# ---------------------------------------------------------------------
+# Import Modules
+# ---------------------------------------------------------------------
 
 from __future__ import annotations
 
@@ -6,8 +8,9 @@ from pathlib import Path
 import pandas as pd
 from pyspark.sql import DataFrame as SparkDataFrame
 
+
 # ---------------------------------------------------------------------
-# Default Parameters
+# Train/Split Constants
 # ---------------------------------------------------------------------
 DEFAULT_CSV_OPTIONS = {
     "header": "true",
@@ -108,10 +111,6 @@ def write_spark_split_parquets(
         compression=compression,
     )
 
-    print("Saved Spark parquet to:")
-    print(f"Train path: {train_path}")
-    print(f"Validation path: {val_path}")
-    print(f"Test path: {test_path}")
 
 # ---------------------------------------------------------------------
 # Pandas IO
@@ -181,8 +180,3 @@ def write_pandas_split_parquets(
         index=index,
         engine=engine,
     )
-
-    print("Saved Pandas parquet to:")
-    print(f"Train path: {train_path}")
-    print(f"Validation path: {val_path}")
-    print(f"Test path: {test_path}")

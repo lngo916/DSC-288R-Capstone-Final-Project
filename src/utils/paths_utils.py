@@ -204,8 +204,8 @@ class ProjectPaths:
         return self.spark_path(self.full_parquet)
 
     @property
-    def clean_parquet_spark(self) -> str:
-        return self.spark_path(self.clean_parquet)
+    def cleaned_parquet_spark(self) -> str:
+        return self.spark_path(self.cleaned_parquet)
 
     @property
     def sampled_parquet_spark(self) -> str:

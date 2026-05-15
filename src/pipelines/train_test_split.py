@@ -1,5 +1,11 @@
+# -----------------------------
+# Import Modules
+# -----------------------------
 from pyspark.sql import functions as F
 
+# -----------------------------
+# Train/Test Split constants
+# -----------------------------
 SECONDS_PER_DAY = 86400
 
 # ----------------------------------
@@ -12,17 +18,17 @@ def random_row_split(df, train_ratio=0.7, val_ratio=0.15, test_ratio=0.15, seed=
     This is the simplest split strategy. It randomly assigns individual review rows
     into train/validation/test, regardless of user identity or timestamp.
     """
-
+    # Ratio sanity check
     total = train_ratio + val_ratio + test_ratio
-
     if abs(total - 1.0) > 1e-6:
         raise ValueError("train_ratio + val_ratio + test_ratio must equal 1.0")
 
+    # Random split on rows
     train_df, val_df, test_df = df.randomSplit(
         [train_ratio, val_ratio, test_ratio],
         seed=seed
     )
-
+    
     return train_df, val_df, test_df
 
 def random_user_split(
@@ -39,12 +45,12 @@ def random_user_split(
     All rows from the same user are kept in the same split.
     This helps avoid user-level leakage.
     """
-
+    # Ratio sanity check
     total = train_ratio + val_ratio + test_ratio
-
     if abs(total - 1.0) > 1e-6:
         raise ValueError("train_ratio + val_ratio + test_ratio must equal 1.0")
 
+    # Gather distinct users
     users = (
         df
         .select(user_col)
@@ -52,11 +58,13 @@ def random_user_split(
         .distinct()
     )
 
+    # Random split on user
     train_users, val_users, test_users = users.randomSplit(
         [train_ratio, val_ratio, test_ratio],
         seed=seed
     )
 
+    # Apply filtered user back to original data to do the split on data
     train_df = df.join(train_users, on=user_col, how="inner")
     val_df = df.join(val_users, on=user_col, how="inner")
     test_df = df.join(test_users, on=user_col, how="inner")
@@ -80,30 +88,23 @@ def time_aware_row_split(
     This is useful when we want to evaluate how well a model trained on the past
     generalizes to future data.
     """
-
-    timestamp_long_col = f"{timestamp_col}_long"
-
-    df_ts = (
-        df
-        .withColumn(timestamp_long_col, F.unix_timestamp(F.col(timestamp_col)))
-        .where(F.col(timestamp_long_col).isNotNull())
-    )
-
-    train_cutoff, val_cutoff = df_ts.approxQuantile(
-        timestamp_long_col,
+    # Find 2 cutoff points that cutt the range into three pieces
+    train_cutoff, val_cutoff = df.approxQuantile(
+        timestamp_col,
         [train_quantile, val_quantile],
         relative_error
     )
-
     train_cutoff = int(train_cutoff)
     val_cutoff = int(val_cutoff)
 
-    train_df = df_ts.where(F.col(timestamp_long_col) <= F.lit(train_cutoff))
-    val_df = df_ts.where(
-        (F.col(timestamp_long_col) > F.lit(train_cutoff)) &
-        (F.col(timestamp_long_col) <= F.lit(val_cutoff))
+    # Use filtering to define data
+    # train_df  -> || train_cutoff || -> val_df -> || val_cutoff || -> test_df
+    train_df = df.where(F.col(timestamp_col) <= F.lit(train_cutoff))
+    val_df = df.where(
+        (F.col(timestamp_col) > F.lit(train_cutoff)) &
+        (F.col(timestamp_col) <= F.lit(val_cutoff))
     )
-    test_df = df_ts.where(F.col(timestamp_long_col) > F.lit(val_cutoff))
+    test_df = df.where(F.col(timestamp_col) > F.lit(val_cutoff))
 
     return train_df, val_df, test_df, train_cutoff, val_cutoff
 
@@ -128,32 +129,23 @@ def build_churn_snapshot(
     horizon_seconds = horizon_days * SECONDS_PER_DAY
     label_end_ts = cutoff_ts + horizon_seconds
 
-    df_ts = (
-        df
-        .withColumn("event_ts_epoch", F.unix_timestamp(F.col(event_ts_col)))
-        .withColumn("last_played_epoch", F.unix_timestamp(F.col(last_played_col)))
-        .where(F.col(user_col).isNotNull())
-        .where(F.col("event_ts_epoch").isNotNull())
-    )
-
-    df_past = df_ts.where(F.col("event_ts_epoch") <= F.lit(cutoff_ts))
-
     features = (
-        df_past
+        df
+        .where(F.col(event_ts_col) <= F.lit(cutoff_ts))
         .groupBy(user_col)
         .agg(
             F.count("*").alias("n_reviews_before_T"),
             F.countDistinct("appid").alias("n_games_reviewed_before_T"),
 
-            F.max("event_ts_epoch").alias("last_review_ts_before_T"),
-            F.min("event_ts_epoch").alias("first_review_ts_before_T"),
+            F.max(event_ts_col).alias("last_review_ts_before_T"),
+            F.min(event_ts_col).alias("first_review_ts_before_T"),
 
             # Leakage-safe version:
             # only use last_played values that happened before or at cutoff time.
             F.max(
                 F.when(
-                    F.col("last_played_epoch") <= F.lit(cutoff_ts),
-                    F.col("last_played_epoch")
+                    F.col(last_played_col) <= F.lit(cutoff_ts),
+                    F.col(last_played_col)
                 )
             ).alias("last_played_ts_before_T"),
 
@@ -181,9 +173,9 @@ def build_churn_snapshot(
     )
 
     future_active_users = (
-        df_ts
-        .where(F.col("event_ts_epoch") > F.lit(cutoff_ts))
-        .where(F.col("event_ts_epoch") <= F.lit(label_end_ts))
+        df
+        .where(F.col(event_ts_col) > F.lit(cutoff_ts))
+        .where(F.col(event_ts_col) <= F.lit(label_end_ts))
         .select(user_col)
         .distinct()
         .withColumn("active_in_horizon", F.lit(1))
@@ -223,16 +215,8 @@ def time_aware_churn_snapshot_split(
     - label is built from activity after T within the horizon
     """
 
-    timestamp_long_col = f"{timestamp_col}_long"
-
-    df_ts = (
-        df
-        .withColumn(timestamp_long_col, F.unix_timestamp(F.col(timestamp_col)))
-        .where(F.col(timestamp_long_col).isNotNull())
-    )
-
-    cutoffs = df_ts.approxQuantile(
-        timestamp_long_col,
+    cutoffs = df.approxQuantile(
+        timestamp_col,
         [train_cutoff_quantile, val_cutoff_quantile, test_cutoff_quantile],
         relative_error
     )
@@ -283,24 +267,3 @@ def print_split_summary(name, train_df, val_df, test_df, user_col="author_steami
         print("Train users:", train_df.select(user_col).distinct().count())
         print("Validation users:", val_df.select(user_col).distinct().count())
         print("Test users:", test_df.select(user_col).distinct().count())
-
-def write_split_parquets(
-    train_df,
-    val_df,
-    test_df,
-    train_path,
-    val_path,
-    test_path,
-    mode="overwrite"
-):
-    """
-    Write train, validation, and test DataFrames to Parquet.
-    """
-
-    train_df.write.mode(mode).parquet(train_path)
-    val_df.write.mode(mode).parquet(val_path)
-    test_df.write.mode(mode).parquet(test_path)
-
-    print("Wrote train parquet to:", train_path)
-    print("Wrote validation parquet to:", val_path)
-    print("Wrote test parquet to:", test_path)
