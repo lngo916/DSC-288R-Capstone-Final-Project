@@ -72,7 +72,7 @@ class ProjectPaths:
         return self.data_root / "subsampled_parquet"
 
     @property
-    def cleaned_sample_parquet(self) -> Path:
+    def cleaned_sampled_parquet(self) -> Path:
         return self.data_root / "cleaned_sampled.parquet"
     
     # ------------------------------------------------------------------
@@ -97,41 +97,59 @@ class ProjectPaths:
     # Random row split paths
     @property
     def random_row_train_parquet(self) -> Path:
-        return self.random_row_split_root / "train.parquet"
+        return self.random_row_split_root / "train_parquet"
 
     @property
     def random_row_val_parquet(self) -> Path:
-        return self.random_row_split_root / "val.parquet"
+        return self.random_row_split_root / "val_parquet"
 
     @property
     def random_row_test_parquet(self) -> Path:
-        return self.random_row_split_root / "test.parquet"
+        return self.random_row_split_root / "test_parquet"
 
     # Random user split paths
     @property
     def random_user_train_parquet(self) -> Path:
-        return self.random_user_split_root / "train.parquet"
+        return self.random_user_split_root / "train_parquet"
 
     @property
     def random_user_val_parquet(self) -> Path:
-        return self.random_user_split_root / "val.parquet"
+        return self.random_user_split_root / "val_parquet"
 
     @property
     def random_user_test_parquet(self) -> Path:
-        return self.random_user_split_root / "test.parquet"
+        return self.random_user_split_root / "test_parquet"
 
     # Time-aware row split paths
     @property
     def time_aware_row_train_parquet(self) -> Path:
-        return self.time_aware_row_split_root / "train.parquet"
+        return self.time_aware_row_split_root / "train_parquet"
 
     @property
     def time_aware_row_val_parquet(self) -> Path:
-        return self.time_aware_row_split_root / "val.parquet"
+        return self.time_aware_row_split_root / "val_parquet"
 
     @property
     def time_aware_row_test_parquet(self) -> Path:
-        return self.time_aware_row_split_root / "test.parquet"
+        return self.time_aware_row_split_root / "test_parquet"
+    
+    # ------------------------------------------------------------------
+    # Train / validation / test split root FOR SAMPLED
+    # ------------------------------------------------------------------
+
+    # Random row split paths
+    @property
+    def random_row_train_sampled_parquet(self) -> Path:
+        return self.random_row_split_root / "train_sampled.parquet"
+
+    @property
+    def random_row_val_sampled_parquet(self) -> Path:
+        return self.random_row_split_root / "val_sampled.parquet"
+
+    @property
+    def random_row_test_sampled_parquet(self) -> Path:
+        return self.random_row_split_root / "test_sampled.parquet"
+
     
     # --------------------------------- IN DEVELOPMENT -------------------------------------
     # @property

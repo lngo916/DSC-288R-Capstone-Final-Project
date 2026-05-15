@@ -430,11 +430,7 @@ def clean_review_text_basic(
     # Remove trailing & ending spaces
     cleaned = F.trim(cleaned)
 
-    
-    return df.withColumn(
-        col_name,
-        F.when(cleaned == "", F.lit(None)).otherwise(cleaned)
-    )
+    return cleaned
 
 
 ## FOR FUTURE DEVELOPMENT
