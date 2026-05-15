@@ -76,7 +76,7 @@ class ProjectPaths:
         return self.data_root / "cleaned_sampled.parquet"
     
     # ------------------------------------------------------------------
-    # Train / validation / test split root
+    # Train / validation / test split root FOR FULL
     # ------------------------------------------------------------------
     @property
     def splits_root(self) -> Path:

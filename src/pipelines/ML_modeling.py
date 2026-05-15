@@ -12,51 +12,119 @@ from pyspark.ml.classification import (
     LinearSVC
 )
 from xgboost.spark import SparkXGBClassifier
-from pyspark.ml.evaluation import BinaryClassificationEvaluator
+from pyspark.ml.evaluation import (
+    BinaryClassificationEvaluator,
+    MulticlassClassificationEvaluator
+)
+
+
+# -----------------------------
+# XG Boost Config
+# -----------------------------
+def get_spark_resources(spark):
+    conf = spark.sparkContext.getConf()
+
+    num_executors = int(conf.get("spark.executor.instances", "1"))
+    executor_cores = int(conf.get("spark.executor.cores", "1"))
+    total_cores = num_executors * executor_cores
+
+    return {
+        "num_executors": num_executors,
+        "executor_cores": executor_cores,
+        "total_cores": total_cores,
+    }
 
 
 # -----------------------------
 # ML constants
 # -----------------------------
-# For XGBoost param setup
-NUM_EXECUTORS = int(sc.getConf().get("spark.executor.instances", "1"))
-EXECUTOR_CORES = int(sc.getConf().get("spark.executor.cores", "1"))
-TOTAL_CORES = NUM_EXECUTORS * EXECUTOR_CORES
-
-# For feature names
 FEATURE_COL = "finalized_features"
 LABEL_COL = "churn"
+PREDICTION_COL = "prediction"
+RAW_PREDICTION_COL = "rawPrediction"
+PROBABILITY_COL = "probability"
+
+SEED = 42
 
 # ----------------------------------
 # Model Definition
 # ----------------------------------
-MODELS = {
-    "log_reg": LogisticRegression(
-        featuresCol=FEATURE_COL,
-        labelCol=LABEL_COL
-    ),
+def build_models(spark):
+    total_cores = get_spark_resources(spark)['total_cores']
 
-    "decision_tree": DecisionTreeClassifier(
-        featuresCol='features', 
-        labelCol='label'
-        
-    "random_forest": RandomForestClassifier(
-        featuresCol=FEATURE_COL,
-        labelCol=LABEL_COL
-    ),
-
-    "svm": LinearSVC(
-        featuresCol=FEATURE_COL,
-        labelCol=LABEL_COL
-    ),
-
-    "xgb": SparkXGBClassifier(
-        features_col=FEATURE_COL,
-        label_col=LABEL_COL,
-        prediction_col=PREDICTION_COL,
-        num_workers=TOTAL_CORES
-    ),
-}
+    return {
+        "log_reg": LogisticRegression(
+            featuresCol=FEATURE_COL,
+            labelCol=LABEL_COL,
+            predictionCol=PREDICTION_COL,
+            rawPredictionCol=RAW_PREDICTION_COL,
+            probabilityCol=PROBABILITY_COL,
+    
+            # baseline params
+            # Safer than relying on a low default if convergence is slow.
+            maxIter=50,
+            regParam=0.0,
+            elasticNetParam=0.0,
+            standardization=True,
+        ),
+    
+        "decision_tree": DecisionTreeClassifier(
+            featuresCol=FEATURE_COL,
+            labelCol=LABEL_COL,
+            predictionCol=PREDICTION_COL,
+            rawPredictionCol=RAW_PREDICTION_COL,
+            probabilityCol=PROBABILITY_COL,
+    
+            # baseline params
+            maxDepth=8,
+            minInstancesPerNode=5,
+            seed=SEED,
+        ),
+    
+        "random_forest": RandomForestClassifier(
+            featuresCol=FEATURE_COL,
+            labelCol=LABEL_COL,
+            predictionCol=PREDICTION_COL,
+            rawPredictionCol=RAW_PREDICTION_COL,
+            probabilityCol=PROBABILITY_COL,
+    
+            # baseline params
+            numTrees=50,
+            maxDepth=8,
+            minInstancesPerNode=5,
+            featureSubsetStrategy="sqrt",
+            seed=SEED,
+        ),
+    
+        "svm": LinearSVC(
+            featuresCol=FEATURE_COL,
+            labelCol=LABEL_COL,
+            predictionCol=PREDICTION_COL,
+            rawPredictionCol=RAW_PREDICTION_COL,
+    
+            # baseline params
+            maxIter=50,
+            regParam=0.1,
+            standardization=True,
+        ),
+    
+        "xgb": SparkXGBClassifier(
+            features_col=FEATURE_COL,
+            label_col=LABEL_COL,
+            prediction_col=PREDICTION_COL,
+            raw_prediction_col=RAW_PREDICTION_COL,
+            probability_col=PROBABILITY_COL,
+    
+            # baseline params
+            num_workers=total_cores,
+            n_estimators=100,
+            max_depth=6,
+            learning_rate=0.1,
+            subsample=0.8,
+            colsample_bytree=0.8,
+            seed=SEED,
+        ),
+    }
 
 
 # ----------------------------------
@@ -66,8 +134,11 @@ def fit_transform_model(
     model_name,
     train_final_df,
     test_final_df,
+    spark,
     cache=False
 ):
+
+    MODELS = build_models(spark)
     if model_name not in MODELS:
         raise ValueError("Model Name NOT FOUND!!!")        
     
@@ -99,18 +170,65 @@ def evaluate_model(
     train_pred_df, 
     test_pred_df,
     label_col=LABEL_COL, 
-    metrics=["f1", "weightedPrecision", "weightedRecall", "accuracy"],
+    prediction_col=PREDICTION_COL,
+    raw_prediction_col=RAW_PREDICTION_COL,
+    metrics=None,
     verbose=True
 ):
+    """
+    Evaluate a binary classification model using both:
+
+    1. BinaryClassificationEvaluator metrics:
+       - areaUnderROC
+       - areaUnderPR
+
+    2. MulticlassClassificationEvaluator metrics:
+       - f1
+       - weightedPrecision
+       - weightedRecall
+       - accuracy
+    """
     metric_data = {}
-    
+
+    if metrics is None:
+        metrics = [
+            "areaUnderROC",
+            "areaUnderPR",
+            "f1",
+            "weightedPrecision",
+            "weightedRecall",
+            "accuracy",
+        ]
+    binary_metrics = {"areaUnderROC", "areaUnderPR"}
+    multiclass_metrics = {
+        "f1",
+        "weightedPrecision",
+        "weightedRecall",
+        "accuracy",
+    }
+
+
     # Define for each metric
     for metric in metrics:
-        evaluator = BinaryClassificationEvaluator(
-            rawPredictionCol=PREDICTION_COL,
-            labelCol=label_col,
-            metricName=metric
-        )
+        if metric in binary_metrics:
+            evaluator = BinaryClassificationEvaluator(
+                labelCol=label_col,
+                rawPredictionCol=raw_prediction_col,
+                metricName=metric,
+            )
+
+        elif metric in multiclass_metrics:
+            evaluator = MulticlassClassificationEvaluator(
+                labelCol=label_col,
+                predictionCol=prediction_col,
+                metricName=metric,
+            )
+
+        else:
+            raise ValueError(
+                f"Unsupported metric: {metric}. "
+                f"Supported metrics are: {sorted(binary_metrics | multiclass_metrics)}"
+            )
         
         # Compute metric
         train_score = evaluator.evaluate(train_pred_df)
@@ -123,5 +241,9 @@ def evaluate_model(
             print()
     
         # Store results
-        metric_data[metric] = [train_score, test_score]
+        metric_data[metric] = {
+            "train": train_score,
+            "test": test_score,
+        }
+        
     return metric_data
