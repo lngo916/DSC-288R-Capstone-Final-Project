@@ -3,6 +3,7 @@
 # -----------------------------
 # Spark
 from pyspark import StorageLevel
+from pyspark.sql import SparkSession, DataFrame
 
 # ML
 from pyspark.ml.classification import (
@@ -17,23 +18,8 @@ from pyspark.ml.evaluation import (
     MulticlassClassificationEvaluator
 )
 
-
-# -----------------------------
-# XG Boost Config
-# -----------------------------
-def get_spark_resources(spark):
-    conf = spark.sparkContext.getConf()
-
-    num_executors = int(conf.get("spark.executor.instances", "1"))
-    executor_cores = int(conf.get("spark.executor.cores", "1"))
-    total_cores = num_executors * executor_cores
-
-    return {
-        "num_executors": num_executors,
-        "executor_cores": executor_cores,
-        "total_cores": total_cores,
-    }
-
+# Others
+from typing import TypeAlias, Optional, Any
 
 # -----------------------------
 # ML constants
@@ -46,11 +32,51 @@ PROBABILITY_COL = "probability"
 
 SEED = 42
 
+SparkClassifier: TypeAlias = (
+    LogisticRegression
+    | DecisionTreeClassifier
+    | RandomForestClassifier
+    | LinearSVC
+    | SparkXGBClassifier
+)
+
+
+# -----------------------------
+# XG Boost Config
+# -----------------------------
+def get_spark_resources(
+    spark: SparkSession
+) -> dict[str, int]:
+    conf = spark.sparkContext.getConf()
+
+    num_executors: int = int(conf.get("spark.executor.instances", "1"))
+    executor_cores: int = int(conf.get("spark.executor.cores", "1"))
+    total_cores: int = num_executors * executor_cores
+
+    return {
+        "num_executors": num_executors,
+        "executor_cores": executor_cores,
+        "total_cores": total_cores,
+    }
+
+
 # ----------------------------------
 # Model Definition
 # ----------------------------------
-def build_models(spark):
-    total_cores = get_spark_resources(spark)['total_cores']
+def build_models(
+    spark: SparkSession,
+    mode: str = "EXPANSE"
+) -> dict[str, SparkClassifier]:
+    total_cores = 1
+    if mode.upper() == "EXPANSE":
+        total_cores = get_spark_resources(spark)['total_cores']
+        print(f"total_cores has {total_cores}")
+    elif mode.upper() == "COLAB":
+        total_cores = 1
+    elif mode.upper() == "LOCAL":
+        total_cores = 7
+    else:
+        raise Exception("Invalid mode, the only acceptible are 'EXPANSE', 'COLAB', 'LOCAL'")
 
     return {
         "log_reg": LogisticRegression(
@@ -131,14 +157,15 @@ def build_models(spark):
 # Model Fit & Transform
 # ----------------------------------
 def fit_transform_model(
-    model_name,
-    train_final_df,
-    test_final_df,
-    spark,
-    cache=False
-):
+    model_name: str,
+    train_final_df: DataFrame,
+    test_final_df: DataFrame,
+    spark: SparkSession,
+    cache: bool = False,
+    mode: str = "EXPANSE"
+) -> tuple[Any, DataFrame, DataFrame]:
 
-    MODELS = build_models(spark)
+    MODELS = build_models(spark, mode=mode)
     if model_name not in MODELS:
         raise ValueError("Model Name NOT FOUND!!!")        
     
@@ -166,15 +193,15 @@ def fit_transform_model(
 # Model Evaluation
 # ----------------------------------
 def evaluate_model(
-    model_name,
-    train_pred_df, 
-    test_pred_df,
-    label_col=LABEL_COL, 
-    prediction_col=PREDICTION_COL,
-    raw_prediction_col=RAW_PREDICTION_COL,
-    metrics=None,
-    verbose=True
-):
+    model_name: str,
+    train_pred_df: DataFrame, 
+    test_pred_df: DataFrame,
+    label_col: str=LABEL_COL, 
+    prediction_col: str=PREDICTION_COL,
+    raw_prediction_col: str=RAW_PREDICTION_COL,
+    metrics: Optional[list[str]]=None,
+    verbose: bool=True
+) -> dict[str, dict[str, float]]:
     """
     Evaluate a binary classification model using both:
 
@@ -245,5 +272,9 @@ def evaluate_model(
             "train": train_score,
             "test": test_score,
         }
+
+        # Memory management
+        train_pred_df.unpersist()
+        test_pred_df.unpersist()
         
     return metric_data

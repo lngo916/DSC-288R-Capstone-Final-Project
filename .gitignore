@@ -1,4 +1,6 @@
+# Git
 **/.DS_Store
+
 # Jupyter
 .ipynb_checkpoints/
 
@@ -6,3 +8,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Specific folders
+/html_nb
