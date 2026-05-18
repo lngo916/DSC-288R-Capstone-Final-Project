@@ -17,7 +17,7 @@ from src.utils.pyspark_utils import BASE_SCHEMA
 
 
 # -----------------------------
-# Audit constants
+# Audit Constants
 # -----------------------------
 # Reusable columns
 NUMERIC_COLS = [
@@ -56,7 +56,7 @@ IssueDfType: TypeAlias = dict[str, SparkDataFrame]
 
 
 # -----------------------------
-# Health audit logic
+# Health Audit Logic
 # -----------------------------
 # Inpsect the dimension & cell counts
 def structure_report(df: SparkDataFrame, row_count: int) -> ReportReturnType:
@@ -788,7 +788,7 @@ def duplicate_report(df: SparkDataFrame, row_count) -> dict[str, ReportReturnTyp
 
 
 # -----------------------------
-# Other helpers
+# Other Helpers
 # -----------------------------
 def print_section(title: str) -> None:
     print("\n" + "=" * 70)

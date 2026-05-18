@@ -17,7 +17,7 @@ from src.utils.pyspark_utils import BASE_SCHEMA
 
 
 # -----------------------------
-# Preparation constants
+# Preparation Constants
 # -----------------------------
 DUP_KEY_COLS = [
     "author_steamid",
@@ -56,7 +56,7 @@ MIN_REASONABLE_UNIX_TS = 1_000_000_000  # Represent 2001-09-09, this indicate a 
 VALID_SCORE_RANGE = (0, 1)  # Valid score range define as format: (min score, max score)
 
 # -----------------------------
-# Health preparation logic
+# Health Preparation Logic
 # -----------------------------
 # Type conversion
 def enforce_schema(
@@ -416,7 +416,9 @@ def clean_review_text_basic(
     return df.withColumn(col_name, cleaned)
 
 
-## FOR FUTURE DEVELOPMENT
+# -----------------------------
+# FOR FUTURE DEVELOPMENT
+# -----------------------------
 # Unify drop/flag action, unify consistency/validity check function
 # check required columns
 # define invalid predicate

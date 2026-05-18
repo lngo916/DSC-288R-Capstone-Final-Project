@@ -4,7 +4,7 @@
 from pyspark.sql import functions as F
 
 # -----------------------------
-# Train/Test Split constants
+# Train/Test Split Constants
 # -----------------------------
 SECONDS_PER_DAY = 86400
 
@@ -110,6 +110,7 @@ def time_aware_row_split(
 
     return train_df, val_df, test_df, train_cutoff, val_cutoff
 
+# FOR FUTURE DEVELOPMENT
 def build_churn_snapshot(
     df,
     cutoff_ts,
@@ -202,6 +203,7 @@ def build_churn_snapshot(
 
     return labeled
 
+# FOR FUTURE DEVELOPMENT
 def time_aware_churn_snapshot_split(
     df,
     timestamp_col="timestamp_created",
@@ -253,6 +255,10 @@ def time_aware_churn_snapshot_split(
     )
 
     return train_df, val_df, test_df, train_cutoff, val_cutoff, test_cutoff
+
+# FOR FUTURE DEVELOPMENT
+def stratification_for_each_split():
+    pass
 
 # ----------------------------------
 # Other Helper

@@ -22,7 +22,7 @@ from pyspark.ml.evaluation import (
 from typing import TypeAlias, Optional, Any
 
 # -----------------------------
-# ML constants
+# ML Constants
 # -----------------------------
 FEATURE_COL = "finalized_features"
 LABEL_COL = "churn"

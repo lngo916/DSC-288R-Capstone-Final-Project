@@ -1,3 +1,6 @@
+# -----------------------------
+# Import Modules
+# -----------------------------
 from __future__ import annotations
 
 from typing import Iterable
@@ -6,19 +9,70 @@ from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 from pyspark.ml.feature import VectorAssembler
 
-
+# --------------------------------
+# Feature Engineered Column Names
+# -------------------------------
 LABEL_COL = "churn"
 FEATURE_COL = "finalized_features"
 SCALED_FEATURE_COL = "scaled_features"
 WEIGHT_COL = "class_weight"
 
+# -----------------------------
+# Feature Engineering Constants
+# -----------------------------
 SECONDS_PER_DAY = 86_400
 
+# Reusable Columns
+FEATURE_ENGINEERING_INPUT_COLS = [
+    # Entity keys
+    "author_steamid",
+    "appid",
+
+    # User profile / activity counts
+    "author_num_games_owned",
+    "author_num_reviews",
+
+    # Playtime engagement
+    "author_playtime_forever",
+    "author_playtime_at_review",
+    "author_playtime_last_two_weeks",
+
+    # Temporal / recency inputs
+    "author_last_played",
+    "timestamp_created",
+    "timestamp_updated",
+
+    # Review behavior / sentiment proxy
+    "review",
+    "voted_up",
+    "language",
+
+    # Review engagement
+    "votes_up",
+    "votes_funny",
+    "weighted_vote_score",
+    "comment_count",
+
+    # Optional metadata
+    "written_during_early_access",
+]
+NUMERIC_COLS = [
+    "author_num_games_owned",
+    "author_num_reviews",
+    "author_playtime_forever",
+    "author_playtime_last_two_weeks",
+    "author_playtime_at_review",
+    "votes_up",
+    "votes_funny",
+    "comment_count",
+    "weighted_vote_score",
+]
+
 
 # ---------------------------------------------------------------------
-# 1. Temporary / proxy churn label
+# Proxy churn label
 # ---------------------------------------------------------------------
-def add_proxy_churn_label_from_recent_playtime(
+def create_label(
     df: DataFrame,
     recent_playtime_col: str = "author_playtime_last_two_weeks",
     threshold_minutes: int = 60,
@@ -31,18 +85,59 @@ def add_proxy_churn_label_from_recent_playtime(
     churn = 0 means active / retained
     """
 
+    return (
+        df.withColumn(
+            label_col,
+            F.when(F.col(recent_playtime_col).isNull(), F.lit(1.0))
+            .when(F.col(recent_playtime_col) >= F.lit(threshold_minutes), F.lit(0.0))
+            .otherwise(F.lit(1.0))
+        )
+        .drop(recent_playtime_col)
+    )
+
+
+# ---------------------------------------------------------------------
+# Class weights
+# ---------------------------------------------------------------------
+def create_class_weights(
+    df: DataFrame, 
+    label_col=LABEL_COL, 
+    weight_col=WEIGHT_COL
+) -> DataFrame:
+    
+    counts = {
+        row[label_col]: row["count"]
+        for row in df.groupBy(label_col).count().collect()
+    }
+
+    total = float(sum(counts.values()))
+    n_classes = float(len(counts))
+
+    weights = {
+        label: total / (n_classes * count)
+        for label, count in counts.items()
+    }
+
+    mapping_expr = F.create_map(
+        *[
+            x
+            for label, weight in weights.items()
+            for x in (F.lit(float(label)), F.lit(float(weight)))
+        ]
+    )
+
     return df.withColumn(
-        label_col,
-        F.when(F.col(recent_playtime_col).isNull(), F.lit(1.0))
-         .when(F.col(recent_playtime_col) > F.lit(threshold_minutes), F.lit(0.0))
-         .otherwise(F.lit(1.0))
+        weight_col,
+        mapping_expr[F.col(label_col).cast("double")]
     )
 
 
 # ---------------------------------------------------------------------
 # Review features
 # ---------------------------------------------------------------------
-def add_review_behavior_features(df: DataFrame) -> DataFrame:
+def create_review_behavior_features(
+    df: DataFrame
+) -> DataFrame:
     """
     Add review-text and review-sentiment proxy features.
 
@@ -73,7 +168,9 @@ def add_review_behavior_features(df: DataFrame) -> DataFrame:
 # ---------------------------------------------------------------------
 # Engagement features
 # ---------------------------------------------------------------------
-def add_playtime_engagement_features(df: DataFrame) -> DataFrame:
+def create_engagement_features(
+    df: DataFrame
+) -> DataFrame:
     """
     Add playtime-based engagement features.
     """
@@ -81,11 +178,11 @@ def add_playtime_engagement_features(df: DataFrame) -> DataFrame:
 
     required = {
         "author_playtime_forever",
-        "author_playtime_last_two_weeks",
         "author_playtime_at_review",
     }
 
     if required.issubset(set(out.columns)):
+        print("I am in")
         forever = F.col("author_playtime_forever").cast("double")
         last_2w = F.col("author_playtime_last_two_weeks").cast("double")
         at_review = F.col("author_playtime_at_review").cast("double")
@@ -122,144 +219,288 @@ def add_playtime_engagement_features(df: DataFrame) -> DataFrame:
 
 
 # ---------------------------------------------------------------------
-# Scale numeric feature through Logarithmic transformation
+# Logarithmic transformation features
 # ---------------------------------------------------------------------
-def log_scale(df: DataFrame, cols: Iterable[str] | None = None) -> DataFrame:
+def transform_log_features(
+    df: DataFrame,
+    cols: Iterable[str] = NUMERIC_COLS,
+    drop_original: bool = False,
+) -> DataFrame:
     """
     Add log1p versions of skewed numeric columns.
 
     log1p(x) = log(1 + x), safer for zero-heavy count/playtime columns.
+
+    Parameters
+    ----------
+    df:
+        Input Spark DataFrame.
+    cols:
+        Columns to log-transform. If None, uses default skewed numeric columns.
+    drop_original:
+        If True, remove the original source columns after creating log columns.
+        If False, keep both original and log-transformed columns.
     """
     out = df
 
-    # Define chosen columns
-    default_cols = [
-        "votes_up",
-        "votes_funny",
-        "comment_count",
-        "author_num_reviews",
-        "author_num_games_owned",
-        "author_playtime_forever",
-        "author_playtime_last_two_weeks",
-        "author_playtime_at_review",
-        "review_length",
-        "playtime_after_review",
-    ]
-    selected_cols = list(cols) if cols is not None else default_cols
+    # Define columns list
+    selected_cols = list(cols)
+    if not selected_cols:
+        raise ValueError(
+            "No available feature columns found for Log Transform Feature Creator."
+        )
+    transformed_cols = []
 
-    # Iterate all columns
     for src in selected_cols:
         if src not in out.columns:
             continue
 
-        # Compute log-transform
+        log_col = f"log_{src}"
+        transformed_cols.append(src)
+
         out = out.withColumn(
-            f"log_{src}",
-            F.when(F.col(src).isNull(), 0)
-            .when(F.col(src) < 0, 0)
-            .otherwise(F.log1p(F.col(src).cast("double")))
+            log_col,
+            F.when(F.col(src).isNull(), 0.0)
+             .when(F.col(src) < 0, 0.0)
+             .otherwise(F.log1p(F.col(src).cast("double")))
         )
+
+    if drop_original and transformed_cols:
+        out = out.drop(*transformed_cols)
 
     return out
 
 
 # ---------------------------------------------------------------------
-# 5. Build model-ready matrix
+# Assemble features
 # ---------------------------------------------------------------------
-def build_proxy_churn_model_frame(
+def assemble_features(
     df: DataFrame,
-    use_class_weight: bool = True,
+    feature_cols: Iterable[str] = FEATURE_ENGINEERING_INPUT_COLS,
+    output_col: str = "finalized_features",
+    handle_invalid: str = "keep",
+    strict: bool = False,
 ) -> DataFrame:
     """
-    Build a model-ready DataFrame for a quick non-temporal baseline.
+    Assemble numeric feature columns into a Spark ML feature vector.
 
-    This is NOT the final time-aware churn definition.
-    It is a cleaned-up version of your current quick baseline.
+    Parameters
+    ----------
+    df:
+        Input Spark DataFrame after feature engineering.
+    feature_cols:
+        List of feature columns to assemble. If None, uses
+        DEFAULT_MODEL_FEATURE_COLS.
+    output_col:
+        Name of the assembled feature vector column.
+        Default matches your ML_modeling.py convention: finalized_features.
+    handle_invalid:
+        VectorAssembler invalid handling.
+        Options: "error", "skip", "keep".
+    strict:
+        If True, raise an error if any requested feature columns are missing.
+        If False, use only columns that exist in df.
 
-    Returns columns:
-    - finalized_features
-    - churn
-    - class_weight, optional
+    Returns
+    -------
+    DataFrame
+        DataFrame with a new vector column.
     """
+    print(feature_cols)
 
-    # Since author_playtime_last_two_weeks creates the label,
-    # it is intentionally excluded from the feature list.
-    raw_numeric_features = [
-        "author_num_games_owned",
-        "author_num_reviews",
-        "author_playtime_forever",
-        "author_playtime_at_review",
-        "author_last_played",
-        "votes_up",
-        "votes_funny",
-        "weighted_vote_score",
-        "comment_count",
-        "timestamp_created",
-        "timestamp_updated",
-    ]
+    # Handle missing features
+    existing_cols = set(df.columns)
+    print(existing_cols)
 
-    skewed_cols = [
-        "author_num_games_owned",
-        "author_num_reviews",
-        "author_playtime_forever",
-        "author_playtime_at_review",
-        "votes_up",
-        "votes_funny",
-        "comment_count",
-    ]
+    missing_cols = [c for c in feature_cols if c not in existing_cols]
+    if strict and missing_cols:
+        raise ValueError(
+            "Missing expected model feature columns: "
+            f"{missing_cols}"
+        )
+    print(missing_cols)
+
+    # Use Available features
+    available_cols = [c for c in feature_cols if c in existing_cols]
+    print(available_cols)
+    if not available_cols:
+        raise ValueError(
+            "No available feature columns found for Feature Assembler."
+        )
 
     out = df
 
-    out = add_proxy_churn_label_from_recent_playtime(out)
-    out = log_scale(out, skewed_cols)
-
-    feature_cols = [
-        # log versions for skewed count/playtime fields
-        "log_author_num_games_owned",
-        "log_author_num_reviews",
-        "log_author_playtime_forever",
-        "log_author_playtime_at_review",
-        "log_votes_up",
-        "log_votes_funny",
-        "log_comment_count",
-
-        # keep bounded / timestamp / boolean numeric fields
-        "author_last_played",
-        "weighted_vote_score",
-        "timestamp_created",
-        "timestamp_updated",
-        "voted_up_num",
-        "written_during_early_access_num",
-    ]
-
-    # Keep only columns that actually exist.
-    feature_cols = [c for c in feature_cols if c in out.columns]
-
-    # Simple null handling for baseline.
-    # Later, replace this with Imputer for numeric features.
-    out = out.fillna(0, subset=feature_cols)
+    # Cast booleans/numerics safely to double.
+    for c in available_cols:
+        out = out.withColumn(c, F.col(c).cast("double"))
 
     assembler = VectorAssembler(
-        inputCols=feature_cols,
-        outputCol=FEATURE_COL,
-        handleInvalid="keep",
+        inputCols=available_cols,
+        outputCol=output_col,
+        handleInvalid=handle_invalid,
     )
 
     out = assembler.transform(out)
 
-    selected_cols = [FEATURE_COL, LABEL_COL]
+    return out
 
-    # if use_class_weight:
-    #     out = add_balanced_class_weights(out)
-    #     selected_cols.append(WEIGHT_COL)
 
-    return out.select(*selected_cols)
+# ---------------------------------------------------------------------
+# Column Selection
+# ---------------------------------------------------------------------
+def reduce_features(
+    df: DataFrame,
+    cols: Iterable[str] | None = None,
+    strict: bool = False,
+) -> DataFrame:
+    """
+    Select only the columns needed before feature engineering.
+
+    This helps:
+    - reduce memory pressure
+    - avoid carrying unused columns through the pipeline
+    - make feature engineering input explicit and reproducible
+
+    Parameters
+    ----------
+    df:
+        Input Spark DataFrame.
+    cols:
+        Optional custom list of columns. If None, uses
+        FEATURE_ENGINEERING_INPUT_COLS.
+    strict:
+        If True, raise an error when expected columns are missing.
+        If False, silently select only columns that exist.
+
+    Returns
+    -------
+    DataFrame
+        Spark DataFrame with selected columns only.
+    """
+
+    # Define selected columns
+    selected_cols = list(cols) if cols is not None else FEATURE_ENGINEERING_INPUT_COLS
+
+    # Handle missing columns
+    existing_cols = set(df.columns)
+    missing_cols = [c for c in selected_cols if c not in existing_cols]
+    if strict and missing_cols:
+        raise ValueError(
+            "Missing expected feature-engineering input columns: "
+            f"{missing_cols}"
+        )
+
+    # Use available columns
+    available_cols = [c for c in selected_cols if c in existing_cols]
+    if not available_cols:
+        raise ValueError(
+            "No available feature columns found for Feature Reducer."
+        )
+
+    # Reduce feature space 
+    # Use list unpacking because in case the iterable contains mix type
+    return df.select(*available_cols)
+
+
+# ---------------------------------------------------------------------
+# 5. Build model-ready matrix
+# ---------------------------------------------------------------------
+# def build_proxy_churn_model_frame(
+#     df: DataFrame,
+#     use_class_weight: bool = True,
+# ) -> DataFrame:
+#     """
+#     Build a model-ready DataFrame for a quick non-temporal baseline.
+
+#     This is NOT the final time-aware churn definition.
+#     It is a cleaned-up version of your current quick baseline.
+
+#     Returns columns:
+#     - finalized_features
+#     - churn
+#     - class_weight, optional
+#     """
+
+#     # Since author_playtime_last_two_weeks creates the label,
+#     # it is intentionally excluded from the feature list.
+#     raw_numeric_features = [
+#         "author_num_games_owned",
+#         "author_num_reviews",
+#         "author_playtime_forever",
+#         "author_playtime_at_review",
+#         "author_last_played",
+#         "votes_up",
+#         "votes_funny",
+#         "weighted_vote_score",
+#         "comment_count",
+#         "timestamp_created",
+#         "timestamp_updated",
+#     ]
+
+#     skewed_cols = [
+#         "author_num_games_owned",
+#         "author_num_reviews",
+#         "author_playtime_forever",
+#         "author_playtime_at_review",
+#         "votes_up",
+#         "votes_funny",
+#         "comment_count",
+#     ]
+
+#     out = df
+
+#     out = add_proxy_churn_label_from_recent_playtime(out)
+#     out = log_scale(out, skewed_cols)
+
+#     feature_cols = [
+#         # log versions for skewed count/playtime fields
+#         "log_author_num_games_owned",
+#         "log_author_num_reviews",
+#         "log_author_playtime_forever",
+#         "log_author_playtime_at_review",
+#         "log_votes_up",
+#         "log_votes_funny",
+#         "log_comment_count",
+
+#         # keep bounded / timestamp / boolean numeric fields
+#         "author_last_played",
+#         "weighted_vote_score",
+#         "timestamp_created",
+#         "timestamp_updated",
+#         "voted_up_num",
+#         "written_during_early_access_num",
+#     ]
+
+#     # Keep only columns that actually exist.
+#     feature_cols = [c for c in feature_cols if c in out.columns]
+
+#     # Simple null handling for baseline.
+#     # Later, replace this with Imputer for numeric features.
+#     out = out.fillna(0, subset=feature_cols)
+
+#     assembler = VectorAssembler(
+#         inputCols=feature_cols,
+#         outputCol=FEATURE_COL,
+#         handleInvalid="keep",
+#     )
+
+#     out = assembler.transform(out)
+
+#     selected_cols = [FEATURE_COL, LABEL_COL]
+
+#     # if use_class_weight:
+#     #     out = add_balanced_class_weights(out)
+#     #     selected_cols.append(WEIGHT_COL)
+
+#     return out.select(*selected_cols)
 
 
 # ----------------------------------------------------------------------------
 # Timestamp features (WILL BE MOVED TO DATA PREPARATION IN FUTURE DEVELOPMENT)
 # ----------------------------------------------------------------------------
-def add_timestamp_columns(df: DataFrame) -> DataFrame:
+def add_timestamp_columns(
+    df: DataFrame
+) -> DataFrame:
     """
     Convert Unix epoch-second timestamp columns into Spark timestamp columns.
 
@@ -290,7 +531,10 @@ def add_timestamp_columns(df: DataFrame) -> DataFrame:
 # --------------------------------------------------------------------------------------------------------------------------------------
 # Temporal recency features (WILL BE USED WITH TIME-AWARED TRAIN/TEST SPLIT, TIME-AWARED CHURN DEFITION, IN FUTURE PREPARATION)
 # --------------------------------------------------------------------------------------------------------------------------------------
-def add_recency_features(df: DataFrame, cutoff_ts: int | float) -> DataFrame:
+def add_recency_features(
+    df: DataFrame, 
+    cutoff_ts: int | float
+) -> DataFrame:
     """
     Add leakage-aware recency features relative to feature cutoff T.
 
@@ -333,3 +577,7 @@ def add_recency_features(df: DataFrame, cutoff_ts: int | float) -> DataFrame:
 
     return out
 
+
+# FUTURE DEVELOPMENT
+def add_flagged_features():
+    pass

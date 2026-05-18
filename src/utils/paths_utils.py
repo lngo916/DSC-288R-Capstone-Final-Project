@@ -68,19 +68,28 @@ class ProjectPaths:
         return self.data_root / "cleaned_parquet"
 
     @property
+    def feature_engineered_parquet(self) -> Path:
+        return self.data_root / "feature_engineered_parquet"
+
+    @property
     def sampled_parquet(self) -> Path:
         return self.data_root / "subsampled_parquet"
 
     @property
     def cleaned_sampled_parquet(self) -> Path:
         return self.data_root / "cleaned_sampled.parquet"
+
+    @property
+    def feature_engineered_sampled_parquet(self) -> Path:
+        return self.data_root / "feature_engineered_sampled.parquet"
     
+
     # ------------------------------------------------------------------
     # Train / validation / test split root FOR FULL
     # ------------------------------------------------------------------
     @property
     def splits_root(self) -> Path:
-        return self.data_root / "splits"
+        return self.data_root / "train_val_test_splits"
 
     @property
     def random_row_split_root(self) -> Path:
@@ -206,14 +215,22 @@ class ProjectPaths:
     @property
     def cleaned_parquet_spark(self) -> str:
         return self.spark_path(self.cleaned_parquet)
-
+    
     @property
-    def sampled_parquet_spark(self) -> str:
-        return self.spark_path(self.sampled_parquet)
+    def feature_engineered_parquet_spark(self) -> str:
+        return self.spark_path(self.feature_engineered_parquet)
 
-    @property
-    def cleaned_sampled_parquet_spark(self) -> str:
-        return self.spark_path(self.cleaned_sampled_parquet)
+    # @property
+    # def sampled_parquet_spark(self) -> str:
+    #     return self.spark_path(self.sampled_parquet)
+
+    # @property
+    # def cleaned_sampled_parquet_spark(self) -> str:
+    #     return self.spark_path(self.cleaned_sampled_parquet)
+    
+    # @property
+    # def feature_engineered_sampled_parquet_spark(self) -> str:
+    #     return self.spark_path(self.feature_engineered_sampled_parquet)
     
     # ------------------------------------------------------------------
     # Spark split output paths
