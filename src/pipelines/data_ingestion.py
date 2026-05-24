@@ -1,16 +1,14 @@
 # -----------------------------
 # Import Modules
 # -----------------------------
-from pathlib import Path
-from typing import Iterable
-
-import kagglehub
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 from pyspark.sql.types import DataType
 
+from pathlib import Path
+
+import kagglehub
 from src.utils.io_utils import read_spark_csv
-from src.utils.paths_utils import ProjectPaths
 from src.utils.pyspark_utils import BASE_SCHEMA
 
 # -----------------------------

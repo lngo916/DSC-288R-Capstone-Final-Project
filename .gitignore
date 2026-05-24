@@ -11,3 +11,4 @@ __pycache__/
 
 # Specific folders
 /html_nb
+**/.vscode/
