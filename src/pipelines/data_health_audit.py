@@ -1,8 +1,6 @@
 # -----------------------------
 # Import Modules
 # -----------------------------
-from __future__ import annotations
-
 # PySpark libs
 from pyspark.sql import (
     Window,
@@ -357,8 +355,6 @@ def validity_report(df: SparkDataFrame, row_count)-> dict[str, ReportReturnType]
             )
             .select("author_steamid", "appid", col_name, "timestamp_created")
         )
-        # Count violation
-        issue_count = issue_df.count()
 
         # Register report
         issue_name = f"{col_name}_negative"
@@ -392,17 +388,15 @@ def validity_report(df: SparkDataFrame, row_count)-> dict[str, ReportReturnType]
             "timestamp_created"
         )
     )
-    # Count violation
-    count_weighted_vote_score = issue_weighted_vote_score.count()
 
     # Register report
     issue_name = "weighted_vote_score_out_of_range"
     summary_rows, issue_dfs = _register_issue(
-            issue_name,
-            issue_weighted_vote_score,
-            summary_rows,
-            issue_dfs,
-            row_count
+        issue_name,
+        issue_weighted_vote_score,
+        summary_rows,
+        issue_dfs,
+        row_count
     )
 
     # ============================================================
@@ -851,21 +845,3 @@ def _register_issue(issue_name: str, issue_df: SparkDataFrame, summary_rows: lis
     # update summary df
     summary_rows.append(issue_content)
     return (summary_rows, issue_dfs)
-
-
-
-    # Register report
-    issue_content = {
-        "issue_name": "combo_dup",
-        "key_cols": DUP_KEY_COLS,
-        "duplicate_key_groups": dup_key_group_count,
-        "duplicate_key_rows": dup_key_row_count,
-    }
-    summary_rows, issue_dfs = _register_issue(
-        "combo_dup", 
-        combo_dup_df,
-        summary_rows, 
-        issue_dfs, 
-        row_count,
-        issue_content
-    )
