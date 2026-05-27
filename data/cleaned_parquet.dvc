@@ -1,0 +1,11 @@
+md5: 9448eaa530531d262310942be3b1afcf
+frozen: true
+deps:
+- md5: de106140e1f85afe20c004900ce7a2eb.dir
+  size: 18482850481
+  nfiles: 66
+  hash: md5
+  path: /expanse/lustre/scratch/bguo3/temp_project/steam_reviews/cleaned_parquet
+outs:
+- hash: md5
+  path: cleaned_parquet
