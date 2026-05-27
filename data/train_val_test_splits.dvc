@@ -1,0 +1,12 @@
+md5: ab85b6056eec86556e832557224fa4f8
+frozen: true
+deps:
+- md5: d1d87e03d8935e399effd33af21a1ed8.dir
+  size: 4673371518
+  nfiles: 288
+  hash: md5
+  path: 
+    /expanse/lustre/scratch/bguo3/temp_project/steam_reviews/train_val_test_splits
+outs:
+- hash: md5
+  path: train_val_test_splits

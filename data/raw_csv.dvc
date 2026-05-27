@@ -1,0 +1,11 @@
+md5: 2e09bc4833e089fc3f60cf4c38d84fba
+frozen: true
+deps:
+- md5: 9e0711c9dd8506594394b8a8cf5f2b0c.dir
+  size: 43186459394
+  nfiles: 3
+  hash: md5
+  path: /expanse/lustre/scratch/bguo3/temp_project/steam_reviews/raw_csv
+outs:
+- hash: md5
+  path: raw_csv

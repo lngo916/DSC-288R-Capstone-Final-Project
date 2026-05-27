@@ -1,0 +1,11 @@
+md5: 42da650692f1f5014590bc132493b2ef
+frozen: true
+deps:
+- md5: b5b2a38b8e4e531e7bf75914140592e1.dir
+  size: 21548375156
+  nfiles: 4
+  hash: md5
+  path: /expanse/lustre/scratch/bguo3/temp_project/steam_reviews/full_parquet
+outs:
+- hash: md5
+  path: full_parquet

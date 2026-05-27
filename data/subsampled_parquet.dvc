@@ -1,0 +1,12 @@
+md5: 85ca93b5963433657e7bdcb6986bea57
+frozen: true
+deps:
+- md5: 0a559cf66603aa2b2fbc6876a01c9df8.dir
+  size: 360622674
+  nfiles: 342
+  hash: md5
+  path: 
+    /expanse/lustre/scratch/bguo3/temp_project/steam_reviews/subsampled_parquet
+outs:
+- hash: md5
+  path: subsampled_parquet
