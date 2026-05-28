@@ -1,0 +1,15 @@
+# Full datasets
+/raw_csv
+/full_parquet
+/cleaned_parquet
+/feature_engineered_parquet
+/train_val_test_splits
+
+# Sampled datasets
+/subsampled_parquet
+/cleaned_sampled.parquet
+/feature_engineered_sampled_parquet
+/train_val_test_splits
+
+# Other dataset
+/game_KNN.parquet

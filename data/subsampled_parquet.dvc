@@ -1,0 +1,6 @@
+outs:
+- md5: 62c762251aea432ee64421046dce3c65.dir
+  size: 360622674
+  nfiles: 342
+  hash: md5
+  path: subsampled_parquet

@@ -1,0 +1,12 @@
+md5: 1b23b34d47920c95ad15782ab7a7030d
+frozen: true
+deps:
+- md5: e7247852f334084cddfac5d00478a197.dir
+  size: 4836402893
+  nfiles: 280
+  hash: md5
+  path: 
+    /expanse/lustre/scratch/bguo3/temp_project/steam_reviews/feature_engineered_parquet
+outs:
+- hash: md5
+  path: feature_engineered_parquet

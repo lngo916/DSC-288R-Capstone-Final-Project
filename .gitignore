@@ -1,1 +1,17 @@
+# Editor / IDE
+.vscode/
+
+# Git
 **/.DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+
+# Specific folders
+/html_nb
+/dvc_remote_sample

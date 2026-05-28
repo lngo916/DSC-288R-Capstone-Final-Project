@@ -161,28 +161,3 @@ def plot_bar_chart(df, groupby_col, x_label, title, has_hue=True) -> None:
         pad=15
     )
     plt.show()
-
-# def show_and_write_to_csv(df: DataFrame, path: str, name: str, n: int = 20, truncate: bool = False, save_reports: bool = False) -> None:
-#     print(f"\n===== {name} =====")
-#     df.show(n=n, truncate=truncate)
-#     if save_reports:
-#         (
-#             df.write
-#             .mode("overwrite")
-#             .option("header", "true")
-#             .csv(f"{path}/{name}")
-#         )
-
-# def show_and_write_to_json(payload: dict, path: str, name: str, save_reports: bool = False) -> None:
-#     print(f"\n===== {name} =====")
-#     print(json.dumps(payload, indent=2, default=str))
-#     if save_reports:
-#         local_stub = Path("/mnt/data") / f"{name}.json"
-#         local_stub.write_text(json.dumps(payload, indent=2, default=str))
-
-# def save_parquet(df: DataFrame, root: str, name: str) -> None:
-#     (
-#         df.write
-#         .mode("overwrite")
-#         .parquet(f"{root}/{name}")
-#     )
