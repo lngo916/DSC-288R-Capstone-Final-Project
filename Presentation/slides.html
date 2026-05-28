@@ -14,13 +14,12 @@
 
   <div id="deck">
 
-    <!-- ══ SLIDE 1: HERO ══════════════════════════════════ -->
+    <!-- ══ SLIDE 1: Intro ══════════════════════════════════ -->
     <div class="slide active" id="s1">
       <div class="slide-header bg-navy">
         <div class="logo-wrap">
           <div class="ucsd-wordmark">UC San Diego<span>Halicioglu Data Science Institute</span></div>
         </div>
-        <div class="slide-num">01 / 08</div>
       </div>
       <div class="slide-body bg-split">
         <div class="corner-accent"></div>
@@ -28,8 +27,11 @@
           <div class="s1-tag anim anim-1">DSC 288R · Capstone Project · 2026</div>
           <div class="title-xl anim anim-2">STEAM<br><span class="gold">PLAYER</span><br>RETENTION</div>
           <div class="accent-line anim anim-3"></div>
-          <div class="subtitle anim anim-4">A multi-modal machine learning system to predict player churn, understand
-            behavioral drivers, and recommend competing games on Steam.</div>
+          <div class="subtitle anim anim-4">A comprehensive machine learning pipeline that integrates gameplay
+            beheavior, engagement activity,
+            and review sentiment analysis to predict player churn, identify retention-driving factors, and reccomend
+            competing Steam games.
+          </div>
         </div>
         <div class="s1-right">
           <div class="s1-meta-box anim anim-2">
@@ -44,7 +46,7 @@
           <div class="s1-divider"></div>
           <div class="s1-meta-box anim anim-4">
             <div class="s1-meta-label">Team</div>
-            <div class="s1-meta-val">Studio Bang Sing Se</div>
+            <div class="s1-meta-val">Ctrl Freaks</div>
           </div>
           <div class="s1-divider"></div>
           <div class="s1-meta-box anim anim-5">
@@ -60,16 +62,15 @@
     </div>
 
     <!-- ══ SLIDE 2: TABLE OF CONTENTS ═════════════════════ -->
-    <div class="slide" id="s2">
+    <div class="slide" id="toc">
       <div class="slide-header bg-navy">
         <div class="logo-wrap">
-          <div class="ucsd-seal">UC</div>
+
           <div class="ucsd-wordmark">
             UC San Diego
             <span>DSC 288R Capstone</span>
           </div>
         </div>
-        <div class="slide-num">02 / 08</div>
       </div>
 
       <div class="slide-body toc-layout">
@@ -102,38 +103,51 @@
             <div class="toc-row anim anim-3">
               <div class="toc-circle">2</div>
               <div class="toc-row-text">
-                Exploratory Data Analysis
-              </div>
-            </div>
-
-            <div class="toc-row anim anim-3">
-              <div class="toc-circle">3</div>
-              <div class="toc-row-text">
-                Methadology
+                Literature Survey
               </div>
             </div>
 
             <div class="toc-row anim anim-4">
-              <div class="toc-circle">4</div>
+              <div class="toc-circle">3</div>
               <div class="toc-row-text">
-                Machine Learning Model Performance
+                Dataset
               </div>
             </div>
 
             <div class="toc-row anim anim-5">
-              <div class="toc-circle">5</div>
+              <div class="toc-circle">4</div>
               <div class="toc-row-text">
-                Team Acknowledgement
+                Feature Extraction
               </div>
             </div>
 
             <div class="toc-row anim anim-6">
-              <div class="toc-circle">6</div>
+              <div class="toc-circle">5</div>
               <div class="toc-row-text">
-                Results & Key Insights
+                Machine Learning Models
               </div>
             </div>
 
+            <div class="toc-row anim anim-7">
+              <div class="toc-circle">6</div>
+              <div class="toc-row-text">
+                Results & Observations
+              </div>
+            </div>
+
+            <div class="toc-row anim anim-8">
+              <div class="toc-circle">7</div>
+              <div class="toc-row-text">
+                Further Implementation
+              </div>
+            </div>
+
+            <div class="toc-row anim anim-9">
+              <div class="toc-circle">8</div>
+              <div class="toc-row-text">
+                References
+              </div>
+            </div>
           </div>
 
         </div>
@@ -144,14 +158,36 @@
       </div>
     </div>
 
-    <!-- ══ SLIDE 3: OVERVIEW ══════════════════════════════ -->
-    <div class="slide" id="s3">
+    <!-- ══ SLIDE 3: Overview Picture ══════════════════════════════ -->
+    <div class="slide" id="po-pic">
+
       <div class="slide-header bg-navy">
         <div class="logo-wrap">
-          <div class="ucsd-seal">UC</div>
           <div class="ucsd-wordmark">UC San Diego<span>DSC 288R Capstone</span></div>
         </div>
-        <div class="slide-num">03 / 08</div>
+      </div>
+
+      <div class="sb-photo">
+        <img src="/images/po.png"
+          alt="UCSD campus" />
+        <div class="sb-gradient"></div>
+        <div class="sb-text">
+          <div class="sb-title">Project<br>Overview</div>
+        </div>
+      </div>
+
+      <div class="slide-footer bg-dark">
+        <span>Steam Player Retention — UCSD DSC 288R</span>
+      </div>
+
+    </div>
+   
+    <!-- ══ SLIDE 4: Overview Content ══════════════════════════════ -->
+    <div class="slide" id="po1">
+      <div class="slide-header bg-navy">
+        <div class="logo-wrap">
+          <div class="ucsd-wordmark">UC San Diego<span>DSC 288R Capstone</span></div>
+        </div>
       </div>
 
       <div class="slide-body bg-dark" style="padding:28px 52px 16px">
@@ -159,49 +195,56 @@
         <div style="padding:0 52px" class="anim anim-1">
           <div class="badge">Project Overview</div>
         </div>
-        <div class="title-lg anim anim-2">Why Player Retention?</div>
+        <div class="title-lg anim anim-2">Predicting Player Churn on Steam at Scale </div>
 
         <div class="overview-sub anim anim-3">
-          Our project investigates how behavioral gameplay patterns, review sentiment, and engagement frequency
-          can be used to predict player churn on Steam. Using large-scale interaction data and machine learning models
-          including XGBoost, Random Forest, and LSTMs, we analyze retention drivers, engineer predictive behavioral
-          features, and evaluate model performance through precision, recall, and AUC-ROC metrics.
+          Our project investigates how behavioral gameplay patterns, review sentiment, and engagement frequency 
+          can be used to predict player churn on Steam. Using large-scale interaction data and machine learning 
+          models including Logistic Regression, Random Forest, and XGBoost, we analyze retention drivers, engineer 
+          predictive behavioral features, and evaluate model performance through precision, recall, and AUC-ROC metrics.
         </div>
 
         <div class="overview-grid">
           <div class="ov-card anim anim-2">
-            <div class="ov-num">1.2M+</div>
-            <div class="ov-title">Player Profiles</div>
-            <div class="ov-desc">Behavioral logs, session data, and purchase histories across thousands of Steam titles.
+            <div class="ov-num">70%</div>
+            <div class="ov-desc">Most Steam players disengage within two weeks of installing a game. Detection of early
+              churn
+              allows developers to improve retention strategies, personalize engagement, and reduce long-term player
+              loss
+              before temporary inactivity turns permanent.</div>
+            <span class="ov-tag"
+              style="color:#eb5757;border-color:#eb5757;background:rgba(235,87,87,.08)">Motivation</span>
+          </div>
+
+          <div class="ov-card anim anim-3">
+            <div class="ov-num">113M+</div>
+            <div class="ov-desc">Our combined dataset contains over 113 million Steam reviews from 37 million unique
+              players across
+              106 thousand games. It captures significant features such as gameplay duration, review sentiment,
+              engagement activity, voting behavior,
+              and temporal interaction patterns at a massive scale.
             </div>
             <span class="ov-tag" style="color:#6fcf97;border-color:#6fcf97;background:rgba(111,207,151,.08)">Data
               Scale</span>
           </div>
-          <div class="ov-card anim anim-3">
-            <div class="ov-num">11K+</div>
-            <div class="ov-title">Steam Games</div>
-            <div class="ov-desc">Multi-genre metadata, tags, pricing, user reviews, and release info from the Kaggle
-              Steam dataset.</div>
-            <span class="ov-tag"
-              style="color:#9cbfe2;border-color:#9cbfe2;background:rgba(156,191,226,.08)">Dataset</span>
-          </div>
+
           <div class="ov-card anim anim-4">
             <div class="ov-num">4</div>
-            <div class="ov-title">ML Models</div>
-            <div class="ov-desc">XGBoost, Random Forest, LSTM, and Collaborative Filtering for churn prediction and
-              recommendations.</div>
-            <span class="ov-tag" style="color:#f2994a;border-color:#f2994a;background:rgba(242,153,74,.08)">ML
-              Pipeline</span>
+            <div class="ov-desc">We built predictive features grounded in EDA findings and churn literature, focusing
+              on behavioral intensity, recency, and engagement dynamics. We then paired this with Logistic Regression,
+              Random Forest, XGBoost, and LSTM models to classify retained vs. churned players.
+            </div>
+            <span class="ov-tag"
+              style="color:#f2994a;border-color:#f2994a;background:rgba(242,153,74,.08)">Models</span>
           </div>
+
           <div class="ov-card anim anim-5">
             <div class="ov-num">0.91</div>
-            <div class="ov-title">AUC-ROC Score</div>
-            <div class="ov-desc">Best performing model achieves 91% AUC-ROC, 87% precision, and 83% recall on the
-              held-out test set.</div>
+            <div class="ov-desc">Our top model achieves 91% AUC-ROC with 87% precision and 83% recall, identifying
+              at-risk players before they disengage.</div>
             <span class="ov-tag"
               style="color:#f2c94c;border-color:#f2c94c;background:rgba(242,201,76,.08)">Results</span>
           </div>
-
         </div>
       </div>
       <div class="slide-footer bg-dark">
@@ -209,93 +252,270 @@
       </div>
     </div>
 
-    <!-- ══ SLIDE 4: EDA ══════════════════════════════════ -->
-    <div class="slide" id="s4">
+    <!-- ══ Slide 5: Literature Survey Picture ════════════════════════ -->
+    <div class="slide" id="ls-pic">
+
+      <div class="slide-header bg-navy">
+        <div class="logo-wrap">
+          <div class="ucsd-wordmark">UC San Diego<span>DSC 288R Capstone</span></div>
+        </div>
+      </div>
+
+      <div class="ls-photo">
+        <img src="/images/ls.jpg"
+          alt="UCSD campus" />
+        <div class="ls-col"></div>
+        <div class="sb-text">
+          <div class="sb-title">Literature<br>Survey</div>
+        </div>
+      </div>
+
+      <div class="slide-footer bg-dark">
+        <span>Steam Player Retention — UCSD DSC 288R</span>
+      </div>
+
+    </div>
+
+    <!-- ══ Slide 6: Literature Survey Content════════════════════════ -->
+    <div class="slide" id="ls1">
       <div class="slide-header bg-navy">
         <div class="logo-wrap">
           <div class="ucsd-seal">UC</div>
           <div class="ucsd-wordmark">UC San Diego<span>DSC 288R Capstone</span></div>
         </div>
-        <div class="slide-num">04 / 08</div>
+      </div>
+
+      <div class="slide-body bg-dark" style="padding:0;display:flex;flex-direction:column;overflow:hidden">
+        <div class="corner-accent"></div>
+
+        <!-- TOP HEADER BAND — mirrors the red template's horizontal rule + title -->
+        <div class="ls-header-band anim anim-1">
+          <div class="ls-header-left">
+            <span class="badge" style="margin-bottom:6px">Prior Work</span>
+            <h2 class="ls-title">Literature Survey</h2>
+          </div>
+          <p class="ls-header-desc">
+            Key research informing our approach to player churn prediction,
+            behavioral feature engineering, and recommendation systems on Steam.
+          </p>
+        </div>
+
+        <!-- DIVIDER LINE (mirrors the red template's horizontal rule) -->
+        <div class="ls-rule anim anim-2">
+          <div class="ls-rule-line"></div>
+          <div class="ls-rule-line"></div>
+          <div class="ls-rule-line"></div>
+          <div class="ls-rule-line"></div>
+          <div class="ls-rule-line"></div>
+        </div>
+
+        <!-- 5-COLUMN LAYOUT — mirrors 01–05 numbered columns in the template image -->
+        <div class="ls-cols anim anim-3">
+
+          <div class="ls-col">
+            <div class="ls-num">01</div>
+            <div class="ls-col-title">Churn<br>Prediction</div>
+            <p class="ls-col-body">
+              Runge et al. (2014) demonstrated that early session patterns predict
+              mobile game churn with &gt;80% accuracy using logistic regression on
+              first-week behavioral logs.
+            </p>
+            <div class="ls-tag" style="--tc:#4a9eca">Behavioral Logs</div>
+          </div>
+
+          <div class="ls-col-divider"></div>
+
+          <div class="ls-col">
+            <div class="ls-num">02</div>
+            <div class="ls-col-title">Gradient<br>Boosting</div>
+            <p class="ls-col-body">
+              Chen & Guestrin (2016) introduced XGBoost, showing superior performance
+              on sparse interaction matrices — directly motivating our primary churn
+              classification model.
+            </p>
+            <div class="ls-tag" style="--tc:#f2994a">XGBoost</div>
+          </div>
+
+          <div class="ls-col-divider"></div>
+
+          <div class="ls-col">
+            <div class="ls-num">03</div>
+            <div class="ls-col-title">Sequential<br>Modeling</div>
+            <p class="ls-col-body">
+              Hochreiter & Schmidhuber (1997) established LSTMs for sequential
+              data. Applied to session logs, LSTMs capture temporal decay in
+              player engagement windows.
+            </p>
+            <div class="ls-tag" style="--tc:#bb86fc">LSTM</div>
+          </div>
+
+          <div class="ls-col-divider"></div>
+
+          <div class="ls-col">
+            <div class="ls-num">04</div>
+            <div class="ls-col-title">Collaborative<br>Filtering</div>
+            <p class="ls-col-body">
+              Koren et al. (2009) proposed SVD++ for matrix factorization on sparse
+              user-item interactions, forming the basis of our Steam game
+              recommendation system.
+            </p>
+            <div class="ls-tag" style="--tc:#6fcf97">SVD++</div>
+          </div>
+
+          <div class="ls-col-divider"></div>
+
+          <div class="ls-col">
+            <div class="ls-num">05</div>
+            <div class="ls-col-title">Steam<br>Analytics</div>
+            <p class="ls-col-body">
+              Drachen et al. (2016) analyzed Steam telemetry data showing playtime,
+              session frequency, and social features as the strongest predictors
+              of long-term player retention.
+            </p>
+            <div class="ls-tag" style="--tc:#e8880a">Steam Data</div>
+          </div>
+
+        </div><!-- /ls-cols -->
+
+      </div>
+
+      <div class="slide-footer bg-dark">
+        <span>Steam Player Retention — UCSD DSC 288R</span>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 7: Literature Survey Content ══════════════════════════════════ -->
+    <div class="slide" id="ls2">
+
+    </div>
+
+    <!-- ══ SLIDE 8: Dataset Picture ══════════════════════════════════ -->
+    <div class="slide" id="dataset-pic">
+
+    </div>
+
+    <!-- ══ SLIDE 9: Dataset Content ══════════════════════════════════ -->
+    <div class="slide" id="d1">
+
+    </div>
+
+    <!-- ══ SLIDE 10: Dataset Content ══════════════════════════════════ -->
+    <div class="slide" id="d2">
+
+    </div>
+
+    <!-- ══ SLIDE 11: Feature Extraction Picture ══════════════════════════════════ -->
+    <div class="slide" id="fe-pic">
+
+    </div>
+
+    <!-- ══ SLIDE 12: Feature Extraction Content ══════════════════════════════════ -->
+    <div class="slide" id="fe1">
+
+    </div>
+
+    <!-- ══ SLIDE 13: Feature Extraction Content ══════════════════════════════════ -->
+    <div class="slide" id="fe2">
+      <div class="slide-header bg-navy">
+        <div class="logo-wrap">
+          <div class="ucsd-wordmark">UC San Diego<span>DSC 288R Capstone</span></div>
+        </div>
       </div>
       <div class="slide-body bg-dark" style="padding:24px 52px 16px">
         <div class="corner-accent"></div>
         <div style="padding:0 52px" class="anim anim-1">
           <div class="badge">Exploratory Data Analysis</div>
         </div>
-        <div class="title-lg anim anim-2">Exploratory Data Analysis Findings</div>
+        <div class="title-lg anim anim-2">Findings</div>
         <div class="eda-grid anim anim-3">
           <div class="eda-card">
-            <div class="eda-img" style="background-image:url('/images/photo1.avif')">
+            <div class="eda-img" style="background-image:url('/images/distribution1.png')">
             </div>
             <div class="eda-info">
-              <div class="eda-tag">Distributions</div>
-              <div class="eda-title">Feature Distributions</div>
-              <div class="eda-desc">Playtime, session frequency, and review counts show strong right skew — most players
-                have minimal interaction histories.</div>
+              <div class="eda-tag">Univariate</div>
+              <div class="eda-title">Playtime Distributions</div>
+              <div class="eda-desc">Playtime-related features show strong right skew. Most
+                players showed low activity levels, while a small subset accumulated high playtime values.
+              </div>
             </div>
           </div>
           <div class="eda-card">
-            <div class="eda-img" style="background-image:url('/images/photo2.webp')"> </div>
+            <div class="eda-img" style="background-image:url('/images/engagement2.jpg')"> </div>
             <div class="eda-info">
-              <div class="eda-tag">Correlation</div>
-              <div class="eda-title">Correlation Analysis</div>
-              <div class="eda-desc">Session length and frequency are most correlated with long-term retention. Review
-                sentiment correlates with 30-day return rate.</div>
+              <div class="eda-tag">Engagement</div>
+              <div class="eda-title">Sparse Engagement Signals</div>
+              <div class="eda-desc">Engagement metrics such as votes, comments, and funny reactions were heavily sparse.
+                Most observations contained low values with few dominating highly engaged users, which suggests
+                uneven participation across the player base.
+              </div>
             </div>
           </div>
           <div class="eda-card">
             <div class="eda-img" style="background-image:url('/images/photo3.avif')"> </div>
             <div class="eda-info">
-              <div class="eda-tag">Temporal</div>
-              <div class="eda-title">Temporal Patterns</div>
-              <div class="eda-desc">Players who churn within 7 days share distinct early behavioral signatures
-                detectable at first login.</div>
+              <div class="eda-tag">Categorical</div>
+              <div class="eda-title">Class Imbalances</div>
+              <div class="eda-desc">Categorical variables such as voted_up and written_during_early_access exhibited
+                class imbalances, indicating that certain player behaviors and review patterns occured more frequently
+                than others. We will consider this aspect for downstream modeling and retention prediction.
+              </div>
             </div>
           </div>
           <div class="eda-card">
             <div class="eda-img" style="background-image:url('/images/photo4.avif')"> </div>
             <div class="eda-info">
-              <div class="eda-tag">Segmentation</div>
-              <div class="eda-title">Engagement Tiers</div>
-              <div class="eda-desc">Players segmented into Low / Mid / High cohorts. High-engagement cohort shows 3×
-                lower churn within 30 days.</div>
+              <div class="eda-tag">Correlation</div>
+              <div class="eda-title">Behavioral Correlations</div>
+              <div class="eda-desc">We have identified strong positive correlations between playtime and engagement
+                metrics.
+                Users with higher playtime tended to leave more reviews and receive more interaction, suggesting
+                interconnected
+                behavioral engagement patterns.
+              </div>
             </div>
           </div>
           <div class="eda-card">
-            <div class="eda-img" style="background-image:url('/images/photo5.avif')"> </div>
+            <div class="eda-img" style="background-image:url('/images/churn.jpg')"> </div>
             <div class="eda-info">
-              <div class="eda-tag">Correlation</div>
-              <div class="eda-title">Correlation Analysis</div>
-              <div class="eda-desc">Session length and frequency are most correlated with long-term retention. Review
-                sentiment correlates with 30-day return rate.</div>
+              <div class="eda-tag">Recency</div>
+              <div class="eda-title">Recency & Churn</div>
+              <div class="eda-desc">Inactivity (recency) exhibited a negative relationship with engagement
+                such that players inactive for longer periods were more likely to churn. As so, recency emerged
+                as a critical predictor of player retention.
+              </div>
             </div>
           </div>
           <div class="eda-card">
             <div class="eda-img" style="background-image:url('/images/photo6.avif')"> </div>
             <div class="eda-info">
-              <div class="eda-tag">Correlation</div>
-              <div class="eda-title">Correlation Analysis</div>
-              <div class="eda-desc">Session length and frequency are most correlated with long-term retention. Review
-                sentiment correlates with 30-day return rate.</div>
+              <div class="eda-tag">Outliers</div>
+              <div class="eda-title">Outlier Detection</div>
+              <div class="eda-desc">Boxplot analysis revealed significant outliers in playtime and engagement features.
+                A small amount of users exhibited disproportionately high activity levels, highlighting the existence
+                of extreme behavioral cases within the dataset.
+              </div>
             </div>
           </div>
           <div class="eda-card">
             <div class="eda-img" style="background-image:url('/images/photo7.avif')"> </div>
             <div class="eda-info">
-              <div class="eda-tag">Correlation</div>
-              <div class="eda-title">Correlation Analysis</div>
-              <div class="eda-desc">Session length and frequency are most correlated with long-term retention. Review
-                sentiment correlates with 30-day return rate.</div>
+              <div class="eda-tag">Profiling</div>
+              <div class="eda-title">Automated Profiling Reports</div>
+              <div class="eda-desc">We utilized YData Profiling and SweetViz to automate feature exploration such that
+                reports summarsized distributions, missing values, correlations, and data quality metrics. </div>
             </div>
           </div>
           <div class="eda-card">
             <div class="eda-img" style="background-image:url('/images/photo8.avif')"> </div>
             <div class="eda-info">
-              <div class="eda-tag">Correlation</div>
-              <div class="eda-title">Correlation Analysis</div>
-              <div class="eda-desc">Session length and frequency are most correlated with long-term retention. Review
-                sentiment correlates with 30-day return rate.</div>
+              <div class="eda-tag">Retention</div>
+              <div class="eda-title">Behavior Insights</div>
+              <div class="eda-desc">Behavioral engagement metrics collectively contributed to retention outcomes. Highly
+                active
+                or engaged players consistently demonstrated lower churn likelihood, suggesting that retention is
+                strongly
+                tied to sustained platform interaction.
+              </div>
             </div>
           </div>
 
@@ -304,14 +524,236 @@
       <div class="slide-footer bg-dark"><span>Steam Player Retention — UCSD DSC 288R</span></div>
     </div>
 
-    <!-- ══ SLIDE 5: DATA PIPELINE — NO SCROLL ════════════ -->
-    <div class="slide" id="s5">
+    <!-- ══ SLIDE 14: Feature Extraction Content ══════════════════════════════════ -->
+    <div class="slide" id="fe3">
+
+    </div>
+
+    <!-- ══ SLIDE 15: Machine Learning Picture ══════════════════════════════════ -->
+    <div class="slide" id="ml-pic">
+
+    </div>
+
+    <!-- ══ SLIDE 16: ML MODELS ════════════════════════════ -->
+    <div class="slide" id="ml1">
       <div class="slide-header bg-navy">
         <div class="logo-wrap">
-          <div class="ucsd-seal">UC</div>
           <div class="ucsd-wordmark">UC San Diego<span>DSC 288R Capstone</span></div>
         </div>
-        <div class="slide-num">05 / 08</div>
+      </div>
+      <div class="slide-body bg-dark" style="padding:24px 0 0">
+        <div class="corner-accent"></div>
+        <div style="padding:0 52px" class="anim anim-1">
+          <div class="badge">Machine Learning</div>
+        </div>
+        <div style="padding:0 52px;margin-bottom:18px" class="anim anim-2">
+          <div class="title-lg">Model Performance</div>
+        </div>
+        <div class="ml-split">
+          <div class="ml-left">
+            <div class="model-row anim anim-2">
+              <div class="model-icon">🌲</div>
+              <div class="model-info">
+                <div class="model-name">XGBoost Classifier</div>
+                <div class="model-desc">Gradient boosting · Spark · Best overall</div>
+              </div>
+              <div class="model-auc">0.91</div>
+            </div>
+            <div class="model-row anim anim-3">
+              <div class="model-icon">🌳</div>
+              <div class="model-info">
+                <div class="model-name">Random Forest</div>
+                <div class="model-desc">Ensemble · 300 estimators · Calibrated</div>
+              </div>
+              <div class="model-auc">0.88</div>
+            </div>
+            <div class="model-row anim anim-4">
+              <div class="model-icon">🧠</div>
+              <div class="model-info">
+                <div class="model-name">LSTM Network</div>
+                <div class="model-desc">Sequential sessions · 30-day window</div>
+              </div>
+              <div class="model-auc">0.89</div>
+            </div>
+            <div class="model-row anim anim-5">
+              <div class="model-icon">🔗</div>
+              <div class="model-info">
+                <div class="model-name">Collaborative Filter</div>
+                <div class="model-desc">SVD++ · Game recommendations</div>
+              </div>
+              <div class="model-auc" style="color:#f2c94c">Rec</div>
+            </div>
+          </div>
+          <div class="ml-right">
+            <div class="roc-wrap anim anim-2">
+              <div class="roc-label">XGBoost — Best Model Metrics</div>
+              <div class="metric-item" style="margin-bottom:10px">
+                <div class="metric-head"><span class="metric-key">AUC-ROC</span><span class="metric-val">0.91</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill" id="b1" style="width:0%"></div>
+                </div>
+              </div>
+              <div class="metric-item" style="margin-bottom:10px">
+                <div class="metric-head"><span class="metric-key">Precision</span><span class="metric-val">87%</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill" id="b2"
+                    style="width:0%;background:linear-gradient(90deg,#3a6fa8,#6fcf97)"></div>
+                </div>
+              </div>
+              <div class="metric-item" style="margin-bottom:10px">
+                <div class="metric-head"><span class="metric-key">Recall</span><span class="metric-val">83%</span></div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill" id="b3"
+                    style="width:0%;background:linear-gradient(90deg,#3a6fa8,#f2994a)"></div>
+                </div>
+              </div>
+              <div class="metric-item">
+                <div class="metric-head"><span class="metric-key">F1 Score</span><span class="metric-val">85%</span>
+                </div>
+                <div class="metric-bar-track">
+                  <div class="metric-bar-fill" id="b4"
+                    style="width:0%;background:linear-gradient(90deg,#3a6fa8,#bb86fc)"></div>
+                </div>
+              </div>
+            </div>
+            <div class="anim anim-3"
+              style="background:rgba(13,26,46,.7);border:1px solid var(--border);border-radius:10px;padding:14px">
+              <div
+                style="font-size:10px;color:var(--ucsd-gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">
+                Top Features (XGBoost SHAP)</div>
+              <div style="display:flex;flex-direction:column;gap:7px">
+                <div style="display:flex;align-items:center;gap:8px;font-size:11px">
+                  <span style="color:var(--sub);width:130px;flex-shrink:0">Playtime (7-day)</span>
+                  <div style="flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden">
+                    <div style="width:88%;height:100%;background:var(--accent);border-radius:999px"></div>
+                  </div>
+                  <span style="color:var(--accent);font-weight:600">22%</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;font-size:11px">
+                  <span style="color:var(--sub);width:130px;flex-shrink:0">Days Inactive</span>
+                  <div style="flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden">
+                    <div style="width:76%;height:100%;background:var(--accent);border-radius:999px"></div>
+                  </div>
+                  <span style="color:var(--accent);font-weight:600">19%</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;font-size:11px">
+                  <span style="color:var(--sub);width:130px;flex-shrink:0">Session Frequency</span>
+                  <div style="flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden">
+                    <div style="width:64%;height:100%;background:var(--accent);border-radius:999px"></div>
+                  </div>
+                  <span style="color:var(--accent);font-weight:600">16%</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;font-size:11px">
+                  <span style="color:var(--sub);width:130px;flex-shrink:0">Games Owned</span>
+                  <div style="flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden">
+                    <div style="width:48%;height:100%;background:var(--accent);border-radius:999px"></div>
+                  </div>
+                  <span style="color:var(--accent);font-weight:600">12%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer bg-dark"><span>Steam Player Retention — UCSD DSC 288R</span></div>
+    </div>
+
+    <!-- ══ SLIDE 17: Results & Observations Picture ══════════════════════════════════ -->
+    <div class="slide" id="ro-pic">
+
+    </div>
+
+    <!-- ══ SLIDE 18: Results & Observations Content ══════════════════════════════════ -->
+    <div class="slide" id="ro1">
+      <div class="slide-header bg-navy">
+        <div class="logo-wrap">
+          <div class="ucsd-wordmark">UC San Diego<span>DSC 288R Capstone</span></div>
+        </div>
+      </div>
+      <div class="slide-body bg-dark" style="padding:24px 52px 16px">
+        <div class="corner-accent"></div>
+        <div style="padding:0 52px" class="anim anim-1">
+          <div class="badge">Insights & Recommendations</div>
+        </div>
+        <div class="title-lg anim anim-2">Key Findings</div>
+        <div class="results-wrap">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" class="anim anim-3">
+            <div class="result-big">
+              <div class="result-num"><span class="gold">0.91</span></div>
+              <div class="result-label">AUC-ROC Score</div>
+              <div class="result-sub">Best model — XGBoost with 5-fold cross-validation on 60/20/20 TVT split.</div>
+            </div>
+            <div class="result-big">
+              <div class="result-num">7<span style="font-size:28px;color:rgba(156,191,226,.5)">days</span></div>
+              <div class="result-label">Churn Window</div>
+              <div class="result-sub">Players who churn within 7 days show detectable behavioral signatures at signup.
+              </div>
+            </div>
+            <div class="result-big">
+              <div class="result-num"><span class="gold">87%</span></div>
+              <div class="result-label">Precision</div>
+              <div class="result-sub">High precision minimizes false positives in churn intervention campaigns.</div>
+            </div>
+            <div class="result-big">
+              <div class="result-num">5M<span style="font-size:28px;color:rgba(156,191,226,.5)">+</span></div>
+              <div class="result-label">Reviews Processed</div>
+              <div class="result-sub">Sentiment analysis on user reviews adds qualitative depth to behavioral features.
+              </div>
+            </div>
+          </div>
+          <div class="insights-list anim anim-4">
+            <div
+              style="font-size:11px;color:var(--ucsd-gold);letter-spacing:.1em;font-weight:700;text-transform:uppercase;margin-bottom:4px">
+              Actionable Insights</div>
+            <div class="insight-row">
+              <div class="insight-num">01</div>
+              <div class="insight-txt">Session length and frequency are the <strong>strongest predictors</strong> of
+                long-term retention — prioritize early engagement loops.</div>
+            </div>
+            <div class="insight-row">
+              <div class="insight-num">02</div>
+              <div class="insight-txt">Players who churn within 7 days share <strong>distinct early behavioral
+                  patterns</strong> detectable at first login.</div>
+            </div>
+            <div class="insight-row">
+              <div class="insight-num">03</div>
+              <div class="insight-txt">Competing game recommendations improve <strong>re-engagement rates</strong> by
+                surfacing relevant alternatives at risk moments.</div>
+            </div>
+            <div class="insight-row">
+              <div class="insight-num">04</div>
+              <div class="insight-txt">Personalization at scale is achievable with <strong>collaborative
+                  filtering</strong> on minimal interaction data via SVD++.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-footer bg-dark"><span>Steam Player Retention — UCSD DSC 288R</span></div>
+    </div>
+
+    <!-- ══ SLIDE 19: Results & Observations Content ══════════════════════════════════ -->
+    <div class="slide" id="ro2">
+
+    </div>
+
+    <!-- ══ SLIDE 20: Further Implementation & Planning Picture ══════════════════════════════════ -->
+    <div class="slide" id="planning-pic">
+
+    </div>
+
+    <!-- ══ SLIDE 21: Further Implementation & Planning Content ══════════════════════════════════ -->
+    <div class="slide" id="p1">
+
+    </div>
+
+    <!-- ══ SLIDE 22: Data Pipeline ════════════ -->
+    <div class="slide" id="p2">
+      <div class="slide-header bg-navy">
+        <div class="logo-wrap">
+          <div class="ucsd-wordmark">UC San Diego<span>DSC 288R Capstone</span></div>
+        </div>
       </div>
 
       <div class="slide-body bg-dark"
@@ -436,142 +878,12 @@
       </div>
     </div>
 
-    <!-- ══ SLIDE 6: ML MODELS ════════════════════════════ -->
-    <div class="slide" id="s6">
+    <!-- ══ SLIDE 23: TEAM ══════════════════════════════════ -->
+    <div class="slide" id="team1">
       <div class="slide-header bg-navy">
         <div class="logo-wrap">
-          <div class="ucsd-seal">UC</div>
           <div class="ucsd-wordmark">UC San Diego<span>DSC 288R Capstone</span></div>
         </div>
-        <div class="slide-num">06 / 08</div>
-      </div>
-      <div class="slide-body bg-dark" style="padding:24px 0 0">
-        <div class="corner-accent"></div>
-        <div style="padding:0 52px" class="anim anim-1">
-          <div class="badge">Machine Learning</div>
-        </div>
-        <div style="padding:0 52px;margin-bottom:18px" class="anim anim-2">
-          <div class="title-lg">Model Performance</div>
-        </div>
-        <div class="ml-split">
-          <div class="ml-left">
-            <div class="model-row anim anim-2">
-              <div class="model-icon">🌲</div>
-              <div class="model-info">
-                <div class="model-name">XGBoost Classifier</div>
-                <div class="model-desc">Gradient boosting · Spark · Best overall</div>
-              </div>
-              <div class="model-auc">0.91</div>
-            </div>
-            <div class="model-row anim anim-3">
-              <div class="model-icon">🌳</div>
-              <div class="model-info">
-                <div class="model-name">Random Forest</div>
-                <div class="model-desc">Ensemble · 300 estimators · Calibrated</div>
-              </div>
-              <div class="model-auc">0.88</div>
-            </div>
-            <div class="model-row anim anim-4">
-              <div class="model-icon">🧠</div>
-              <div class="model-info">
-                <div class="model-name">LSTM Network</div>
-                <div class="model-desc">Sequential sessions · 30-day window</div>
-              </div>
-              <div class="model-auc">0.89</div>
-            </div>
-            <div class="model-row anim anim-5">
-              <div class="model-icon">🔗</div>
-              <div class="model-info">
-                <div class="model-name">Collaborative Filter</div>
-                <div class="model-desc">SVD++ · Game recommendations</div>
-              </div>
-              <div class="model-auc" style="color:#f2c94c">Rec</div>
-            </div>
-          </div>
-          <div class="ml-right">
-            <div class="roc-wrap anim anim-2">
-              <div class="roc-label">XGBoost — Best Model Metrics</div>
-              <div class="metric-item" style="margin-bottom:10px">
-                <div class="metric-head"><span class="metric-key">AUC-ROC</span><span class="metric-val">0.91</span>
-                </div>
-                <div class="metric-bar-track">
-                  <div class="metric-bar-fill" id="b1" style="width:0%"></div>
-                </div>
-              </div>
-              <div class="metric-item" style="margin-bottom:10px">
-                <div class="metric-head"><span class="metric-key">Precision</span><span class="metric-val">87%</span>
-                </div>
-                <div class="metric-bar-track">
-                  <div class="metric-bar-fill" id="b2"
-                    style="width:0%;background:linear-gradient(90deg,#3a6fa8,#6fcf97)"></div>
-                </div>
-              </div>
-              <div class="metric-item" style="margin-bottom:10px">
-                <div class="metric-head"><span class="metric-key">Recall</span><span class="metric-val">83%</span></div>
-                <div class="metric-bar-track">
-                  <div class="metric-bar-fill" id="b3"
-                    style="width:0%;background:linear-gradient(90deg,#3a6fa8,#f2994a)"></div>
-                </div>
-              </div>
-              <div class="metric-item">
-                <div class="metric-head"><span class="metric-key">F1 Score</span><span class="metric-val">85%</span>
-                </div>
-                <div class="metric-bar-track">
-                  <div class="metric-bar-fill" id="b4"
-                    style="width:0%;background:linear-gradient(90deg,#3a6fa8,#bb86fc)"></div>
-                </div>
-              </div>
-            </div>
-            <div class="anim anim-3"
-              style="background:rgba(13,26,46,.7);border:1px solid var(--border);border-radius:10px;padding:14px">
-              <div
-                style="font-size:10px;color:var(--ucsd-gold);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px">
-                Top Features (XGBoost SHAP)</div>
-              <div style="display:flex;flex-direction:column;gap:7px">
-                <div style="display:flex;align-items:center;gap:8px;font-size:11px">
-                  <span style="color:var(--sub);width:130px;flex-shrink:0">Playtime (7-day)</span>
-                  <div style="flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden">
-                    <div style="width:88%;height:100%;background:var(--accent);border-radius:999px"></div>
-                  </div>
-                  <span style="color:var(--accent);font-weight:600">22%</span>
-                </div>
-                <div style="display:flex;align-items:center;gap:8px;font-size:11px">
-                  <span style="color:var(--sub);width:130px;flex-shrink:0">Days Inactive</span>
-                  <div style="flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden">
-                    <div style="width:76%;height:100%;background:var(--accent);border-radius:999px"></div>
-                  </div>
-                  <span style="color:var(--accent);font-weight:600">19%</span>
-                </div>
-                <div style="display:flex;align-items:center;gap:8px;font-size:11px">
-                  <span style="color:var(--sub);width:130px;flex-shrink:0">Session Frequency</span>
-                  <div style="flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden">
-                    <div style="width:64%;height:100%;background:var(--accent);border-radius:999px"></div>
-                  </div>
-                  <span style="color:var(--accent);font-weight:600">16%</span>
-                </div>
-                <div style="display:flex;align-items:center;gap:8px;font-size:11px">
-                  <span style="color:var(--sub);width:130px;flex-shrink:0">Games Owned</span>
-                  <div style="flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden">
-                    <div style="width:48%;height:100%;background:var(--accent);border-radius:999px"></div>
-                  </div>
-                  <span style="color:var(--accent);font-weight:600">12%</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="slide-footer bg-dark"><span>Steam Player Retention — UCSD DSC 288R</span></div>
-    </div>
-
-    <!-- ══ SLIDE 7: TEAM ══════════════════════════════════ -->
-    <div class="slide" id="s7">
-      <div class="slide-header bg-navy">
-        <div class="logo-wrap">
-          <div class="ucsd-seal">UC</div>
-          <div class="ucsd-wordmark">UC San Diego<span>DSC 288R Capstone</span></div>
-        </div>
-        <div class="slide-num">07 / 08</div>
       </div>
       <div class="slide-body bg-dark" style="padding:28px 52px 20px">
         <div class="corner-accent"></div>
@@ -584,22 +896,25 @@
             <div class="team-avatar">👨‍💼</div>
             <div class="team-role">Project Manager</div>
             <div class="team-name">Jason Limfueco</div>
-            <div class="team-desc">Leads project coordination, manages timelines, and contributes to data cleaning and
-              exploratory analysis.</div>
+            <div class="team-desc">Leads project coordination, manages timelines, and ensures smooth collaboration
+              across all components. Contributes to data cleaning, exploratory analysis, and overall workflow structure.
+            </div>
           </div>
           <div class="team-card anim anim-3">
             <div class="team-avatar">🎨</div>
             <div class="team-role">Frontend & Presentation</div>
             <div class="team-name">Laura Ngo</div>
             <div class="team-desc">Designs and builds the project website, transforming technical results into clear
-              visual narratives.</div>
+              visual narratives. Focuses on user experience, layout, and presentation of insights.
+            </div>
           </div>
           <div class="team-card anim anim-4">
             <div class="team-avatar">⚙️</div>
             <div class="team-role">Data Engineer</div>
             <div class="team-name">Baixi Guo</div>
-            <div class="team-desc">Develops and maintains the data pipeline, handling preprocessing and large-scale
-              dataset management with Spark.</div>
+            <div class="team-desc">Develops and maintains the data pipeline, handling preprocessing, integration,
+              and large-scale dataset management using distributed systems and notebook-based workflows.
+            </div>
           </div>
         </div>
         <div class="anim anim-5" style="margin-top:20px;display:flex;align-items:center;gap:16px">
@@ -612,83 +927,22 @@
       <div class="slide-footer bg-dark"><span>Steam Player Retention — UCSD DSC 288R</span></div>
     </div>
 
-    <!-- ══ SLIDE 8: RESULTS ══════════════════════════════ -->
-    <div class="slide" id="s8">
-      <div class="slide-header bg-navy">
-        <div class="logo-wrap">
-          <div class="ucsd-wordmark">UC San Diego<span>DSC 288R Capstone</span></div>
-        </div>
-        <div class="slide-num">08 / 08</div>
-      </div>
-      <div class="slide-body bg-dark" style="padding:24px 52px 16px">
-        <div class="corner-accent"></div>
-        <div style="padding:0 52px" class="anim anim-1">
-          <div class="badge">Insights & Recommendations</div>
-        </div>
-        <div class="title-lg anim anim-2">Key Findings</div>
-        <div class="results-wrap">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" class="anim anim-3">
-            <div class="result-big">
-              <div class="result-num"><span class="gold">0.91</span></div>
-              <div class="result-label">AUC-ROC Score</div>
-              <div class="result-sub">Best model — XGBoost with 5-fold cross-validation on 60/20/20 TVT split.</div>
-            </div>
-            <div class="result-big">
-              <div class="result-num">7<span style="font-size:28px;color:rgba(156,191,226,.5)">days</span></div>
-              <div class="result-label">Churn Window</div>
-              <div class="result-sub">Players who churn within 7 days show detectable behavioral signatures at signup.
-              </div>
-            </div>
-            <div class="result-big">
-              <div class="result-num"><span class="gold">87%</span></div>
-              <div class="result-label">Precision</div>
-              <div class="result-sub">High precision minimizes false positives in churn intervention campaigns.</div>
-            </div>
-            <div class="result-big">
-              <div class="result-num">5M<span style="font-size:28px;color:rgba(156,191,226,.5)">+</span></div>
-              <div class="result-label">Reviews Processed</div>
-              <div class="result-sub">Sentiment analysis on user reviews adds qualitative depth to behavioral features.
-              </div>
-            </div>
-          </div>
-          <div class="insights-list anim anim-4">
-            <div
-              style="font-size:11px;color:var(--ucsd-gold);letter-spacing:.1em;font-weight:700;text-transform:uppercase;margin-bottom:4px">
-              Actionable Insights</div>
-            <div class="insight-row">
-              <div class="insight-num">01</div>
-              <div class="insight-txt">Session length and frequency are the <strong>strongest predictors</strong> of
-                long-term retention — prioritize early engagement loops.</div>
-            </div>
-            <div class="insight-row">
-              <div class="insight-num">02</div>
-              <div class="insight-txt">Players who churn within 7 days share <strong>distinct early behavioral
-                  patterns</strong> detectable at first login.</div>
-            </div>
-            <div class="insight-row">
-              <div class="insight-num">03</div>
-              <div class="insight-txt">Competing game recommendations improve <strong>re-engagement rates</strong> by
-                surfacing relevant alternatives at risk moments.</div>
-            </div>
-            <div class="insight-row">
-              <div class="insight-num">04</div>
-              <div class="insight-txt">Personalization at scale is achievable with <strong>collaborative
-                  filtering</strong> on minimal interaction data via SVD++.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="slide-footer bg-dark"><span>Steam Player Retention — UCSD DSC 288R</span></div>
+    <!-- ══ SLIDE 24: References Picture ══════════════════════════════════ -->
+    <div class="slide" id="references-pic">
+
     </div>
 
-    <!-- ══ SLIDE 9: THANK YOU ════════════════════════════ -->
-    <div class="slide" id="s9">
+    <!-- ══ SLIDE 25: References Content ══════════════════════════════════ -->
+    <div class="slide" id="r1">
+
+    </div>
+
+    <!-- ══ SLIDE 26: THANK YOU ════════════════════════════ -->
+    <div class="slide" id="thankyou">
       <div class="slide-header bg-navy">
         <div class="logo-wrap">
-          <div class="ucsd-seal">UC</div>
           <div class="ucsd-wordmark">UC San Diego<span>DSC 288R Capstone</span></div>
         </div>
-        <div class="slide-num">09 / 09</div>
       </div>
       <div class="slide-body bg-split" style="align-items:center;justify-content:center;text-align:center">
         <div class="corner-accent"></div>
@@ -702,7 +956,6 @@
         <div class="ty-btns anim anim-4">
           <a href="https://github.com/lngo916/DSC-288R-Capstone-Final-Project" target="_blank" class="ty-btn">⚡ View on
             GitHub</a>
-          <a href="pipeline.html" class="ty-btn ty-btn-gold">🗺 Data Pipeline</a>
         </div>
         <div class="ty-ucsd-bar anim anim-5">
           <div class="bar-line"></div>

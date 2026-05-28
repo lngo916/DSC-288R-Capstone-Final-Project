@@ -1,5 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Pipeline — Steam Player Retention</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="pipeline.css">
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+  <div class="pg-topbar">
+    <div class="pg-topbar-left">
+      <a href="index.html" class="pg-back">← Back</a>
+      <!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,59 +27,137 @@
 <body>
 
   <!-- TOP BAR -->
-  <div class="pg-topbar">
-    <div class="pg-topbar-left">
-      <a href="index.html" class="pg-back">← Back</a>
-      <div>
-        <div class="pg-title">Data Pipeline</div>
-        <div class="pg-subtitle">Steam Player Retention — DSC 288R</div>
+  <div class="slide" id="p2">
+
+
+      <div class="slide-body bg-dark"
+        style="padding:10px 20px 8px;display:flex;flex-direction:column;gap:8px;overflow:hidden">
+        <div class="corner-accent"></div>
+
+        <!-- HEADER -->
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:3px;flex-shrink:0">
+          <div style="display:flex;align-items:center;gap:14px">
+            <div class="badge" style="margin:0">Data Pipeline</div>
+            <div style="font-size:clamp(14px,1.8vw,22px);font-weight:800;color:var(--accent)"></div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <div class="pl-leg" style="--lc:#4a9eca">Sources</div>
+            <div class="pl-leg" style="--lc:#6fcf97">Branch</div>
+            <div class="pl-leg" style="--lc:#f2994a">Processing</div>
+            <div class="pl-leg" style="--lc:#bb86fc">EDA</div>
+            <div class="pl-leg" style="--lc:#e8880a">ML</div>
+            <div class="pl-leg" style="--lc:#eb5757">Output</div>
+            <div class="pl-leg" style="--lc:#9cbfe2">Infra</div>
+          </div>
+        </div>
+        <div
+          style="flex:1;display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(4,1fr);gap:5px;min-height:0">
+
+          <!-- COL 1: Sources & API scripts -->
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div class="pl-col-label">① Sources</div>
+            <div class="pl-n" style="--nc:#4a9eca">🗄️ <span><b>Kaggle Game</b><br>~43GB CSV</span></div>
+            <div class="pl-n" style="--nc:#4a9eca">🗄️ <span><b>Kaggle Multimodal</b><br>~43GB CSV</span></div>
+            <div class="pl-n" style="--nc:#4a9eca">🗄️ <span><b>Kaggle Reviews</b><br>~43GB CSV</span></div>
+            <div class="pl-n" style="--nc:#4a9eca">🔌 <span><b>Steam API</b><br>JSONs</span></div>
+            <div class="pl-n" style="--nc:#6fcf97">📜 <span><b>API Script</b><br>Review & Game</span></div>
+            <div class="pl-n" style="--nc:#6fcf97">📜 <span><b>API Script</b><br>Multimodal</span></div>
+          </div>
+
+          <!-- COL 2: Branches + Ingest -->
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div class="pl-col-label">② Branches & Ingest</div>
+            <div class="pl-n" style="--nc:#6fcf97">🌿 <span><b>Game Branch</b><br>Spark</span></div>
+            <div class="pl-n" style="--nc:#6fcf97">🌿 <span><b>Multimodal Branch</b><br>Pandas</span></div>
+            <div class="pl-n" style="--nc:#6fcf97">🌿 <span><b>Review Branch</b><br>Spark</span></div>
+            <div class="pl-n" style="--nc:#9cbfe2">📖 <span><b>Read Author Code</b><br>Reference</span></div>
+            <div class="pl-n" style="--nc:#f2994a">🔢 <span><b>KNN Script</b><br>~350MB → Parquet</span></div>
+            <div class="pl-n" style="--nc:#f2994a">⬇️ <span><b>Data Ingestion</b><br>~38GB → Parquet</span></div>
+            <div class="pl-n" style="--nc:#f2994a">✂️ <span><b>Data Sampling</b><br>2-5GB → Parquet</span></div>
+          </div>
+
+          <!-- COL 3: Audit + Prep + EDA -->
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div class="pl-col-label">③ Audit, Prep & EDA</div>
+            <div class="pl-n" style="--nc:#bb86fc">🩺 <span><b>EDA</b><br>~777 rows (Spark)</span></div>
+            <div class="pl-n" style="--nc:#bb86fc">🩺 <span><b>Health Audit + Global EDA</b><br>No practical size
+                (Spark)</span></div>
+            <div class="pl-n" style="--nc:#bb86fc">🩺 <span><b>Health Audit</b><br>No output (Spark)</span></div>
+            <div class="pl-n" style="--nc:#bb86fc">🩺 <span><b>Health Audit</b><br>No output (Pandas)</span></div>
+            <div class="pl-n" style="--nc:#f2994a">🔀 <span><b>Data Comparison</b><br>Game vs Review (Spark)</span>
+            </div>
+            <div class="pl-n" style="--nc:#f2994a">🛠️ <span><b>Data Prep</b><br>~33-34GB Parquet (Spark)</span></div>
+            <div class="pl-n" style="--nc:#f2994a">🛠️ <span><b>Data Prep</b><br>~1-4GB Parquet (Pandas)</span></div>
+            <div class="pl-n" style="--nc:#f2994a">🛠️ <span><b>Health Audit + Prep</b><br>~1-4GB Parquet
+                (Pandas)</span></div>
+          </div>
+
+          <!-- COL 4: Deep EDA + Feature Layer -->
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div class="pl-col-label">④ Deep EDA & Features</div>
+            <div class="pl-n" style="--nc:#bb86fc">📊 <span><b>Global EDA</b><br>~33-34GB (Spark)</span></div>
+            <div class="pl-n" style="--nc:#bb86fc">📈 <span><b>Mature Sample EDA</b><br>Pandas</span></div>
+            <div class="pl-n" style="--nc:#bb86fc">📉 <span><b>Preliminary EDA</b><br>Pandas</span></div>
+            <div class="pl-n" style="--nc:#bb86fc">🔬 <span><b>Advanced Sample EDA</b><br>Regression · Spectral</span>
+            </div>
+            <div class="pl-n" style="--nc:#f2994a">🔀 <span><b>Review + Game Merge</b><br>Join on app_id (Spark)</span>
+            </div>
+            <div class="pl-n" style="--nc:#f2994a">⚙️ <span><b>Feature Engineering</b><br>~2GB Parquet (Spark)</span>
+            </div>
+            <div class="pl-n" style="--nc:#f2994a">✂️ <span><b>TVT Split</b><br>60/20/20 (Spark)</span></div>
+            <div class="pl-n" style="--nc:#f2994a">⚙️ <span><b>Sample Feature Eng.</b><br>Spark</span></div>
+            <div class="pl-n" style="--nc:#f2994a">✂️ <span><b>Sample TVT Split</b><br>Spark</span></div>
+          </div>
+
+          <!-- COL 5: ML + Infra -->
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div class="pl-col-label">⑤ ML & Infra</div>
+            <div class="pl-n" style="--nc:#e8880a">🌲 <span><b>ML Modeling</b><br>XGB · RF · LSTM (Spark)</span></div>
+            <div class="pl-n" style="--nc:#e8880a">🔬 <span><b>ML Predict & Eval</b><br>Spark</span></div>
+            <div class="pl-n" style="--nc:#e8880a">🌳 <span><b>Sample ML Modeling</b><br>Output → Pickle (Spark)</span>
+            </div>
+            <div class="pl-n" style="--nc:#e8880a">🧠 <span><b>Diagnostic Analysis</b><br>Post-model eval</span></div>
+            <div class="pl-n" style="--nc:#e8880a">🚀 <span><b>ML as a Service</b><br>MFaaS · REST API</span></div>
+            <div class="pl-n" style="--nc:#9cbfe2">🧪 <span><b>Testing Module</b><br>All stages</span></div>
+            <div class="pl-n" style="--nc:#9cbfe2">⚙️ <span><b>Config Module</b><br>All stages</span></div>
+            <div class="pl-n" style="--nc:#9cbfe2">📋 <span><b>Make File</b><br>All stages</span></div>
+          </div>
+
+          <!-- COL 6: Milestones + Outputs -->
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div class="pl-col-label">⑥ Milestones & Outputs</div>
+            <div class="pl-n" style="--nc:#9cbfe2">🏁 <span><b>Milestone 1</b><br>EDA + Pipeline</span></div>
+            <div class="pl-n" style="--nc:#9cbfe2">🏁 <span><b>Milestone 2</b><br>Feature Matrix</span></div>
+            <div class="pl-n" style="--nc:#9cbfe2">🏁 <span><b>Milestone 3</b><br>Model Checkpoint</span></div>
+            <div class="pl-n" style="--nc:#9cbfe2">🏁 <span><b>Milestone 4</b><br>Deployed Rec.</span></div>
+            <div class="pl-n" style="--nc:#9cbfe2">📁 <span><b>Create Repo</b><br>GitHub setup</span></div>
+            <div class="pl-n" style="--nc:#9cbfe2">📦 <span><b>DVC Tracking</b><br>Data versioning</span></div>
+            <div class="pl-n" style="--nc:#9cbfe2">🐙 <span><b>GitHub CI/CD</b><br>Version control</span></div>
+            <div class="pl-n" style="--nc:#eb5757">🌐 <span><b>Web App</b><br>Streamlit / React</span></div>
+            <div class="pl-n" style="--nc:#eb5757">🎯 <span><b>Rec. System</b><br>Pickle + App (Pandas)</span></div>
+            <div class="pl-n" style="--nc:#eb5757">📊 <span><b>Viz Gallery</b><br>Dash / Streamlit</span></div>
+            <div class="pl-n" style="--nc:#eb5757">📄 <span><b>Report</b><br>UCSD Capstone</span></div>
+            <div class="pl-n" style="--nc:#eb5757">💻 <span><b>Frontend Website</b><br>By Laura</span></div>
+            <div class="pl-n" style="--nc:#eb5757;font-weight:700">🏆 <span><b>Project Product</b><br>Final
+                deliverable</span></div>
+          </div>
+
+        </div><!-- /grid -->
+      </div>
+
+      <div class="slide-footer bg-dark">
+        <span>Steam Player Retention — UCSD DSC 288R</span>
+        <span>05 / 08</span>
       </div>
     </div>
-
-    <div class="pg-topbar-right">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="source">Sources</button>
-      <button class="filter-btn" data-filter="process">Processing</button>
-      <button class="filter-btn" data-filter="eda">EDA</button>
-      <button class="filter-btn" data-filter="ml">ML</button>
-      <button class="filter-btn" data-filter="output">Outputs</button>
-      <button class="filter-btn" data-filter="infra">Infra</button>
-      <div class="ctrl-sep"></div>
-      <button class="zoom-btn" id="zin">+</button>
-      <button class="zoom-btn" id="zout">−</button>
-      <button class="zoom-btn" id="zreset">⌂</button>
-      <span class="hint">Drag · Scroll · Click</span>
-    </div>
-  </div>
-
-  <!-- CANVAS -->
-  <div id="canvas-wrap">
-    <canvas id="c"></canvas>
-    <canvas id="minimap" width="180" height="90"></canvas>
-  </div>
-
-  <!-- LEGEND -->
-  <div id="legend">
-    <div class="leg-title">NODE TYPE</div>
-    <div class="leg-item"><div class="leg-dot" style="background:#4a9eca"></div>Data Source</div>
-    <div class="leg-item"><div class="leg-dot" style="background:#6fcf97"></div>Branch / Ingest</div>
-    <div class="leg-item"><div class="leg-dot" style="background:#f2994a"></div>Processing</div>
-    <div class="leg-item"><div class="leg-dot" style="background:#bb86fc"></div>EDA / Analysis</div>
-    <div class="leg-item"><div class="leg-dot" style="background:#e8880a"></div>ML / Modeling</div>
-    <div class="leg-item"><div class="leg-dot" style="background:#eb5757"></div>Output</div>
-    <div class="leg-item"><div class="leg-dot" style="background:#9cbfe2"></div>Infra / DevOps</div>
-  </div>
-
-  <!-- DETAIL PANEL -->
-  <div id="detail">
-    <button id="detail-close">✕</button>
-    <span id="detail-tag"></span>
-    <div id="detail-name"></div>
-    <div id="detail-desc"></div>
-    <div id="detail-meta"></div>
-  </div>
 
     <script src="pipeline.js"></script>
 
 </body>
+</html>
+
+  <script src="pipeline.js"></script>
+
+</body>
+
 </html>
