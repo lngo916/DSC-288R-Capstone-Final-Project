@@ -22,23 +22,23 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 
-  <link rel="preload" href="images/steam2.glb" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="/web/images/steam2.glb" as="fetch" crossorigin="anonymous">
 
 </head>
 
 <body class="locked">
 
   <canvas id="road-canvas"></canvas>
-    <canvas id="overlay-canvas"></canvas>
-    <div id="crt"></div>
+  <canvas id="overlay-canvas"></canvas>
+  <div id="crt"></div>
 
-    <!-- PRESS START -->
-    <div id="start-screen">
-        <div class="press-badge">DSC 288R · UCSD Capstone · 2026</div>
-        <div class="game-logo"><span>STEAM</span> RETENTION</div>
-        <div class="game-sub">Player Churn Analysis System v1.0</div>
-        <div class="press-start" id="press-start">▶ PRESS START</div>
-    </div>
+  <!-- PRESS START -->
+  <div id="start-screen">
+    <div class="press-badge">DSC 288R · UCSD Capstone · 2026</div>
+    <div class="game-logo"><span>STEAM</span> RETENTION</div>
+    <div class="game-sub">Player Churn Analysis System v1.0</div>
+    <div class="press-start" id="press-start">▶ PRESS START</div>
+  </div>
 
   <div id="boot-screen">
     <div class="boot-text">Initializing website...</div>
@@ -218,8 +218,10 @@
   </section>
 
   <!-- ══ SLIDE 5: ML ══ -->
+  <!-- Add to your <head>:  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script> -->
 
   <section id="ml">
+
     <div class="ml-header">
       <div class="ml-header-text">
         <span class="year-badge">Machine Learning</span>
@@ -235,8 +237,10 @@
       </div>
     </div>
 
+    <!-- MAIN GRID -->
     <div class="ml-grid">
 
+      <!-- LEFT: MODEL CARD -->
       <div class="model-card" id="modelCard">
         <div class="model-card-header">
           <span class="model-title" id="modelName">XGBoost Classifier</span>
@@ -469,7 +473,7 @@
         <!-- MEMBER 1 -->
         <div class="team-card">
           <div class="team-role">Project Manager</div>
-          <img src="images/data1.png" alt="Jason Limfueco" class="team-avatar">
+          <img src="/web/images/jason.jpg" alt="Jason Limfueco" class="team-avatar">
           <h3 class="team-name">Jason Limfueco</h3>
           <p class="team-desc">
             Leads project coordination, manages timelines, and ensures smooth collaboration across all components.
@@ -480,7 +484,7 @@
         <!-- MEMBER 3 -->
         <div class="team-card">
           <div class="team-role">Frontend & Presentation</div>
-          <img src="images/laura.jpeg" alt="Laura Ngo" class="team-avatar">
+          <img src="/web/images/laura.jpeg" alt="Laura Ngo" class="team-avatar">
           <h3 class="team-name">Laura Ngo</h3>
           <p class="team-desc">
             Designs and builds the project website, transforming technical results into clear visual narratives.
@@ -491,7 +495,7 @@
         <!-- MEMBER 2 -->
         <div class="team-card">
           <div class="team-role">Data Engineer</div>
-          <img src="images/data1.png" alt="Baixi Guo" class="team-avatar">
+          <img src="/web/images/photo1.avif" alt="Baixi Guo" class="team-avatar">
           <h3 class="team-name">Baixi Guo</h3>
           <p class="team-desc">
             Develops and maintains the data pipeline, handling preprocessing, integration, and large-scale dataset
@@ -516,7 +520,7 @@
         <a href="https://github.com/lngo916/DSC-288R-Capstone-Final-Project" target="_blank" class="btn">
           View on GitHub
         </a>
-        <a href="pipeline.html" class="btn">
+        <a href="pages/pipeline.html" class="btn">
           Data Pipeline
         </a>
       </div>
@@ -533,7 +537,7 @@
     </div>
 
   </section>
-  
+
 
   <script type="module" src="script.js"></script>
 

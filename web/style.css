@@ -119,7 +119,7 @@ section {
   align-items: center;
   justify-content: center;
 
-  background: rgba(0, 0, 0, 0.95); 
+  background: rgba(0, 0, 0, 0.95);
 
   transition: opacity 0.6s ease;
 }
@@ -183,8 +183,15 @@ section {
 }
 
 @keyframes blink-text {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.25; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.25;
+  }
 }
 
 #boot-screen {
@@ -194,7 +201,8 @@ section {
   width: 100%;
   height: 100vh;
 
-  z-index: 9998; /* slightly under start screen */
+  z-index: 9998;
+  /* slightly under start screen */
 
   background: rgba(0, 0, 0, 0.92);
 
@@ -559,7 +567,7 @@ body:not(.locked) #hero {
        SLIDE 2: Overview
     ══════════════════════════════ */
 #about {
-  background-image: url("../images/dark.jpg");
+  background-image: url("../web/images/dark.jpg");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -1124,19 +1132,19 @@ body:not(.locked) #hero {
 
 /* bg images — add your own or swap Unsplash URLs */
 .eda-card[data-i="0"] .eda-card-bg {
-  background-image: url(/images/photo1.avif);
+  background-image: url(/web/images/photo1.avif);
 }
 
 .eda-card[data-i="1"] .eda-card-bg {
-  background-image: url(/images/photo2.webp);
+  background-image: url(/web/images/photo2.webp);
 }
 
 .eda-card[data-i="2"] .eda-card-bg {
-  background-image: url(/images/photo3.avif);
+  background-image: url(/web/images/photo3.avif);
 }
 
 .eda-card[data-i="3"] .eda-card-bg {
-  background-image: url(/images/photo4.avif);
+  background-image: url(/web/images/photo4.avif);
 }
 
 .eda-card[data-i="4"] .eda-card-bg {
@@ -1144,15 +1152,15 @@ body:not(.locked) #hero {
 }
 
 .eda-card[data-i="5"] .eda-card-bg {
-  background-image: url(/images/photo6.avif);
+  background-image: url(/web/images/photo6.avif);
 }
 
 .eda-card[data-i="6"] .eda-card-bg {
-  background-image: url(/images/photo7.avif);
+  background-image: url(/web/images/photo7.avif);
 }
 
 .eda-card[data-i="7"] .eda-card-bg {
-  background-image: url(/images/photo8.avif);
+  background-image: url(/web/images/photo8.avif);
 }
 
 /* ── BOTTOM ROW ── */
@@ -1332,11 +1340,11 @@ body:not(.locked) #hero {
 }
 
 /* ══════════════════════════════
-       SLIDE 5: ML  
-    ══════════════════════════════ */
+   SLIDE 5: ML SECTION
+══════════════════════════════ */
+
 #ml {
   min-height: 100vh;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   padding: 70px clamp(30px, 4vw, 60px) 30px;
@@ -1346,10 +1354,11 @@ body:not(.locked) #hero {
   background: linear-gradient(to bottom, #02050c, #050d1a);
 }
 
+/* ── HEADER ── */
 .ml-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 20px;
   flex-wrap: nowrap;
 }
@@ -1369,6 +1378,7 @@ body:not(.locked) #hero {
   max-width: 600px;
   margin-top: 2px;
 }
+
 
 /* ── MODEL TABS ── */
 .model-tabs {
@@ -1411,6 +1421,7 @@ body:not(.locked) #hero {
   gap: 15px;
   align-items: start;
 }
+
 
 /* ── MODEL CARD ── */
 .model-card {
@@ -1729,213 +1740,10 @@ body:not(.locked) #hero {
 }
 
 
-/* ══════════════════════════════
-       SLIDE 6: Live Churn Simulator  
-    ══════════════════════════════ */
-#churn {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 60px 40px;
-  box-sizing: border-box;
-  background: linear-gradient(to bottom, #02050c, #050d1a)
-}
-
-#churn {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: all 0.8s ease;
-}
-
-#churn.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.section-title {
-  font-size: clamp(36px, 5vw, 64px);
-  font-weight: 900;
-  color: var(--accent);
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.section-title {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.7s ease;
-}
-
-#churn.show .section-title {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.sim-panel {
-  background: #4f618065;
-  border: 1px solid rgba(156, 191, 226, 0.15);
-  border-radius: 16px;
-  padding: 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  max-width: 850px;
-  /* controls how wide it can get */
-  width: 100%;
-  /* still responsive on smaller screens */
-  margin: 0 auto;
-  /* centers it */
-}
-
-.sim-panel {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.7s ease;
-}
-
-#churn.show .sim-panel {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.15s;
-}
-
-.sim-panel-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--accent);
-}
-
-.sim-panel-sub {
-  font-size: 13px;
-  color: var(--subtext);
-  margin-top: 6px;
-}
-
-.sim-inputs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.sim-field {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.sim-field label {
-  font-size: 12px;
-  color: var(--subtext);
-}
-
-.sim-field input[type="range"] {
-  width: 100%;
-  accent-color: var(--accent);
-}
-
-.sim-field {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: all 0.5s ease;
-}
-
-#churn.show .sim-field {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.sim-val {
-  color: var(--accent);
-  font-weight: 600;
-}
-
-.churn-result {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  padding: 20px;
-  background: rgba(156, 191, 226, 0.04);
-  border: 1px solid rgba(156, 191, 226, 0.15);
-  border-radius: 10px;
-}
-
-.churn-result-label {
-  font-size: 11px;
-  color: var(--subtext);
-  letter-spacing: 0.1em;
-  margin-bottom: 4px;
-}
-
-.churn-score {
-  font-size: 48px;
-  font-weight: 900;
-  transition: 0.4s;
-}
-
-.churn-status {
-  font-size: 12px;
-  margin-top: 4px;
-}
-
-.churn-right {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.churn-bar-wrap {
-  width: 100%;
-  height: 10px;
-  background: rgba(255, 255, 255, 0.07);
-  border-radius: 5px;
-  overflow: hidden;
-}
-
-.churn-bar {
-  height: 100%;
-  border-radius: 5px;
-  width: 28%;
-  background: #6fcf97;
-  transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.4s;
-}
-
-#churn.show .sim-field:nth-child(1) {
-  transition-delay: 0.1s;
-}
-
-#churn.show .sim-field:nth-child(2) {
-  transition-delay: 0.15s;
-}
-
-#churn.show .sim-field:nth-child(3) {
-  transition-delay: 0.2s;
-}
-
-#churn.show .sim-field:nth-child(4) {
-  transition-delay: 0.25s;
-}
-
-#churn.show .sim-field:nth-child(5) {
-  transition-delay: 0.3s;
-}
-
-#churn.show .sim-field:nth-child(6) {
-  transition-delay: 0.35s;
-}
-
-
-.churn-reason {
-  font-size: 11px;
-  color: var(--subtext);
-}
-
+/* ── RESPONSIVE ── */
 @media (max-width: 900px) {
-  .sim-inputs {
-    grid-template-columns: 1fr 1fr;
+  .ml-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -1943,10 +1751,19 @@ body:not(.locked) #hero {
   .sim-inputs {
     grid-template-columns: 1fr;
   }
+
+  .ml-header {
+    flex-direction: column;
+  }
+
+  .churn-result {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
 
 /* ══════════════════════════════
-   SLIDE 7: Model Performance (FIXED)
+   SLIDE 6: Model Performance 
 ══════════════════════════════ */
 
 #techniques {
@@ -2040,7 +1857,7 @@ body:not(.locked) #hero {
 }
 
 /* ══════════════════════════════
-       SLIDE 8: REPORTING (line chart)
+       SLIDE 7: REPORTING (line chart)
     ══════════════════════════════ */
 #reporting {
   background: linear-gradient(to bottom, #19191c, #19191c);
@@ -2104,7 +1921,7 @@ body:not(.locked) #hero {
 
 
 /* ══════════════════════════════
-       SLIDE 10: CHALLENGES & SOLUTIONS
+       SLIDE 8: CHALLENGES & SOLUTIONS
     ══════════════════════════════ */
 #challenges {
   background: linear-gradient(to bottom, #02050c, #02050c);
@@ -2159,7 +1976,7 @@ body:not(.locked) #hero {
 }
 
 /* ══════════════════════════════
-  TEAM SECTION
+  SLIDE 9: TEAM SECTION
 ══════════════════════════════ */
 #team {
   min-height: 100vh;

@@ -1,50 +1,63 @@
 // =====================
 // Start Loading
 // =====================
+// =====================
+// Start Loading (RUN ONCE)
+// =====================
+
+const HAS_STARTED = sessionStorage.getItem("hasStarted");
+
 const startBtn = document.getElementById("press-start");
 const startScreen = document.getElementById("start-screen");
 const bootScreen = document.getElementById("boot-screen");
 
-startBtn.addEventListener("click", () => {
+// If already started in this tab session → skip intro entirely
+if (HAS_STARTED) {
+  startScreen.style.display = "none";
+  bootScreen.style.display = "none";
+  document.body.classList.remove("locked");
+} else {
 
-  // prevent double click spam
-  startBtn.style.pointerEvents = "none";
+  startBtn.addEventListener("click", () => {
 
-  // 1. fade out start screen
-  startScreen.classList.add("gone");
+    startBtn.style.pointerEvents = "none";
 
-  // 2. show boot screen AFTER fade
-  setTimeout(() => {
-    bootScreen.classList.add("active");
+    // mark as started (persists until tab is closed or Cmd+R refresh)
+    sessionStorage.setItem("hasStarted", "true");
 
-    const fill = document.querySelector(".boot-fill");
+    // 1. fade out start screen
+    startScreen.classList.add("gone");
 
-    // reset in case of refresh
-    fill.style.width = "0%";
+    // 2. boot screen
+    setTimeout(() => {
+      bootScreen.classList.add("active");
 
-    setTimeout(() => fill.style.width = "30%", 200);
-    setTimeout(() => fill.style.width = "65%", 700);
-    setTimeout(() => fill.style.width = "100%", 1400);
+      const fill = document.querySelector(".boot-fill");
+      fill.style.width = "0%";
 
-  }, 600);
+      setTimeout(() => fill.style.width = "30%", 200);
+      setTimeout(() => fill.style.width = "65%", 700);
+      setTimeout(() => fill.style.width = "100%", 1400);
 
-  // 3. finish boot → reveal site
-  setTimeout(() => {
-    bootScreen.classList.remove("active");
+    }, 600);
 
-    document.body.classList.remove("locked");
+    // 3. finish boot
+    setTimeout(() => {
+      bootScreen.classList.remove("active");
 
-    // reveal content
-    document.querySelector(".top-nav").style.opacity = "1";
-    document.querySelector("#hero").style.opacity = "1";
+      document.body.classList.remove("locked");
 
-    // ONLY scroll AFTER everything is done
-    document.querySelector("#hero").scrollIntoView({
-      behavior: "smooth"
-    });
+      document.querySelector(".top-nav").style.opacity = "1";
+      document.querySelector("#hero").style.opacity = "1";
 
-  }, 2200);
-});
+      document.querySelector("#hero").scrollIntoView({
+        behavior: "smooth"
+      });
+
+    }, 2200);
+
+  });
+}
 
 // =====================
 // Hero
@@ -502,61 +515,61 @@ const ML_MODELS = {
     desc: "Gradient-boosted decision trees trained to predict 30-day churn probability. XGBoost handles feature interactions and missing values natively, making it robust to the sparse Steam interaction matrix.",
     auc: "0.91", prec: "87%", rec: "83%", params: true,
     cm: { tp: 7241, fp: 412, fn: 689, tn: 4158 },
-    roc: [[0, 0], [0.05, 0.62], [0.10, 0.75], [0.18, 0.83], [0.28, 0.88], [0.40, 0.91], [0.55, 0.94], [0.70, 0.96], [0.85, 0.98], [1, 1]],
-    feat: [["Playtime (7d)", 0.22], ["Days Inactive", 0.19], ["Session Freq.", 0.16], ["Games Owned", 0.12], ["Friends Count", 0.09], ["Review Count", 0.08], ["Achievement %", 0.07], ["Wishlist Size", 0.05], ["Price Paid", 0.02]]
+    roc: [[0,0],[0.05,0.62],[0.10,0.75],[0.18,0.83],[0.28,0.88],[0.40,0.91],[0.55,0.94],[0.70,0.96],[0.85,0.98],[1,1]],
+    feat: [["Playtime (7d)",0.22],["Days Inactive",0.19],["Session Freq.",0.16],["Games Owned",0.12],["Friends Count",0.09],["Review Count",0.08],["Achievement %",0.07],["Wishlist Size",0.05],["Price Paid",0.02]]
   },
   rf: {
     name: "Random Forest", tag: "SUPERVISED", tagClass: "tag-supervised",
     desc: "Ensemble of 300 decision trees with bootstrapped sampling. Provides probability calibration and interpretable feature importances, serving as a robust baseline for the churn prediction task.",
     auc: "0.88", prec: "84%", rec: "80%", params: true,
     cm: { tp: 6980, fp: 520, fn: 890, tn: 4110 },
-    roc: [[0, 0], [0.06, 0.55], [0.12, 0.68], [0.20, 0.78], [0.32, 0.84], [0.44, 0.88], [0.58, 0.91], [0.72, 0.94], [0.86, 0.97], [1, 1]],
-    feat: [["Days Inactive", 0.20], ["Playtime (7d)", 0.18], ["Session Freq.", 0.15], ["Games Owned", 0.13], ["Achievement %", 0.10], ["Friends Count", 0.09], ["Review Count", 0.07], ["Wishlist Size", 0.05], ["Price Paid", 0.03]]
+    roc: [[0,0],[0.06,0.55],[0.12,0.68],[0.20,0.78],[0.32,0.84],[0.44,0.88],[0.58,0.91],[0.72,0.94],[0.86,0.97],[1,1]],
+    feat: [["Days Inactive",0.20],["Playtime (7d)",0.18],["Session Freq.",0.15],["Games Owned",0.13],["Achievement %",0.10],["Friends Count",0.09],["Review Count",0.07],["Wishlist Size",0.05],["Price Paid",0.03]]
   },
   lstm: {
     name: "LSTM Network", tag: "SEQUENTIAL", tagClass: "tag-nlp",
     desc: "Long Short-Term Memory network that models temporal sequences of player sessions over a 30-day window. Captures recency decay patterns and behavioral rhythm shifts that tree-based models miss.",
     auc: "0.89", prec: "85%", rec: "82%", params: false,
     cm: { tp: 7100, fp: 480, fn: 760, tn: 4160 },
-    roc: [[0, 0], [0.04, 0.58], [0.10, 0.72], [0.18, 0.81], [0.30, 0.87], [0.42, 0.90], [0.56, 0.93], [0.70, 0.95], [0.84, 0.97], [1, 1]],
-    feat: [["Session Recency", 0.24], ["Playtime Trend", 0.20], ["Session Gaps", 0.17], ["Activity Decay", 0.15], ["Genre Shift", 0.11], ["Time of Day", 0.08], ["Weekend Ratio", 0.05]]
+    roc: [[0,0],[0.04,0.58],[0.10,0.72],[0.18,0.81],[0.30,0.87],[0.42,0.90],[0.56,0.93],[0.70,0.95],[0.84,0.97],[1,1]],
+    feat: [["Session Recency",0.24],["Playtime Trend",0.20],["Session Gaps",0.17],["Activity Decay",0.15],["Genre Shift",0.11],["Time of Day",0.08],["Weekend Ratio",0.05]]
   },
   cf: {
     name: "Collaborative Filter", tag: "UNSUPERVISED", tagClass: "tag-unsupervised",
     desc: "Matrix factorization (SVD++) on the sparse user-game interaction matrix. Generates latent player embeddings used for recommendation: given a churned player, surface the top-K similar games most likely to re-engage them.",
     auc: "0.82", prec: "79%", rec: "76%", params: false,
     cm: { tp: 6540, fp: 730, fn: 1100, tn: 4130 },
-    roc: [[0, 0], [0.08, 0.48], [0.15, 0.62], [0.25, 0.73], [0.36, 0.79], [0.48, 0.83], [0.62, 0.87], [0.76, 0.91], [0.88, 0.95], [1, 1]],
-    feat: [["Genre Overlap", 0.26], ["Tag Similarity", 0.22], ["Play Duration", 0.18], ["Price Range", 0.13], ["Rating Match", 0.10], ["Release Year", 0.07], ["Multiplayer", 0.04]]
+    roc: [[0,0],[0.08,0.48],[0.15,0.62],[0.25,0.73],[0.36,0.79],[0.48,0.83],[0.62,0.87],[0.76,0.91],[0.88,0.95],[1,1]],
+    feat: [["Genre Overlap",0.26],["Tag Similarity",0.22],["Play Duration",0.18],["Price Range",0.13],["Rating Match",0.10],["Release Year",0.07],["Multiplayer",0.04]]
   }
 };
 
 const ML_STEPS = [
-  { title: "Raw Data", text: "Steam behavioral logs, game metadata, playtime, session timestamps, and user reviews collected across millions of player sessions. Data is stored as columnar Parquet files for efficient downstream processing." },
+  { title: "Raw Data",         text: "Steam behavioral logs, game metadata, playtime, session timestamps, and user reviews collected across millions of player sessions. Data is stored as columnar Parquet files for efficient downstream processing." },
   { title: "Feature Engineering", text: "Session-level features are aggregated to player level: 7-day playtime sums, inactivity windows, session frequency, genre diversity scores, social graph features, and review sentiment scores." },
-  { title: "Sampling", text: "The dataset suffers from class imbalance (~70% retained, ~30% churned). SMOTE oversamples the minority class in feature space, while stratified k-fold ensures both classes appear equally in each validation fold." },
-  { title: "Training", text: "Models are trained with 5-fold cross-validation. Hyperparameters are tuned via Optuna Bayesian search. Early stopping prevents overfitting on the XGBoost and LSTM models." },
-  { title: "Prediction", text: "The trained model outputs a calibrated churn probability [0,1] for each player. A threshold of 0.45 was chosen via Youden's J statistic to balance precision and recall on the held-out test set." },
-  { title: "Recommendation", text: "Players flagged as high churn risk are passed to the collaborative filter. The top-K games most similar to their historical preferences are ranked by cosine similarity in the latent embedding space." }
+  { title: "Sampling",         text: "The dataset suffers from class imbalance (~70% retained, ~30% churned). SMOTE oversamples the minority class in feature space, while stratified k-fold ensures both classes appear equally in each validation fold." },
+  { title: "Training",         text: "Models are trained with 5-fold cross-validation. Hyperparameters are tuned via Optuna Bayesian search. Early stopping prevents overfitting on the XGBoost and LSTM models." },
+  { title: "Prediction",       text: "The trained model outputs a calibrated churn probability [0,1] for each player. A threshold of 0.45 was chosen via Youden's J statistic to balance precision and recall on the held-out test set." },
+  { title: "Recommendation",   text: "Players flagged as high churn risk are passed to the collaborative filter. The top-K games most similar to their historical preferences are ranked by cosine similarity in the latent embedding space." }
 ];
 
 let mlActiveModel = 'xgb';
 let mlActiveChart = 'roc';
-let rocChartInst = null;
+let rocChartInst  = null;
 let learnChartInst = null;
 
 // ── Model switching ──
 function mlSwitchModel(key) {
   mlActiveModel = key;
   const m = ML_MODELS[key];
-  document.getElementById('modelName').textContent = m.name;
+  document.getElementById('modelName').textContent    = m.name;
   const tag = document.getElementById('modelTag');
   tag.textContent = m.tag;
-  tag.className = 'model-tag ' + m.tagClass;
-  document.getElementById('modelDesc').textContent = m.desc;
-  document.getElementById('m-auc').textContent = m.auc;
-  document.getElementById('m-prec').textContent = m.prec;
-  document.getElementById('m-rec').textContent = m.rec;
+  tag.className   = 'model-tag ' + m.tagClass;
+  document.getElementById('modelDesc').textContent    = m.desc;
+  document.getElementById('m-auc').textContent        = m.auc;
+  document.getElementById('m-prec').textContent       = m.prec;
+  document.getElementById('m-rec').textContent        = m.rec;
   document.getElementById('paramsSection').style.display = m.params ? 'flex' : 'none';
   document.querySelectorAll('#modelTabs .tab-btn').forEach(b =>
     b.classList.toggle('active', b.dataset.model === key)
@@ -583,9 +596,9 @@ function mlUpdateChart(type) {
   ['roc', 'feat', 'cm', 'learn'].forEach(v =>
     document.getElementById('view-' + v).style.display = v === type ? '' : 'none'
   );
-  if (type === 'roc') mlDrawROC();
-  if (type === 'feat') mlDrawFeat();
-  if (type === 'cm') mlUpdateCM();
+  if (type === 'roc')   mlDrawROC();
+  if (type === 'feat')  mlDrawFeat();
+  if (type === 'cm')    mlUpdateCM();
   if (type === 'learn') mlDrawLearn();
 }
 
@@ -596,18 +609,16 @@ function mlDrawROC() {
   if (rocChartInst) { rocChartInst.destroy(); rocChartInst = null; }
   rocChartInst = new Chart(document.getElementById('rocChart'), {
     type: 'scatter',
-    data: {
-      datasets: [
-        { label: 'Model', data, showLine: true, borderColor: '#9cbfe2', backgroundColor: 'rgba(156,191,226,0.15)', borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#9cbfe2', tension: 0.4 },
-        { label: 'Random', data: [{ x: 0, y: 0 }, { x: 1, y: 1 }], showLine: true, borderColor: 'rgba(255,255,255,0.2)', borderWidth: 1, borderDash: [5, 5], pointRadius: 0 }
-      ]
-    },
+    data: { datasets: [
+      { label: 'Model',  data, showLine: true, borderColor: '#9cbfe2', backgroundColor: 'rgba(156,191,226,0.15)', borderWidth: 2, pointRadius: 3, pointBackgroundColor: '#9cbfe2', tension: 0.4 },
+      { label: 'Random', data: [{x:0,y:0},{x:1,y:1}], showLine: true, borderColor: 'rgba(255,255,255,0.2)', borderWidth: 1, borderDash: [5,5], pointRadius: 0 }
+    ]},
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
         x: { title: { display: true, text: 'False Positive Rate', color: '#c8d8e8', font: { size: 11 } }, ticks: { color: '#c8d8e8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' }, min: 0, max: 1 },
-        y: { title: { display: true, text: 'True Positive Rate', color: '#c8d8e8', font: { size: 11 } }, ticks: { color: '#c8d8e8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' }, min: 0, max: 1 }
+        y: { title: { display: true, text: 'True Positive Rate',  color: '#c8d8e8', font: { size: 11 } }, ticks: { color: '#c8d8e8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' }, min: 0, max: 1 }
       }
     }
   });
@@ -627,9 +638,9 @@ function mlDrawFeat() {
 
 // ── Learning curve ──
 function mlDrawLearn() {
-  const sizes = [1000, 3000, 6000, 12000, 20000, 30000, 42000, 50000];
-  const train = [0.71, 0.79, 0.83, 0.86, 0.88, 0.89, 0.90, 0.91];
-  const val = [0.62, 0.72, 0.78, 0.82, 0.85, 0.87, 0.88, 0.89];
+  const sizes = [1000,3000,6000,12000,20000,30000,42000,50000];
+  const train = [0.71,0.79,0.83,0.86,0.88,0.89,0.90,0.91];
+  const val   = [0.62,0.72,0.78,0.82,0.85,0.87,0.88,0.89];
   const jitter = () => (Math.random() - 0.5) * 0.008;
   if (learnChartInst) { learnChartInst.destroy(); learnChartInst = null; }
   learnChartInst = new Chart(document.getElementById('learnChart'), {
@@ -637,8 +648,8 @@ function mlDrawLearn() {
     data: {
       labels: sizes.map(s => s >= 1000 ? (s / 1000) + 'k' : s),
       datasets: [
-        { label: 'Train', data: train.map(v => +(v + jitter()).toFixed(3)), borderColor: '#9cbfe2', backgroundColor: 'rgba(156,191,226,0.1)', borderWidth: 2, pointRadius: 4, fill: false, tension: 0.4 },
-        { label: 'Validation', data: val.map(v => +(v + jitter()).toFixed(3)), borderColor: '#f2994a', backgroundColor: 'rgba(242,153,74,0.1)', borderWidth: 2, pointRadius: 4, borderDash: [4, 4], fill: false, tension: 0.4 }
+        { label: 'Train',      data: train.map(v => +(v + jitter()).toFixed(3)), borderColor: '#9cbfe2', backgroundColor: 'rgba(156,191,226,0.1)', borderWidth: 2, pointRadius: 4, fill: false, tension: 0.4 },
+        { label: 'Validation', data: val.map(v   => +(v + jitter()).toFixed(3)), borderColor: '#f2994a', backgroundColor: 'rgba(242,153,74,0.1)',   borderWidth: 2, pointRadius: 4, borderDash: [4,4], fill: false, tension: 0.4 }
       ]
     },
     options: {
@@ -646,58 +657,27 @@ function mlDrawLearn() {
       plugins: { legend: { labels: { color: '#c8d8e8', font: { size: 11 } } } },
       scales: {
         x: { title: { display: true, text: 'Training samples', color: '#c8d8e8', font: { size: 11 } }, ticks: { color: '#c8d8e8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
-        y: { title: { display: true, text: 'AUC-ROC', color: '#c8d8e8', font: { size: 11 } }, ticks: { color: '#c8d8e8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' }, min: 0.55, max: 0.96 }
+        y: { title: { display: true, text: 'AUC-ROC',          color: '#c8d8e8', font: { size: 11 } }, ticks: { color: '#c8d8e8', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' }, min: 0.55, max: 0.96 }
       }
     }
   });
 }
 
-// =====================
-// CHURN SIMULATOR
-// =====================
-
-const churnSection = document.querySelector("#churn");
-const churnFields = document.querySelectorAll(".sim-field");
-
-const churnObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      churnSection.classList.add("show");
-    } else {
-      churnSection.classList.remove("show"); // re-trigger on scroll
-    }
-  });
-}, { threshold: 0.3 });
-
-churnObserver.observe(churnSection);
-
-// optional: per-field stagger control (extra polish)
-const fieldObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add("show");
-    } else {
-      entry.target.classList.remove("show");
-    }
-  });
-}, { threshold: 0.2 });
-
-churnFields.forEach(field => fieldObserver.observe(field));
-
+// ── Churn simulator ──
 function mlCalcChurn() {
-  const sess = +document.getElementById('s-session').value;
-  const days = +document.getElementById('s-days').value;
-  const games = +document.getElementById('s-games').value;
+  const sess    = +document.getElementById('s-session').value;
+  const days    = +document.getElementById('s-days').value;
+  const games   = +document.getElementById('s-games').value;
   const reviews = +document.getElementById('s-reviews').value;
   const friends = +document.getElementById('s-friends').value;
-  const ach = +document.getElementById('s-ach').value;
+  const ach     = +document.getElementById('s-ach').value;
 
   document.getElementById('sv-session').textContent = sess;
-  document.getElementById('sv-days').textContent = days;
-  document.getElementById('sv-games').textContent = games;
+  document.getElementById('sv-days').textContent    = days;
+  document.getElementById('sv-games').textContent   = games;
   document.getElementById('sv-reviews').textContent = reviews;
   document.getElementById('sv-friends').textContent = friends;
-  document.getElementById('sv-ach').textContent = ach;
+  document.getElementById('sv-ach').textContent     = ach;
 
   let risk = 0;
   risk += Math.max(0, (14 - days / 6)) * 0.025;
@@ -711,32 +691,32 @@ function mlCalcChurn() {
   const pct = Math.round(Math.max(3, Math.min(97, risk * 100)));
 
   document.getElementById('churnScore').textContent = pct + '%';
-  document.getElementById('churnBar').style.width = pct + '%';
+  document.getElementById('churnBar').style.width   = pct + '%';
 
   let color, label, reason;
   if (pct < 30) {
-    color = '#6fcf97';
-    label = 'Low risk — player likely to stay';
+    color  = '#6fcf97';
+    label  = 'Low risk — player likely to stay';
     reason = 'Strong session length and recent activity suggest continued engagement.';
   } else if (pct < 55) {
-    color = '#f2994a';
-    label = 'Moderate risk — monitor closely';
+    color  = '#f2994a';
+    label  = 'Moderate risk — monitor closely';
     reason = 'Some signals of reduced engagement. Consider targeted re-engagement.';
   } else if (pct < 75) {
-    color = '#eb5757';
-    label = 'High risk — intervention recommended';
+    color  = '#eb5757';
+    label  = 'High risk — intervention recommended';
     reason = 'Multiple churn signals detected. Recommend game suggestions now.';
   } else {
-    color = '#ff4444';
-    label = 'Critical — player likely churned';
+    color  = '#ff4444';
+    label  = 'Critical — player likely churned';
     reason = 'Severe inactivity and low engagement. Automated re-engagement triggered.';
   }
 
-  document.getElementById('churnBar').style.background = color;
-  document.getElementById('churnScore').style.color = color;
-  document.getElementById('churnLabel').style.color = color;
-  document.getElementById('churnLabel').textContent = label;
-  document.getElementById('churnReason').textContent = reason;
+  document.getElementById('churnBar').style.background   = color;
+  document.getElementById('churnScore').style.color       = color;
+  document.getElementById('churnLabel').style.color       = color;
+  document.getElementById('churnLabel').textContent       = label;
+  document.getElementById('churnReason').textContent      = reason;
 }
 
 // ── Init (call inside your DOMContentLoaded block) ──
@@ -778,166 +758,30 @@ document.addEventListener('DOMContentLoaded', () => {
     this.textContent = 'Training…';
     this.disabled = true;
     const base = { xgb: { auc: 0.91, prec: 87, rec: 83 }, rf: { auc: 0.88, prec: 84, rec: 80 } }[mlActiveModel]
-      || { auc: 0.89, prec: 85, rec: 82 };
-    const d = +document.getElementById('p-depth').value;
-    const lr = +document.getElementById('p-lr').value / 100;
+               || { auc: 0.89, prec: 85, rec: 82 };
+    const d   = +document.getElementById('p-depth').value;
+    const lr  = +document.getElementById('p-lr').value / 100;
     const est = +document.getElementById('p-est').value;
     setTimeout(() => {
-      const aucAdj = Math.min(0.97, base.auc + (d > 8 ? -0.01 : 0) + (lr > 0.2 ? -0.02 : 0) + (est >= 300 ? 0.01 : 0) + (Math.random() - 0.5) * 0.015);
+      const aucAdj  = Math.min(0.97, base.auc + (d > 8 ? -0.01 : 0) + (lr > 0.2 ? -0.02 : 0) + (est >= 300 ? 0.01 : 0) + (Math.random() - 0.5) * 0.015);
       const precAdj = Math.min(99, Math.max(70, base.prec + (est >= 300 ? 1 : 0) + (d < 5 ? -2 : 0) + Math.round((Math.random() - 0.5) * 4)));
-      const recAdj = Math.min(99, Math.max(70, base.rec + (lr < 0.05 ? -2 : 0) + (d > 10 ? -1 : 0) + Math.round((Math.random() - 0.5) * 4)));
-      document.getElementById('m-auc').textContent = aucAdj.toFixed(2);
+      const recAdj  = Math.min(99, Math.max(70, base.rec  + (lr < 0.05 ? -2 : 0) + (d > 10 ? -1 : 0) + Math.round((Math.random() - 0.5) * 4)));
+      document.getElementById('m-auc').textContent  = aucAdj.toFixed(2);
       document.getElementById('m-prec').textContent = precAdj + '%';
-      document.getElementById('m-rec').textContent = recAdj + '%';
+      document.getElementById('m-rec').textContent  = recAdj + '%';
       this.textContent = 'Retrain Model ↻';
       this.disabled = false;
     }, 1200);
   });
 
   // Churn simulator sliders
-  ['s-session', 's-days', 's-games', 's-reviews', 's-friends', 's-ach'].forEach(id => {
+  ['s-session','s-days','s-games','s-reviews','s-friends','s-ach'].forEach(id => {
     document.getElementById(id).addEventListener('input', mlCalcChurn);
   });
 
   // Initial render
   mlSwitchModel('xgb');
   mlCalcChurn();
-});
-
-const nodes = [
-  { id: "data", x: 200, y: 200, title: "Raw Data", desc: "Steam logs + metadata" },
-  { id: "feat", x: 500, y: 200, title: "Feature Engineering", desc: "Session + encoding" },
-  { id: "train", x: 800, y: 200, title: "Training", desc: "XGBoost / RF / LSTM" },
-  { id: "pred", x: 1100, y: 200, title: "Prediction", desc: "Churn probability output" },
-  { id: "rec", x: 1400, y: 200, title: "Recommender", desc: "Game ranking system" }
-];
-
-const edges = [
-  ["data", "feat"],
-  ["feat", "train"],
-  ["train", "pred"],
-  ["pred", "rec"]
-];
-
-const svg = document.getElementById("mlGraph");
-
-let scale = 1;
-let offsetX = 0;
-let offsetY = 0;
-
-// DRAW EDGES
-function drawEdges() {
-  return edges.map(([a, b]) => {
-    const n1 = nodes.find(n => n.id === a);
-    const n2 = nodes.find(n => n.id === b);
-
-    return `
-      <path class="edge"
-        d="M ${n1.x} ${n1.y}
-           C ${(n1.x + n2.x) / 2} ${n1.y},
-             ${(n1.x + n2.x) / 2} ${n2.y},
-             ${n2.x} ${n2.y}" />
-    `;
-  }).join("");
-}
-
-function resize() {
-  const canvas = document.getElementById("canvas");
-
-  if (!canvas) return;
-
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight - 56; // subtract topbar
-}
-resize();
-
-// DRAW NODES
-function drawNodes() {
-  return nodes.map(n => `
-    <g class="node" data-id="${n.id}" transform="translate(${n.x},${n.y})">
-      <rect width="160" height="60" x="-80" y="-30"></rect>
-      <text text-anchor="middle" y="-5">${n.title}</text>
-      <text class="sub" text-anchor="middle" y="15">${n.desc}</text>
-    </g>
-  `).join("");
-}
-
-// RENDER
-function render() {
-  svg.innerHTML = drawEdges() + drawNodes();
-
-  document.querySelectorAll(".node").forEach(el => {
-    el.addEventListener("click", () => {
-      const id = el.dataset.id;
-      const node = nodes.find(n => n.id === id);
-
-      document.getElementById("nodeDetail").classList.add("active");
-      document.getElementById("nd-title").textContent = node.title;
-      document.getElementById("nd-desc").textContent = node.desc;
-    });
-  });
-}
-
-render();
-
-// CLOSE PANEL
-document.getElementById("closeDetail").onclick = () => {
-  document.getElementById("nodeDetail").classList.remove("active");
-};
-
-// SIMPLE PAN (drag)
-let isDragging = false;
-let lastX, lastY;
-
-document.getElementById("graphViewport").addEventListener("mousedown", e => {
-  isDragging = true;
-  lastX = e.clientX;
-  lastY = e.clientY;
-});
-
-window.addEventListener("mousemove", e => {
-  if (!isDragging) return;
-  offsetX += e.clientX - lastX;
-  offsetY += e.clientY - lastY;
-  lastX = e.clientX;
-  lastY = e.clientY;
-
-  svg.style.transform = `translate(${offsetX}px,${offsetY}px) scale(${scale})`;
-});
-
-window.addEventListener("mouseup", () => isDragging = false);
-
-// ZOOM
-document.getElementById("zoomIn").onclick = () => {
-  scale *= 1.1;
-  svg.style.transform = `translate(${offsetX}px,${offsetY}px) scale(${scale})`;
-};
-
-document.getElementById("zoomOut").onclick = () => {
-  scale *= 0.9;
-  svg.style.transform = `translate(${offsetX}px,${offsetY}px) scale(${scale})`;
-};
-
-document.getElementById("zoomReset").onclick = () => {
-  scale = 1;
-  offsetX = 0;
-  offsetY = 0;
-  svg.style.transform = `translate(0px,0px) scale(1)`;
-};
-
-// Model Performance 
-document.addEventListener("DOMContentLoaded", () => {
-  const items = document.querySelectorAll(".tech-item");
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("visible");
-      }
-    });
-  }, { threshold: 0.15 });
-
-  items.forEach((item) => observer.observe(item));
 });
 
 // =====================
