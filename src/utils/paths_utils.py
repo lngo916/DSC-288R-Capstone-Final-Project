@@ -33,6 +33,7 @@ class ProjectPaths:
     def mode_upper(self) -> str:
         return self.mode.upper()
 
+
     # ------------------------------------------------------------------
     # Data roots
     # ------------------------------------------------------------------
@@ -51,14 +52,22 @@ class ProjectPaths:
             return Path("/content/drive/MyDrive/DSC 288R/Project/data")
 
         if self.mode_upper == "LOCAL":
-            return Path("/Users/steveg/Downloads")
+            return Path("/Users/steveg/Desktop/DSC-288R-Capstone-Final-Project")
 
         raise ValueError(f"Unsupported mode: {self.mode}")
 
+
+    # ------------------------------------------------------------------
+    # Original datasets
+    # ------------------------------------------------------------------
     @property
     def raw_csv_root(self) -> Path:
         return self.data_root / "raw_csv"
     
+
+    # ------------------------------------------------------------------
+    # Full datasets
+    # ------------------------------------------------------------------
     @property
     def full_parquet(self) -> Path:
         return self.data_root / "full_parquet"
@@ -71,6 +80,10 @@ class ProjectPaths:
     def feature_engineered_parquet(self) -> Path:
         return self.data_root / "feature_engineered_parquet"
 
+
+    # ------------------------------------------------------------------
+    # Sampled datasets
+    # ------------------------------------------------------------------
     @property
     def sampled_parquet(self) -> Path:
         return self.data_root / "subsampled_parquet"
@@ -81,12 +94,13 @@ class ProjectPaths:
 
     @property
     def feature_engineered_sampled_parquet(self) -> Path:
-        return self.data_root / "feature_engineered_sampled.parquet"
+        return self.data_root / "feature_engineered_sampled_parquet"
     
 
     # ------------------------------------------------------------------
-    # Train / validation / test split root FOR FULL
+    # Train / validation / test split datasets FOR FULL
     # ------------------------------------------------------------------
+    # Split data root
     @property
     def splits_root(self) -> Path:
         return self.data_root / "train_val_test_splits"
@@ -143,53 +157,21 @@ class ProjectPaths:
         return self.time_aware_row_split_root / "test_parquet"
     
     # # ------------------------------------------------------------------
-    # # Train / validation / test split root FOR SAMPLED
+    # # Train / validation / test split datasets FOR SAMPLED
     # # ------------------------------------------------------------------
+    # Random row split sampled paths
+    @property
+    def random_row_train_sampled_parquet(self) -> Path:
+        return self.random_row_split_root / "train_sampled_parquet"
 
-    # # Random row split paths
-    # @property
-    # def random_row_train_sampled_parquet(self) -> Path:
-    #     return self.random_row_split_root / "train_sampled.parquet"
+    @property
+    def random_row_val_sampled_parquet(self) -> Path:
+        return self.random_row_split_root / "val_sampled_parquet"
 
-    # @property
-    # def random_row_val_sampled_parquet(self) -> Path:
-    #     return self.random_row_split_root / "val_sampled.parquet"
+    @property
+    def random_row_test_sampled_parquet(self) -> Path:
+        return self.random_row_split_root / "test_sampled_parquet"
 
-    # @property
-    # def random_row_test_sampled_parquet(self) -> Path:
-    #     return self.random_row_split_root / "test_sampled.parquet"
-
-    
-    # --------------------------------- IN DEVELOPMENT -------------------------------------
-    # @property
-    # def time_aware_churn_split_root(self) -> Path:
-    #     return self.splits_root / "time_aware_churn"
-
-    # # Time-aware churn snapshot split paths
-    # @property
-    # def time_aware_churn_train_parquet(self) -> Path:
-    #     return self.time_aware_churn_split_root / "train.parquet"
-
-    # @property
-    # def time_aware_churn_val_parquet(self) -> Path:
-    #     return self.time_aware_churn_split_root / "val.parquet"
-
-    # @property
-    # def time_aware_churn_test_parquet(self) -> Path:
-    #     return self.time_aware_churn_split_root / "test.parquet"
-
-    # @property
-    # def time_aware_churn_train_parquet_spark(self) -> str:
-    #     return self.spark_path(self.time_aware_churn_train_parquet)
-
-    # @property
-    # def time_aware_churn_val_parquet_spark(self) -> str:
-    #     return self.spark_path(self.time_aware_churn_val_parquet)
-
-    # @property
-    # def time_aware_churn_test_parquet_spark(self) -> str:
-    #     return self.spark_path(self.time_aware_churn_test_parquet)
-    # --------------------------------- IN DEVELOPMENT -------------------------------------
     
     # # ------------------------------------------------------------------
     # # Spark path helpers, used for writing parquet files in Spark
