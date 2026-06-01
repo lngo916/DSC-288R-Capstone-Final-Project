@@ -8,6 +8,7 @@ from pyspark.sql.types import (
     FloatType, StringType, BooleanType
 )
 
+import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 

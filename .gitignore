@@ -12,6 +12,11 @@
 __pycache__/
 *.py[cod]
 
-# Specific folders
-/html_nb
-/dvc_remote_sample
+# Specific folders/files
+configs
+dvc_remote_sample/
+src/legacy/
+notebooks/4_EDA_review_sampleV2.ipynb
+notebooks/7_ML_modelingV2.ipynb
+notebooks/7_ML_modelingV3.ipynb
+notebooks/9_data_&_ethics.ipynb

@@ -7,7 +7,7 @@
 
 # Sampled datasets
 /subsampled_parquet
-/cleaned_sampled.parquet
+/cleaned_sampled_parquet
 /feature_engineered_sampled_parquet
 /train_val_test_splits
 
