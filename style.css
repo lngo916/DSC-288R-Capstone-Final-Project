@@ -1116,35 +1116,35 @@ section {
 }
 
 .eda-card[data-i="0"] .eda-card-bg {
-  background-image: url(/images/photo1.webp);
+  background-image: url(./images/photo1.webp);
 }
 
 .eda-card[data-i="1"] .eda-card-bg {
-  background-image: url(/images/photo2.png);
+  background-image: url(./images/photo2.png);
 }
 
 .eda-card[data-i="2"] .eda-card-bg {
-  background-image: url(/images/photo3.png);
+  background-image: url(./images/photo3.png);
 }
 
 .eda-card[data-i="3"] .eda-card-bg {
-  background-image: url(/images/photo4.png);
+  background-image: url(./images/photo4.png);
 }
 
 .eda-card[data-i="4"] .eda-card-bg {
-  background-image: url(/images/photo5.png);
+  background-image: url(./images/photo5.png);
 }
 
 .eda-card[data-i="5"] .eda-card-bg {
-  background-image: url(/images/photo6.png);
+  background-image: url(./images/photo6.png);
 }
 
 .eda-card[data-i="6"] .eda-card-bg {
-  background-image: url(/images/photo7.png);
+  background-image: url(./images/photo7.png);
 }
 
 .eda-card[data-i="7"] .eda-card-bg {
-  background-image: url(/images/photo8.png);
+  background-image: url(./images/photo8.png);
 }
 
 /* ── BOTTOM ROW ── */
