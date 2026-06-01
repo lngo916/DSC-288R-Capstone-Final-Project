@@ -86,10 +86,10 @@ MODEL_TRAIN_TEST_COMPARISON_METRICS = [
 
 # Friendly names used in tables and figures.
 MODEL_DISPLAY_NAMES = {
-    "xgb": "XGBoost",
-    "random_forest": "Random Forest",
     "log_reg": "Logistic Regression",
     "decision_tree": "Decision Tree",
+    "random_forest": "Random Forest",
+    "xgb": "XGBoost",
     "svm": "SVM",
 }
 
@@ -103,10 +103,10 @@ METRIC_DISPLAY_NAMES = {
 }
 
 DEFAULT_MODEL_ORDER = [
-    "xgb",
-    "random_forest",
     "log_reg",
     "decision_tree",
+    "random_forest",
+    "xgb",
     "svm",
 ]
 

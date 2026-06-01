@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -19,6 +17,9 @@ class ProjectPaths:
     - adding project root to sys.path
     """
 
+    # ------------------------------------------------------------------
+    # Setup
+    # ------------------------------------------------------------------
     mode: str
 
     def __post_init__(self):
@@ -90,7 +91,7 @@ class ProjectPaths:
 
     @property
     def cleaned_sampled_parquet(self) -> Path:
-        return self.data_root / "cleaned_sampled.parquet"
+        return self.data_root / "cleaned_sampled_parquet"
 
     @property
     def feature_engineered_sampled_parquet(self) -> Path:
@@ -155,6 +156,7 @@ class ProjectPaths:
     @property
     def time_aware_row_test_parquet(self) -> Path:
         return self.time_aware_row_split_root / "test_parquet"
+    
     
     # # ------------------------------------------------------------------
     # # Train / validation / test split datasets FOR SAMPLED
