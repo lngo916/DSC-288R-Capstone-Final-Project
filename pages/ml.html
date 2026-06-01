@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ML Modeling — Steam Churn Prediction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="stylesheet" href="ml.css">
+
+<a href="../index.html#ml" class="back-btn">
+  ← Back
+</a>
+</head>
+
+<body>
+
+<div id="ml-page">
+
+  <!-- ── HERO ── -->
+  <div class="ml-hero">
+    <span class="year-badge">Machine Learning</span>
+    <h1>MODEL EXPLORATION</h1>
+    <div class="hero-meta">
+      <span class="hero-meta-item">PySpark MLlib</span>
+      <span class="hero-meta-item">5 classifiers</span>
+      <span class="hero-meta-item">XGBoost best AUC 0.877</span>
+      <span class="hero-meta-item">Expanse HPC</span>
+    </div>
+  </div>
+
+  <!-- ── FEATURES ── -->
+  <div>
+    <div class="section-label">02 &nbsp; Feature set</div>
+    <div class="features-grid">
+      <div class="feat-item">
+        <div class="feat-dot"></div>
+        <div>
+          <div class="feat-name">author_num_games_owned</div>
+          <div class="feat-desc">Total library size — proxy for platform investment and tenure.</div>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-dot"></div>
+        <div>
+          <div class="feat-name">author_num_reviews</div>
+          <div class="feat-desc">Reviews written — indicates community engagement and attachment.</div>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-dot"></div>
+        <div>
+          <div class="feat-name">author_playtime_forever</div>
+          <div class="feat-desc">Cumulative all-time playtime across all Steam games.</div>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-dot"></div>
+        <div>
+          <div class="feat-name">author_playtime_at_review</div>
+          <div class="feat-desc">Hours in the specific game when the review was written.</div>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-dot"></div>
+        <div>
+          <div class="feat-name">voted_up</div>
+          <div class="feat-desc">Whether the player recommended the game — satisfaction signal.</div>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-dot"></div>
+        <div>
+          <div class="feat-name">votes_up / votes_funny</div>
+          <div class="feat-desc">Community reactions to reviews — measures social visibility.</div>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-dot"></div>
+        <div>
+          <div class="feat-name">weighted_vote_score</div>
+          <div class="feat-desc">Steam's helpfulness score, weighting recency and vote volume.</div>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-dot"></div>
+        <div>
+          <div class="feat-name">comment_count</div>
+          <div class="feat-desc">Replies on reviews — additional social connection signal.</div>
+        </div>
+      </div>
+      <div class="feat-item">
+        <div class="feat-dot"></div>
+        <div>
+          <div class="feat-name">written_during_early_access</div>
+          <div class="feat-desc">Early-access flag — early adopters exhibit distinct churn patterns.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODEL EXPLORER ── -->
+  <div>
+    <div class="section-label">03 &nbsp; Model explorer</div>
+
+    <div class="model-tabs-row">
+      <button class="mtab active" onclick="switchModel('xgb')">XGBoost</button>
+      <button class="mtab" onclick="switchModel('rf')">Random Forest</button>
+      <button class="mtab" onclick="switchModel('lr')">Logistic Regression</button>
+      <button class="mtab" onclick="switchModel('dt')">Decision Tree</button>
+      <button class="mtab" onclick="switchModel('svm')">SVM</button>
+    </div>
+
+    <div class="model-panel">
+      <div class="model-inner">
+        <!-- LEFT -->
+        <div class="model-left">
+          <div class="model-card-header">
+            <div class="model-title" id="mName">XGBoost</div>
+            <span class="model-tag tag-ensemble" id="mTag">ENSEMBLE</span>
+          </div>
+          <p class="model-desc" id="mDesc">Gradient-boosted decision trees via XGBoost4J-Spark. Achieves the highest AUC-ROC (0.877) in validation with a near-zero generalization gap — the top performer in this pipeline.</p>
+
+          <div class="metrics-row">
+            <div class="metric-box">
+              <div class="metric-val" id="mAUC">0.877</div>
+              <div class="metric-label">AUC-ROC (val)</div>
+            </div>
+            <div class="metric-box">
+              <div class="metric-val" id="mAUCPR">0.990</div>
+              <div class="metric-label">AUC-PR (val)</div>
+            </div>
+            <div class="metric-box">
+              <div class="metric-val" id="mAcc">93.4%</div>
+              <div class="metric-label">Accuracy (val)</div>
+            </div>
+            <div class="metric-box">
+              <div class="metric-val" id="mF1">0.910</div>
+              <div class="metric-label">F1 score (val)</div>
+            </div>
+          </div>
+
+          <div class="gap-block">
+            <div class="gap-label">Train → val gap</div>
+            <div id="mGapRows"></div>
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="model-right">
+          <div class="chart-tabs">
+            <button class="chart-tab active" onclick="switchChart('feat')">Feature importance</button>
+            <button class="chart-tab" onclick="switchChart('roc')">ROC curve</button>
+            <button class="chart-tab" onclick="switchChart('cm')">Confusion matrix</button>
+          </div>
+
+          <!-- Feature bars -->
+          <div class="chart-view active" id="view-feat">
+            <div class="feat-bars" id="featBarsEl"></div>
+          </div>
+
+          <!-- ROC -->
+          <div class="chart-view" id="view-roc">
+            <div style="position:relative;height:290px;">
+              <canvas id="rocCanvas" role="img" aria-label="ROC curve for selected model">ROC curve.</canvas>
+            </div>
+          </div>
+
+          <!-- CM -->
+          <div class="chart-view" id="view-cm">
+            <div class="cm-wrap">
+              <div class="cm-axis-title">Predicted →</div>
+              <div class="cm-grid">
+                <div></div>
+                <div class="cm-axis">Retained</div>
+                <div class="cm-axis">Churned</div>
+                <div class="cm-axis cm-axis-vert">Retained</div>
+                <div class="cm-cell tp">
+                  <div class="cm-val good" id="cmTP">—</div>
+                  <div class="cm-lbl">True Pos</div>
+                </div>
+                <div class="cm-cell fp">
+                  <div class="cm-val bad" id="cmFP">—</div>
+                  <div class="cm-lbl">False Pos</div>
+                </div>
+                <div class="cm-axis cm-axis-vert">Churned</div>
+                <div class="cm-cell fn">
+                  <div class="cm-val bad" id="cmFN">—</div>
+                  <div class="cm-lbl">False Neg</div>
+                </div>
+                <div class="cm-cell tn">
+                  <div class="cm-val good" id="cmTN">—</div>
+                  <div class="cm-lbl">True Neg</div>
+                </div>
+              </div>
+              <div class="cm-note">Estimated from validation-set metrics</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── COMPARISON TABLE ── -->
+  <div>
+    <div class="section-label">04 &nbsp; Model comparison — validation set</div>
+    <div class="comparison-wrap">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>AUC-ROC</th>
+            <th>AUC-PR</th>
+            <th>F1</th>
+            <th>Accuracy</th>
+            <th>Train time</th>
+            <th>AUC gap</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="best-row">
+            <td><span class="mono">XGBoost</span><span class="best-badge">best AUC</span></td>
+            <td><span class="mono">0.877</span></td>
+            <td><span class="mono">0.990</span></td>
+            <td><span class="mono">0.910</span></td>
+            <td><span class="mono">93.4%</span></td>
+            <td><span class="mono">248s</span></td>
+            <td><span class="gap-pill gap-low">−0.003</span></td>
+          </tr>
+          <tr>
+            <td><span class="mono">Random Forest</span></td>
+            <td><span class="mono">0.852</span></td>
+            <td><span class="mono">0.986</span></td>
+            <td><span class="mono">0.900</span></td>
+            <td><span class="mono">93.3%</span></td>
+            <td><span class="mono">255s</span></td>
+            <td><span class="gap-pill gap-low">+0.002</span></td>
+          </tr>
+          <tr>
+            <td><span class="mono">Logistic Regression</span></td>
+            <td><span class="mono">0.826</span></td>
+            <td><span class="mono">0.981</span></td>
+            <td><span class="mono">0.911</span></td>
+            <td><span class="mono">93.3%</span></td>
+            <td><span class="mono">129s</span></td>
+            <td><span class="gap-pill gap-low">−0.000</span></td>
+          </tr>
+          <tr>
+            <td><span class="mono">Decision Tree</span></td>
+            <td><span class="mono">0.826</span></td>
+            <td><span class="mono">0.981</span></td>
+            <td><span class="mono">0.911</span></td>
+            <td><span class="mono">93.3%</span></td>
+            <td><span class="mono">101s</span></td>
+            <td><span class="gap-pill gap-low">−0.000</span></td>
+          </tr>
+          <tr>
+            <td><span class="mono">SVM</span></td>
+            <td><span class="mono">0.753</span></td>
+            <td><span class="mono">0.972</span></td>
+            <td><span class="mono">0.900</span></td>
+            <td><span class="mono">93.3%</span></td>
+            <td><span class="mono">116s</span></td>
+            <td><span class="gap-pill gap-low">−0.001</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-note">Gap = train AUC − val AUC. Negative values mean val slightly outperformed train — a sign of stable generalization.</p>
+  </div>
+
+  <!-- ── CHARTS ── -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-card-title">AUC-ROC by model</div>
+      <div class="chart-card-sub">Validation set — higher is better</div>
+      <div class="chart-legend">
+        <span class="legend-item"><span class="legend-swatch" style="background:#b9dcf9"></span>XGBoost</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:#6fa8d4"></span>Random Forest</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:#4d8ab8"></span>Log Reg / DT</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:#3a6f9e"></span>SVM</span>
+      </div>
+      <div style="position:relative;height:190px;">
+        <canvas id="aucChart" role="img" aria-label="Bar chart of AUC-ROC per model">AUC-ROC: XGBoost 0.877, Random Forest 0.852, Logistic Regression 0.826, Decision Tree 0.826, SVM 0.753.</canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-card-title">Train vs. validation AUC</div>
+      <div class="chart-card-sub">Generalization gap across all five models</div>
+      <div class="chart-legend">
+        <span class="legend-item"><span class="legend-swatch" style="background:#6baced"></span>Train</span>
+        <span class="legend-item"><span class="legend-swatch" style="background:#0d4379;border:1px dashed #9cbfe2"></span>Validation</span>
+      </div>
+      <div style="position:relative;height:190px;">
+        <canvas id="gapChart" role="img" aria-label="Grouped bar chart of train vs validation AUC">Train vs val AUC for all models.</canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STRATEGIC PROCESS ── -->
+  <div>
+    <div class="section-label">05 &nbsp; Strategic advising</div>
+    <div class="process-grid">
+      <div class="process-item">
+        <h3>Churn risk scoring</h3>
+        <p>The XGBoost model outputs a calibrated probability [0,1] per player. Players above a chosen threshold are flagged as high-risk and routed to downstream retention workflows.</p>
+      </div>
+      <div class="process-item">
+        <h3>Personalized re-engagement</h3>
+        <p>High-risk players receive notifications tailored to their behavioral profile — genre preferences, playtime patterns, and social activity — rather than generic promotions.</p>
+      </div>
+      <div class="process-item">
+        <h3>Competing game recommendations</h3>
+        <p>Players at risk of leaving a title are surfaced alternatives within the same genre cluster, reducing platform-level churn even when game-level churn is unavoidable.</p>
+      </div>
+      <div class="process-item">
+        <h3>Threshold tuning</h3>
+        <p>The classification threshold is a business lever — stricter thresholds cut false positives (fewer wasted interventions), looser thresholds maximize recall (catch more at-risk players).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── RETENTION LEVERS ── -->
+  <div>
+    <div class="section-label">06 &nbsp; Retention levers</div>
+    <div class="levers-grid">
+      <div class="lever-card">
+        <div class="lever-icon">🎯</div>
+        <div class="lever-title">Behavioral triggers</div>
+        <div class="lever-body">Inactivity windows and declining session frequency are the strongest churn signals. Trigger interventions at day 7 and day 14 of inactivity before the player fully disengages.</div>
+      </div>
+      <div class="lever-card">
+        <div class="lever-icon">💬</div>
+        <div class="lever-title">Social re-engagement</div>
+        <div class="lever-body">Players with high <code style="color:var(--accent);font-size:11px">votes_up</code> and <code style="color:var(--accent);font-size:11px">comment_count</code> are community-invested. Highlight friend activity, new reviews, and events to pull them back.</div>
+      </div>
+      <div class="lever-card">
+        <div class="lever-icon">📊</div>
+        <div class="lever-title">Platform-level retention</div>
+        <div class="lever-body">When a player churns from one game, recommend within-platform alternatives ranked by similarity — keeping cumulative playtime on Steam even as game-level loyalty fades.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+  <script src="ml.js"></script>
+
+</body>
+</html>

@@ -69,23 +69,7 @@
             background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, .6) 100%);
         }
 
-        /* ── PRESS START SCREEN ── */
-        #start-screen {
-            position: fixed;
-            inset: 0;
-            z-index: 50;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 0, 0, .85);
-            transition: opacity .6s ease;
-        }
 
-        #start-screen.gone {
-            opacity: 0;
-            pointer-events: none
-        }
 
         .press-badge {
             font-size: 11px;
@@ -514,12 +498,7 @@
     <div id="crt"></div>
 
     <!-- PRESS START -->
-    <div id="start-screen">
-        <div class="press-badge">DSC 288R · UCSD Capstone · 2026</div>
-        <div class="game-logo"><span>STEAM</span> RETENTION</div>
-        <div class="game-sub">Player Churn Analysis System v1.0</div>
-        <div class="press-start" id="press-start">▶ PRESS START</div>
-    </div>
+
 
     <!-- ACHIEVEMENT TOAST -->
     <div class="toast" id="toast">
@@ -530,7 +509,7 @@
         </div>
     </div>
 
- 
+
 
     <!-- MAIN HUD -->
     <div id="hud">
@@ -587,6 +566,15 @@
     </div>
 
     <script>
+        window.addEventListener('load', () => {
+            document.getElementById('hud').classList.add('visible');
+            document.getElementById('footer').style.opacity = '1';
+            started = true;
+
+            setTimeout(() => animateProgress(), 1000);
+            setTimeout(() => showToast('🏆', 'Mission Complete — DSC 288R'), 1800);
+            setTimeout(() => showToast('📊', '91% AUC-ROC achieved'), 5200);
+        });
         /* ════════════════════════════════════════════
            CANVAS SETUP
         ════════════════════════════════════════════ */
@@ -852,19 +840,7 @@
         let cars = [], carT = 0;
         cars.push(new Car(), new Car());
 
-        /* ════════════════════════════════════════════
-           START SCREEN
-        ════════════════════════════════════════════ */
-        let started = false;
-        document.getElementById('press-start').addEventListener('click', () => {
-            document.getElementById('start-screen').classList.add('gone');
-            document.getElementById('hud').classList.add('visible');
-            document.getElementById('footer').style.opacity = '1';
-            started = true;
-            setTimeout(() => animateProgress(), 1000);
-            setTimeout(() => showToast('🏆', 'Mission Complete — DSC 288R'), 1800);
-            setTimeout(() => showToast('📊', '91% AUC-ROC achieved'), 5200);
-        });
+
 
         /* ════════════════════════════════════════════
            MAIN LOOP

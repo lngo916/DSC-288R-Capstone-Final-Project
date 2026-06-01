@@ -1,19 +1,41 @@
-.pg-back {
-  display: flex;
+.back-btn {
+  position: sticky;
+  top: 22px;
+  left: 22px;
+  z-index: 999;
+
+  display: inline-flex;
   align-items: center;
   gap: 8px;
+
+  padding: 10px 14px;
+  border-radius: 10px;
+
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   text-decoration: none;
-  color: var(--subtext);
-  font-size: 13px;
-  padding: 6px 12px;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  transition: .2s;
+
+  color: var(--accent);
+  background: rgba(13, 26, 46, 0.6);
+  border: 1px solid rgba(156, 191, 226, 0.2);
+
+  backdrop-filter: blur(8px);
+  transition: all 0.25s ease;
 }
 
-.pg-back:hover {
-  color: var(--accent);
-  border-color: var(--accent);
+/* hover effect */
+.back-btn:hover {
+  transform: translateX(-4px);
+  border-color: rgba(156, 191, 226, 0.5);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+  background: rgba(156, 191, 226, 0.08);
+}
+
+/* click feel */
+.back-btn:active {
+  transform: translateX(-2px) scale(0.98);
 }
 
 /* GENERAL */
@@ -50,8 +72,9 @@ body.locked #hero {
   --deep: #030916;
 }
 
-html {
-  scroll-behavior: smooth;
+html, body {
+  height: 100%;
+  overflow: hidden;
 }
 
 body {
@@ -85,7 +108,7 @@ section {
 }
 
 .big-title {
-  font-size: clamp(48px, 7vw, 96px);
+  font-size: clamp(2px, 7vw, 35px);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: -0.01em;
@@ -94,12 +117,11 @@ section {
   text-shadow: 0 0 25px rgba(235, 238, 248, 0.315);
 }
 
-
 .body-text {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 300;
   color: var(--subtext);
-  line-height: 1.75;
+  line-height: 1.55;
   max-width: 440px;
 }
 
@@ -125,7 +147,7 @@ section {
   align-items: center;
   gap: 2px;
   font-size: 9px;
-  color: var(--subtext, #c8d8e8);
+  color: #ffffff;
 }
 
 .pl-leg::before {
@@ -140,7 +162,7 @@ section {
 .pl-col-label {
   font-size: 8px;
   font-weight: 700;
-  color: rgba(156, 191, 226, 0.4);
+  color: rgb(199, 218, 233);
   letter-spacing: .1em;
   text-transform: uppercase;
   padding: 0 0 2px 4px;
@@ -152,25 +174,27 @@ section {
 .pl-n {
   display: flex;
   align-items: flex-start;
-  gap: 2px;
+  gap: 20px;
   background: rgba(13, 26, 46, 0.7);
   border: 1px solid color-mix(in srgb, var(--nc) 25%, transparent);
   border-left: 2px solid var(--nc, #9cbfe2);
   border-radius: 4px;
   padding: 2px 6px;
-  font-size: 9px;
+  font-size: 10px;
   line-height: 1.1;
   color: rgba(200, 216, 232, 0.6);
   transition: background .15s, transform .15s, border .15s;
   cursor: default;
   flex-shrink: 0;
+  font-family: 'Poppins', 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
 }
 
 .pl-n:hover {
-  background: rgba(13, 26, 46, 0.95);
+  background: color-mix(in srgb, var(--nc) 18%, rgba(13, 26, 46, 0.95));
   border-left-color: var(--nc);
   transform: translateX(2px);
-  color: rgba(200, 216, 232, 0.85);
+  color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--nc) 80%, transparent);
 }
 
 .pl-n b {
@@ -178,6 +202,8 @@ section {
   font-weight: 600;
   display: block;
 }
+
+
 
 /* flow arrows between columns — pure CSS */
 .pl-arrow {
