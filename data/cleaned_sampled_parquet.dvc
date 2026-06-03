@@ -1,5 +1,6 @@
 outs:
-- md5: db025d5cbcff13b70c1982533df99c12
-  size: 357745788
+- md5: a3f3263bd73cae84db9c4eca85f22e03.dir
+  size: 362449667
   hash: md5
   path: cleaned_sampled_parquet
+  nfiles: 66
