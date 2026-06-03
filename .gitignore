@@ -1,6 +1,6 @@
 # Editor / IDE
 .vscode/
-.env.publisher
+.env.*
 
 # Git
 **/.DS_Store

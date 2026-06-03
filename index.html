@@ -8,8 +8,11 @@
 
   <link rel="stylesheet" href="style.css">
 
-
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script> -->
 
   <script type="importmap">
     {
@@ -22,14 +25,11 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 
-  <link rel="preload" href="/web/images/steam2.glb" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="/images/steam2.glb" as="fetch" crossorigin="anonymous">
 
 </head>
 
 <body class="locked">
-
-  <canvas id="road-canvas"></canvas>
-  <canvas id="overlay-canvas"></canvas>
   <div id="crt"></div>
 
   <!-- PRESS START -->
@@ -101,7 +101,7 @@
       <div class="about-right">
         <p class="body-text">
           Player retention refers to a game's ability to keep its user base engaged over time. In the
-          competitive gaming market, understanding why players stay or leave is critical for studios and publishers
+          competitive gaming market, understanding influeencing factors to a users' engagement is critical for studios and publishers
           looking to maximize lifetime value and community growth.
         </p>
 
@@ -167,23 +167,31 @@
       <div class="process-grid">
         <div class="process-item">
           <h3>Data Gathering</h3>
-          <p class="body-text">Collecting Steam behavioral logs, game metadata, user reviews, and playtime data across
-            millions of player sessions and thousands of titles.</p>
+          <p class="body-text">
+            Collecting Steam behavioral logs, game metadata, user reviews, and playtime data across
+            millions of player sessions and thousands of titles.
+          </p>
         </div>
         <div class="process-item">
           <h3>Reporting</h3>
-          <p class="body-text">Communicating findings through interactive dashboards and visual reports that surface
-            churn risk scores and recommendation outputs.</p>
+          <p class="body-text">
+            Communicating findings through interactive dashboards and visual reports that surface
+            churn risk scores and recommendation outputs.
+          </p>
         </div>
         <div class="process-item">
           <h3>Analysis</h3>
-          <p class="body-text">Applying EDA, feature engineering, and statistical methods to identify patterns in player
-            behavior that precede disengagement.</p>
+          <p class="body-text">
+            Applying EDA, feature engineering, and statistical methods to identify patterns in player
+            behavior that precede disengagement.
+          </p>
         </div>
         <div class="process-item">
           <h3>Strategic Advising</h3>
-          <p class="body-text">Translating model outputs into actionable retention strategies — from personalized
-            notifications to competing game recommendations.</p>
+          <p class="body-text">
+            Translating model outputs into actionable retention strategies — from personalized
+            notifications to competing game recommendations.
+          </p>
         </div>
       </div>
     </div>
@@ -218,171 +226,132 @@
   </section>
 
   <!-- ══ SLIDE 5: ML ══ -->
-  <!-- Add to your <head>:  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script> -->
-
   <section id="ml">
 
     <div class="ml-header">
+        <a href="pages/ml.html" class="ml-more-btn">More Info →</a>
+
       <div class="ml-header-text">
         <span class="year-badge">Machine Learning</span>
         <h2>Model Exploration</h2>
-        <p>Interact with each model in our retention pipeline — tune parameters, inspect metrics, and simulate
-          predictions in real time.</p>
-      </div>
-      <div class="model-tabs" id="modelTabs">
-        <button class="tab-btn active" data-model="xgb">XGBoost</button>
-        <button class="tab-btn" data-model="rf">Random Forest</button>
-        <button class="tab-btn" data-model="lstm">LSTM</button>
-        <button class="tab-btn" data-model="cf">Collab Filter</button>
+        <p>A PySpark ML pipeline trained on Steam behavioral data across five classifiers —
+          from linear baselines to gradient-boosted trees — to identify players at risk of churning and
+          surface retention strategies.
+        </p>
       </div>
     </div>
 
-    <!-- MAIN GRID -->
-    <div class="ml-grid">
-
-      <!-- LEFT: MODEL CARD -->
-      <div class="model-card" id="modelCard">
-        <div class="model-card-header">
-          <span class="model-title" id="modelName">XGBoost Classifier</span>
-          <span class="model-tag tag-supervised" id="modelTag">SUPERVISED</span>
+    <div>
+      <div class="section-label">01 &nbsp; Pipeline overview</div>
+      <div class="pipeline-grid">
+        <div class="pipe-step">
+          <div class="pipe-num">01</div>
+          <div class="pipe-title">Data ingestion</div>
+          <div class="pipe-body">Train, val, and test splits loaded from Parquet via PySpark. Full data runs on Expanse
+            HPC; sampled data runs on Colab. Columnar storage enables efficient feature assembly.</div>
         </div>
-        <p class="model-desc" id="modelDesc">Gradient-boosted decision trees trained to predict 30-day churn
-          probability. XGBoost handles feature interactions and missing values natively, making it robust to the sparse
-          Steam interaction matrix.</p>
-
-        <div class="metrics-row" id="metricsRow">
-          <div class="metric-box">
-            <div class="metric-val" id="m-auc">0.91</div>
-            <div class="metric-label">AUC-ROC</div>
-          </div>
-          <div class="metric-box">
-            <div class="metric-val" id="m-prec">87%</div>
-            <div class="metric-label">Precision</div>
-          </div>
-          <div class="metric-box">
-            <div class="metric-val" id="m-rec">83%</div>
-            <div class="metric-label">Recall</div>
-          </div>
+        <div class="pipe-step">
+          <div class="pipe-num">02</div>
+          <div class="pipe-title">Feature engineering</div>
+          <div class="pipe-body">10 behavioral columns assembled into a dense feature vector via VectorAssembler —
+            playtime, review activity, vote signals, and early-access flag.</div>
         </div>
-
-        <div class="params-section" id="paramsSection">
-          <div class="params-title">HYPERPARAMETERS</div>
-          <div class="param-row">
-            <div class="param-label"><span>Max Depth</span><span id="pv-depth">6</span></div>
-            <input class="param-slider" type="range" min="2" max="12" value="6" id="p-depth">
-          </div>
-          <div class="param-row">
-            <div class="param-label"><span>Learning Rate</span><span id="pv-lr">0.10</span></div>
-            <input class="param-slider" type="range" min="1" max="30" value="10" id="p-lr">
-          </div>
-          <div class="param-row">
-            <div class="param-label"><span>Estimators</span><span id="pv-est">200</span></div>
-            <input class="param-slider" type="range" min="50" max="500" step="50" value="200" id="p-est">
-          </div>
-          <button class="sim-btn" id="retrainBtn">Retrain Model ↻</button>
+        <div class="pipe-step">
+          <div class="pipe-num">03</div>
+          <div class="pipe-title">Churn labeling</div>
+          <div class="pipe-body">Binary label derived from <code
+              style="color:var(--accent);font-size:11px">author_playtime_last_two_weeks</code>: ≤ 60 min → churned (1),
+            else retained (0).</div>
         </div>
-      </div>
-
-      <!-- RIGHT: CHART PANEL -->
-      <div class="chart-panel">
-        <div class="chart-tabs" id="chartTabs">
-          <button class="chart-tab active" data-chart="roc">ROC Curve</button>
-          <button class="chart-tab" data-chart="feat">Feature Importance</button>
-          <button class="chart-tab" data-chart="cm">Confusion Matrix</button>
-          <button class="chart-tab" data-chart="learn">Learning Curve</button>
+        <div class="pipe-step">
+          <div class="pipe-num">04</div>
+          <div class="pipe-title">Model training</div>
+          <div class="pipe-body">Five classifiers trained independently: Logistic Regression, Decision Tree, Random
+            Forest, SVM, and XGBoost — each timed and evaluated on the validation split.</div>
         </div>
-
-        <div id="view-roc">
-          <div class="chart-wrap"><canvas id="rocChart" role="img" aria-label="ROC curve for the current model">ROC
-              curve showing true positive rate vs false positive rate.</canvas></div>
+        <div class="pipe-step">
+          <div class="pipe-num">05</div>
+          <div class="pipe-title">Evaluation</div>
+          <div class="pipe-body">Models scored on AUC-ROC, AUC-PR, F1, weighted precision/recall, and accuracy for both
+            train and val splits to surface generalization gaps.</div>
         </div>
-
-        <div id="view-feat" style="display:none">
-          <div class="feat-bars" id="featBars"></div>
-        </div>
-
-        <div id="view-cm" style="display:none">
-          <div class="cm-wrap">
-            <div class="cm-axis-title">PREDICTED →</div>
-            <div class="cm-grid">
-              <div></div>
-              <div class="cm-axis">Retained</div>
-              <div class="cm-axis">Churned</div>
-              <div class="cm-axis cm-axis-vert">Retained</div>
-              <div class="cm-cell tp">
-                <div class="cm-val good" id="cm-tp">7241</div>
-                <div class="cm-label">TRUE POS</div>
-              </div>
-              <div class="cm-cell fp">
-                <div class="cm-val bad" id="cm-fp">412</div>
-                <div class="cm-label">FALSE POS</div>
-              </div>
-              <div class="cm-axis cm-axis-vert">Churned</div>
-              <div class="cm-cell fn">
-                <div class="cm-val bad" id="cm-fn">689</div>
-                <div class="cm-label">FALSE NEG</div>
-              </div>
-              <div class="cm-cell tn">
-                <div class="cm-val good" id="cm-tn">4158</div>
-                <div class="cm-label">TRUE NEG</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div id="view-learn" style="display:none">
-          <div class="chart-wrap"><canvas id="learnChart" role="img"
-              aria-label="Learning curve showing train vs validation score">Learning curve: train vs validation accuracy
-              over training set size.</canvas></div>
+        <div class="pipe-step">
+          <div class="pipe-num">06</div>
+          <div class="pipe-title">Strategic output</div>
+          <div class="pipe-body">Churn probabilities translated into retention actions — personalized notifications and
+            game recommendations for high-risk players.</div>
         </div>
       </div>
     </div>
+
+    <!-- ── CHURN DEFINITION ── -->
+    <div class="churn-banner">
+      <div class="churn-label-text">
+        <strong>Churn definition</strong>
+        Players with ≤ 60 min playtime in the past two weeks are labeled as churned.
+      </div>
+      <div class="churn-code">
+        churn &nbsp;= 1 &nbsp;&nbsp;if &nbsp;author_playtime_last_two_weeks &nbsp;≤ 60 min<br>
+        churn &nbsp;= 0 &nbsp;&nbsp;otherwise
+      </div>
+      <span class="churn-pill">Binary classification</span>
+    </div>
+
   </section>
+
 
   <!-- ══ SLIDE 7: TECHNIQUES ══ -->
-  <section id="techniques">
-    <div class="tech-inner">
+<section id="techniques">
+  <div class="tech-inner">
 
-      <div class="tech-heading">
-        <p class="big-title">Model Comparison</p>
-        <p class="tech-sub">Our end-to-end analytical workflow — from raw behavioral data to actionable
-          retention strategies — broken down into four core stages.</p>
-      </div>
-
-      <div class="tech-grid">
-
-        <div class="tech-item">
-          <h3>XGBoost</h3>
-          <p class="body-text">
-            Collecting Steam behavioral logs, game metadata, user reviews, and playtime data across millions of
-            sessions.
-          </p>
-        </div>
-
-        <div class="tech-item">
-          <h3>Random Forest</h3>
-          <p class="body-text">
-            Communicating findings through dashboards and visual reports that surface churn risk scores.
-          </p>
-        </div>
-
-        <div class="tech-item">
-          <h3>LSTM</h3>
-          <p class="body-text">
-            Applying EDA, feature engineering, and statistical methods to identify disengagement patterns.
-          </p>
-        </div>
-
-        <div class="tech-item">
-          <h3>Collaborative Filtering</h3>
-          <p class="body-text">
-            Translating outputs into retention strategies like recommendations and re-engagement triggers.
-          </p>
-        </div>
-
-      </div>
+    <div class="tech-heading">
+      <p class="big-title">Model Comparison</p>
+      <p class="tech-sub">
+        We evaluated multiple modeling approaches to predict Steam player churn,
+        ranging from interpretable baselines to deep sequential models that capture
+        long-term engagement patterns.
+      </p>
     </div>
-  </section>
+
+    <div class="tech-grid">
+
+      <div class="tech-item">
+        <h3>XGBoost</h3>
+        <p class="body-text">
+          Primary production model for churn prediction. Captures non-linear interactions
+          between behavioral features such as playtime, review sentiment, and engagement frequency.
+          Strong performance on structured tabular Steam data.
+        </p>
+      </div>
+
+      <div class="tech-item">
+        <h3>Random Forest</h3>
+        <p class="body-text">
+          Baseline ensemble model used for robustness comparison and feature importance validation.
+          Helps verify stability of churn signals across different sampling and feature subsets.
+        </p>
+      </div>
+
+      <div class="tech-item">
+        <h3>Logistic Regression</h3>
+        <p class="body-text">
+          Interpretable baseline model used to establish linear separability of churn behavior.
+          Provides a transparent benchmark for understanding directional impact of key features
+          like early playtime and review activity.
+        </p>
+      </div>
+
+      <div class="tech-item">
+        <h3>LSTM / Sequential Model</h3>
+        <p class="body-text">
+          Captures temporal dynamics in player behavior over time (session sequences, play history).
+          Used to model long-term engagement trends that static models cannot represent.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
 
   <!-- ══ SLIDE 8: REPORTING ══ -->
   <section id="insight">
@@ -473,7 +442,7 @@
         <!-- MEMBER 1 -->
         <div class="team-card">
           <div class="team-role">Project Manager</div>
-          <img src="/web/images/jason.jpg" alt="Jason Limfueco" class="team-avatar">
+          <img src="/images/jason.jpg" alt="Jason Limfueco" class="team-avatar">
           <h3 class="team-name">Jason Limfueco</h3>
           <p class="team-desc">
             Leads project coordination, manages timelines, and ensures smooth collaboration across all components.
@@ -484,7 +453,7 @@
         <!-- MEMBER 3 -->
         <div class="team-card">
           <div class="team-role">Frontend & Presentation</div>
-          <img src="/web/images/laura.jpeg" alt="Laura Ngo" class="team-avatar">
+          <img src="/images/laura.jpg" alt="Laura Ngo" class="team-avatar">
           <h3 class="team-name">Laura Ngo</h3>
           <p class="team-desc">
             Designs and builds the project website, transforming technical results into clear visual narratives.
@@ -495,7 +464,7 @@
         <!-- MEMBER 2 -->
         <div class="team-card">
           <div class="team-role">Data Engineer</div>
-          <img src="/web/images/photo1.avif" alt="Baixi Guo" class="team-avatar">
+          <img src="/images/baixi.jpg" alt="Baixi Guo" class="team-avatar">
           <h3 class="team-name">Baixi Guo</h3>
           <p class="team-desc">
             Develops and maintains the data pipeline, handling preprocessing, integration, and large-scale dataset
