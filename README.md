@@ -118,16 +118,44 @@ DSC-288R-Capstone-Final-Project/
 - **Python 3.11 recommended** — tested on 3.11; **3.10–3.12** should also work.
   Avoid 3.13 (some dependencies such as `ray`, `numba`, and `ydata-profiling` lag
   on the newest release).
-- **Java runtime (JRE/JDK)** — required by PySpark. This is the most common silent
-  setup failure; confirm `java -version` works before running Spark notebooks.
 - **git**
 - Free disk space for the sampled parquet datasets
+
+> 🐍 **Easiest path — skip all local setup:** open the notebooks in **Google Colab**
+> and set `MODE = "COLAB"` in the first cell. Colab ships with Java, libomp, and the
+> ML stack preinstalled, so the system dependencies below are handled for you.
+
+### System dependencies (NOT installed by `pip`)
+
+These are **native libraries** `requirements.txt` cannot provide. On macOS, install
+both via [Homebrew](https://brew.sh) **before** running the notebooks:
+
+| Dependency | Why | macOS install |
+|------------|-----|---------------|
+| **JDK 17** | PySpark runs on the JVM. **The version matters** — PySpark 3.5 needs Java 8/11/**17**, PySpark 4.0 needs **17/21**. Java 17 is the safe choice. Too-old (e.g. 15) *or* too-new Java fails with `UnsupportedClassVersionError`. | `brew install openjdk@17` |
+| **libomp** | XGBoost's native library needs the OpenMP runtime, or `import xgboost.spark` raises `XGBoostError`. | `brew install libomp` |
+
+After installing JDK 17, point Spark at it (add the exports to `~/.zshrc` to persist):
+
+```bash
+export JAVA_HOME="/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home"
+export PATH="$JAVA_HOME/bin:$PATH"
+java -version   # should report 17.x
+```
+
+> If a notebook still picks up the wrong Java (e.g. VS Code didn't inherit the new
+> env), set it in the **first cell, before `create_spark_session`**:
+> ```python
+> import os
+> os.environ["JAVA_HOME"] = "/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home"
+> ```
+>
+> **Linux:** a JDK 17 (`apt install openjdk-17-jdk`) plus `libgomp1` (usually already
+> present) are the equivalents.
 
 > **Don't have Python 3.11?** Get it without touching your system Python:
 > - **conda / miniconda:** `conda create -n dsc288r python=3.11 && conda activate dsc288r`
 > - **pyenv:** `pyenv install 3.11 && pyenv local 3.11`
-> - **No local setup at all:** open the notebooks in **Google Colab** (some notebooks
->   already support mounting Drive via `google.colab`).
 
 ### Create a virtual environment and install dependencies
 
@@ -172,14 +200,19 @@ available and you can skip this. Without the right kernel, notebooks fail with
 
 ## 6. AWS Credentials Setup
 
-Two credential templates are provided:
+**The ready-to-use `.env.reader` is committed in this repo — there's nothing to
+create.** Working read-only credentials are already provided so the professor/TA
+can fetch the data immediately. (This is intentional; see the
+[tradeoff note](#️-a-deliberate-convenience-vs-security-tradeoff) below.)
 
-- `.env.reader.example` — for *pulling* data. (read only) 
-- `.env.publisher.example` — for *pushing* data (maintainers only).
-- `.env.reader` — for *pulling* data. **This is all the
-  professor/TA needs.**
+Files you'll see:
 
-`.env.reader` format:
+- **`.env.reader`** — *committed and populated.* Read-only keys for *pulling* data.
+  **This is all the professor/TA needs.**
+- `.env.reader.example` — template, kept for future consistency.
+- `.env.publisher.example` — template for *pushing* data (maintainers only).
+
+`.env.reader` contents (already filled in for you):
 
 ```
 AWS_ACCESS_KEY_ID=AKI...
@@ -187,12 +220,29 @@ AWS_SECRET_ACCESS_KEY=...
 AWS_DEFAULT_REGION=us-west-2
 ```
 
+### Before you run the fetch script ([§7](#7-data-setup-dvc--s3))
+
+**Clear any AWS credentials already in your shell.** If you have AWS variables
+exported from another project or an `aws configure` session, a leftover
+`AWS_SESSION_TOKEN` or `AWS_PROFILE` can override the provided reader keys and
+cause `403`/auth errors. Reset them in the terminal you'll run the script from:
+
+```bash
+unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN \
+      AWS_PROFILE AWS_DEFAULT_REGION AWS_DEFAULT_PROFILE
+```
+
+The fetch script in §7 `source`s `.env.reader` and exports the keys for that run,
+so you don't need to export anything yourself.
+
 ### ⚠️ A deliberate convenience-vs-security tradeoff
 
-AWS **strongly discourages** sharing sensitive material such as access keys (e.g.
-in an `.env.reader`). I am exposing the reader credentials **publicly on purpose**,
-as a deliberate tradeoff: it lets the grader run the startup / fetch script
-directly against the data without setting up their own AWS account.
+AWS **strongly discourages** sharing sensitive material such as access keys. By
+**committing `.env.reader` to this public repo**, I am exposing the reader
+credentials **on purpose**, as a deliberate tradeoff: it lets the grader run the
+fetch script directly against the data without setting up their own AWS account or
+copying keys around — they can be confident the right credentials are already in
+place.
 
 I fully understand the implications:
 
@@ -363,7 +413,12 @@ straight from the repo, no setup required.
 |---------|-----|
 | `Permission denied` on fetch script | `chmod +x scripts/fetch_all_sampled_data.sh` |
 | Missing-credentials error | Confirm `.env.reader` exists and is populated |
-| `dvc pull` auth / 403 errors | Verify the reader keys and `AWS_DEFAULT_REGION` (note: keys are rotated after grading — see [§6](#6-aws-credentials-setup)) |
-| `ModuleNotFoundError` in a notebook | Activate the venv and `pip install -r requirements.txt` (see [§5](#5-prerequisites)) |
-| Spark fails to start / `JAVA_HOME` errors | Install a Java runtime; confirm `java -version` |
-| Notebook can't find data | Run the fetch script first (see [§7](#7-data-setup-dvc--s3)); data must be present in `data/` |
+| `dvc pull` auth / 403 errors | Clear stale AWS env vars (`unset AWS_SESSION_TOKEN AWS_PROFILE …`, see [§6](#6-aws-credentials-setup) step 1), then verify the reader keys and `AWS_DEFAULT_REGION` (note: keys are rotated after grading) |
+| `ModuleNotFoundError` in a notebook, but `pip show <pkg>` finds it | The notebook kernel isn't your `.venv`. In VS Code, use the **kernel picker (top-right)** → select `./.venv/bin/python`. Verify with `import sys; print(sys.executable)`. |
+| `ModuleNotFoundError` (package genuinely missing) | Activate the venv and `pip install -r requirements.txt` (see [§5](#5-prerequisites)) |
+| `XGBoostError` on `import xgboost.spark` (mentions OpenMP / "32-bit Python") | Install the OpenMP runtime: `brew install libomp`, then **restart the kernel**. The "32-bit Python" line is a red herring. (see [§5](#5-prerequisites)) |
+| Spark: `UnsupportedClassVersionError` / `class file version 61.0` | Wrong Java version. Install **JDK 17** (`brew install openjdk@17`) and set `JAVA_HOME` (see [§5](#5-prerequisites)). "61.0" = Java 17 required; a lower "recognized up to" number = your Java is too old. |
+| Spark: `JAVA_GATEWAY_EXITED` (gateway exited before sending its port) | The JVM launched but died. Two causes: **(a)** wrong/old Java → fix per the row above (JDK 17 + `JAVA_HOME`); **(b)** the default Spark config requests **10g driver memory**, too big for a laptop → run in local mode with less memory (next row). |
+| Spark too big for a laptop (cluster-sized config) | The default `SPARK_CONFIGS` are sized for the Expanse cluster. For local runs, override at the call site: `create_spark_session(app_name, extra_configs={"spark.driver.memory": "4g", "spark.master": "local[*]"})`. |
+| Spark fails to start / `JAVA_HOME` errors | Confirm `java -version` reports **17.x** and `JAVA_HOME` points at JDK 17 (see [§5](#5-prerequisites)) |
+| Notebook can't find data (`FileNotFoundException` on a parquet path) | Set `MODE = "LOCAL"` in the notebook's first cell, and ensure the data was pulled into `data/` (see [§7](#7-data-setup-dvc--s3)). Paths resolve to `<repo>/data/...` via `ProjectPaths`. |

@@ -1,20 +1,17 @@
 # Editor / IDE
+.claude/
 .vscode/
-.env.publisher
 
-# Git
-**/.DS_Store
-
-# Jupyter
-.ipynb_checkpoints/
-
-# Python
+# Caches
 .venv/
 __pycache__/
 *.py[cod]
+.ipynb_checkpoints/
+**/.DS_Store
 
 # Specific folders/files
-configs
+.env.publisher
+configs/
 dvc_remote_sample/
 src/legacy/
 notebooks/4_EDA_review_sampleV2.ipynb

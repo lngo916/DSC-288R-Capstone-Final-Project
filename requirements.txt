@@ -22,6 +22,7 @@ requests
 # --- ML & modeling ---
 scikit-learn
 xgboost
+pyarrow >= 15.0.0
 
 # --- EDA & profiling ---
 ydata-profiling
