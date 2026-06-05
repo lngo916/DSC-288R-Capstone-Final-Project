@@ -126,6 +126,10 @@ DSC-288R-Capstone-Final-Project/
 - **git**
 - Free disk space for the sampled parquet datasets
 
+> **Don't have Python 3.11?** Get it without touching your system Python:
+> - **conda / miniconda:** `conda create -n dsc288r python=3.11 && conda activate dsc288r`
+> - **pyenv:** `pyenv install 3.11 && pyenv local 3.11`
+
 > 🐍 **Easiest path — skip all local setup:** open the notebooks in **Google Colab**
 > and set `MODE = "COLAB"` in the first cell. Colab ships with Java, libomp, and the
 > ML stack preinstalled, so the system dependencies below are handled for you.
@@ -157,10 +161,6 @@ java -version   # should report 17.x
 >
 > **Linux:** a JDK 17 (`apt install openjdk-17-jdk`) plus `libgomp1` (usually already
 > present) are the equivalents.
-
-> **Don't have Python 3.11?** Get it without touching your system Python:
-> - **conda / miniconda:** `conda create -n dsc288r python=3.11 && conda activate dsc288r`
-> - **pyenv:** `pyenv install 3.11 && pyenv local 3.11`
 
 ### Create a virtual environment and install dependencies
 
@@ -296,9 +296,9 @@ installs `dvc[s3]`, loads your reader credentials, and runs `dvc pull` against t
 
 After the pull, the datasets land in `data/`:
 `subsampled_parquet/`, `cleaned_sampled_parquet/`,
-`feature_engineered_sampled_parquet/`, and `train_val_test_splits/`.
+`feature_engineered_sampled_parquet/`, `train_val_test_splits/` and `steam_tfidf_nn_recommender_v2.parquet`
 
-⏱️ **The fetch completes in under ~15 minutes.** After that, open Jupyter and run
+⏱️ **The fetch completes in under ~17 minutes.** After that, open Jupyter and run
 the notebooks.
 
 ---
@@ -312,6 +312,7 @@ that is present locally.
 
 | Notebook | Purpose | Runnable from clone? |
 |----------|---------|----------------------|
+| `0_RECOMMENDER_TF_IDF+NNBRUTE_Steam_playground.ipynb` | TF-IDF + NN recommender | ✅ |
 | `1_data_ingestion.ipynb` | Download / ingest raw Steam reviews | ❌ needs full dataset |
 | `2_data_subsampling.ipynb` | Create sampled subsets | ❌ needs full dataset |
 | `3_data_health_audit_&_prep_sample.ipynb` | Health audit + prep (sample) | ✅ |
@@ -322,7 +323,8 @@ that is present locally.
 | `5_feature_engineering.ipynb` | Feature engineering | ✅ |
 | `6_train_test_split.ipynb` | Train / val / test split | ✅ |
 | `7_ML_modeling.ipynb` | ML model training | ✅ |
-| `8_RECOMMENDER_TF_IDF+NNBRUTE_Steam_playground.ipynb` | TF-IDF + NN recommender | ✅ |
+| `8_ML_tuning.ipynb` | ML fine tuning| ✅ |
+
 
 > **Note:** The full-dataset notebooks (`*_full`, plus ingestion and subsampling)
 > are included for reproducibility documentation but will not run without the
@@ -372,8 +374,7 @@ work:
   **imperative (hardcoded) instead of declarative**. Lifting them into `configs/`
   makes the workflow reconfigurable with **no code changes**, parameterizing logic,
   notebooks, and automation alike.
-- **`model/` layer + live deployment.** Add a `model/` layer that stores trained
-  **model weights and metadata** (produced via the logic layer), then expose it as
+- **`model/` layer + live deployment.** expose `model/`  as
   a **backend service** that powers the **live site** — turning the portfolio
   walkthrough into an interactive, model-backed demo.
 - **Connect the full dataset to S3.** Wire the ~50 GB full dataset on SDSC Expanse
