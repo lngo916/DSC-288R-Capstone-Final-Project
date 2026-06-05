@@ -22,6 +22,7 @@ DVC_FILES=(
   "data/feature_engineered_sampled_parquet.dvc"
   "data/subsampled_parquet.dvc"
   "data/train_val_test_splits.dvc"
+  "data/steam_tfidf_nn_recommender_v2.parquet.dvc"
 )
 
 echo "Project root: ${PROJECT_ROOT}"
