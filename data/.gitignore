@@ -13,3 +13,4 @@
 
 # Other dataset
 /game_KNN.parquet
+/steam_tfidf_nn_recommender_v2.parquet

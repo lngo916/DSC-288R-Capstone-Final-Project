@@ -48,7 +48,7 @@ active today; two are scaffolded for future development (see
 | **Exploration layer** | `notebooks/` | ✅ active | the logic layer | Numbered Jupyter notebooks — the analysis narrative. Cells are **run manually**. |
 | **Automation layer** | `automation/` | 🚧 future | the logic layer | *(Not yet completed.)* Python-script versions of the notebooks that **run the workflow automatically** as SLURM batch jobs — the scripted counterpart to manual notebooks. |
 | **Config layer** | `configs/` | 🚧 future | logic, notebooks & automation (cross-cutting) | *(Not yet completed.)* `path.yaml`, `spark.yaml`, `eda.yml`. A **cross-cutting side input** that parameterizes the others (Spark resources, paths, EDA settings). The `ALL_CAPS` constants currently hardcoded in `src/` were meant to live here — see [§11](#11-future-development). Fully wiring this up lets automation run config-driven with no code edits, while notebooks can still override by hand. |
-| **Model layer** | `model/` | 🚧 future | the logic layer | *(Not yet completed.)* Trained-model **weights and metadata**. Trained via the logic layer, then deployed as a backend service that powers the live site (see [§12](#12-portfolio-website--project-walkthrough)). |
+| **Model layer** | `model/` | ✅ active | the logic layer | *(Not yet completed.)* Trained-model **weights and metadata**. Trained via the logic layer, then deployed as a backend service that powers the live site (see [§12](#12-portfolio-website--project-walkthrough)). |
 | **Execution layer** | `scripts/` | ✅ active | — | Shell entrypoints: data fetch + notebook rendering. **Operational glue**, not part of the analysis flow. |
 
 Read it bottom-up: each layer *runs on* the one below it (solid arrows). `configs/`
@@ -91,7 +91,13 @@ DSC-288R-Capstone-Final-Project/
 │   ├── subsampled_parquet/        #   pulled datasets land here
 │   ├── cleaned_sampled_parquet/
 │   ├── feature_engineered_sampled_parquet/
-│   └── train_val_test_splits/
+│   ├── train_val_test_splits/
+│   └── steam_tfidf_nn_recommender_v2.parquet  # TF-IDF + NN recommender artifact
+├── models/                        # Model layer — trained Spark ML models (§7)
+│   ├── baseline/                  #   default-hyperparameter models
+│   │   ├── log_reg/  decision_tree/  random_forest/  xgb/  svm/
+│   └── tuned/                     #   hyperparameter-tuned models
+│       └── log_reg/  ...
 ├── src/                           # Logic layer
 │   ├── pipelines/                 #   ingest, prep, audit, feature eng, modeling, split
 │   └── utils/                     #   io_utils, paths_utils, pyspark_utils
@@ -108,7 +114,6 @@ DSC-288R-Capstone-Final-Project/
 ├── requirements.txt               # Python dependencies (§5)
 └── README.md
 # (planned) automation/            # Python/SLURM batch versions of the notebooks (§11)
-# (planned) model/                 # Trained model weights + metadata → backend service (§11)
 ```
 
 ---
