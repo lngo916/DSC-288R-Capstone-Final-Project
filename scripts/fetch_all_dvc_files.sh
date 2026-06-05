@@ -139,7 +139,10 @@ echo "Configured DVC remotes:"
 dvc remote list
 
 for remote in "${DVC_REMOTES[@]}"; do
-  if ! dvc remote list | grep -q "^${remote}[[:space:]]"; then
+  # Check machine-readable config (remote.<name>.url=...) rather than the
+  # human-formatted `dvc remote list`, which wraps to terminal width and can
+  # break a fragile `^${remote}` grep.
+  if ! dvc config --list 2>/dev/null | grep -q "^remote\.${remote}\.url="; then
     echo "ERROR: DVC remote '${remote}' is not configured."
     echo "Expected remote name: ${remote}"
     echo "Ask the project owner to commit .dvc/config with the S3 remotes."
