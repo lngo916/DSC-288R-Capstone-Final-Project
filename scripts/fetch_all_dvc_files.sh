@@ -3,10 +3,11 @@
 set -euo pipefail
 
 # ============================================================
-# Setup + pull sampled Steam review data from DVC S3 remote
+# Setup + pull all DVC-tracked files (data, images, models)
+# from the project's S3 remotes.
 #
 # Run from the repo root:
-#   bash setup_pull_sampled_data.sh
+#   bash scripts/fetch_all_dvc_files.sh
 #
 # Required local file, NOT committed to GitHub:
 #   .env.reader
@@ -15,15 +16,22 @@ set -euo pipefail
 PROJECT_ROOT="$(pwd)"
 VENV_DIR=".venv"
 ENV_FILE=".env.reader"
-DVC_REMOTE="s3_sample"
 
-DVC_FILES=(
-  "data/cleaned_sampled_parquet.dvc"
-  "data/feature_engineered_sampled_parquet.dvc"
-  "data/subsampled_parquet.dvc"
-  "data/train_val_test_splits.dvc"
-  "data/steam_tfidf_nn_recommender_v2.parquet.dvc"
+# Each entry is "<dvc_file> <remote>". Data lives in s3_sample,
+# images in s3_images, models in s3_models. All three remotes
+# resolve under the dvcstore/ prefix, so the reader keys cover them.
+PULL_TARGETS=(
+  "data/cleaned_sampled_parquet.dvc s3_sample"
+  "data/feature_engineered_sampled_parquet.dvc s3_sample"
+  "data/subsampled_parquet.dvc s3_sample"
+  "data/train_val_test_splits.dvc s3_sample"
+  "data/steam_tfidf_nn_recommender_v2.parquet.dvc s3_sample"
+  "images.dvc s3_images"
+  "models.dvc s3_models"
 )
+
+# Distinct remotes referenced above (used for the remote-config check).
+DVC_REMOTES=("s3_sample" "s3_images" "s3_models")
 
 echo "Project root: ${PROJECT_ROOT}"
 
@@ -124,18 +132,20 @@ echo "AWS_ACCESS_KEY_ID loaded: ${AWS_ACCESS_KEY_ID:0:4}********"
 echo "AWS_DEFAULT_REGION loaded: ${AWS_DEFAULT_REGION}"
 
 # ------------------------------------------------------------
-# 7. Check DVC remote
+# 7. Check DVC remotes
 # ------------------------------------------------------------
 
 echo "Configured DVC remotes:"
 dvc remote list
 
-if ! dvc remote list | grep -q "^${DVC_REMOTE}[[:space:]]"; then
-  echo "ERROR: DVC remote '${DVC_REMOTE}' is not configured."
-  echo "Expected remote name: ${DVC_REMOTE}"
-  echo "Ask the project owner to commit .dvc/config with the S3 remote."
-  exit 1
-fi
+for remote in "${DVC_REMOTES[@]}"; do
+  if ! dvc remote list | grep -q "^${remote}[[:space:]]"; then
+    echo "ERROR: DVC remote '${remote}' is not configured."
+    echo "Expected remote name: ${remote}"
+    echo "Ask the project owner to commit .dvc/config with the S3 remotes."
+    exit 1
+  fi
+done
 
 # ------------------------------------------------------------
 # 8. Check that requested .dvc files exist
@@ -145,7 +155,8 @@ echo "Checking requested DVC metadata files..."
 
 missing_files=0
 
-for dvc_file in "${DVC_FILES[@]}"; do
+for target in "${PULL_TARGETS[@]}"; do
+  dvc_file="${target%% *}"
   if [ ! -f "${dvc_file}" ]; then
     echo "MISSING: ${dvc_file}"
     missing_files=1
@@ -160,28 +171,30 @@ if [ "${missing_files}" -ne 0 ]; then
   echo "Check whether the file names in this script match the repo."
   echo
   echo "Helpful command:"
-  echo "  find data -name '*.dvc' | sort"
+  echo "  find . -name '*.dvc' | sort"
   exit 1
 fi
 
 # ------------------------------------------------------------
-# 9. Pull selected DVC-tracked data
+# 9. Pull selected DVC-tracked files
 # ------------------------------------------------------------
 
 echo
-echo "Pulling selected DVC data from remote: ${DVC_REMOTE}"
+echo "Pulling selected DVC files from their remotes"
 echo
 
 # Force to overwrite existing local DVC-tracked data folders.
 FORCE_PULL="${FORCE_PULL:-false}"
 
-for dvc_file in "${DVC_FILES[@]}"; do
-  echo "Pulling ${dvc_file} ..."
+for target in "${PULL_TARGETS[@]}"; do
+  dvc_file="${target%% *}"
+  remote="${target##* }"
+  echo "Pulling ${dvc_file} (remote: ${remote}) ..."
 
   if [ "${FORCE_PULL}" = "true" ]; then
-    dvc pull "${dvc_file}" -r "${DVC_REMOTE}" -j 1 --force
+    dvc pull "${dvc_file}" -r "${remote}" -j 1 --force
   else
-    dvc pull "${dvc_file}" -r "${DVC_REMOTE}" -j 1
+    dvc pull "${dvc_file}" -r "${remote}" -j 1
   fi
 done
 
@@ -193,10 +206,12 @@ echo
 echo "DVC pull completed."
 echo
 echo "Pulled data status:"
-for dvc_file in "${DVC_FILES[@]}"; do
+for target in "${PULL_TARGETS[@]}"; do
+  dvc_file="${target%% *}"
+  remote="${target##* }"
   echo
-  echo "Status for ${dvc_file}:"
-  dvc status -r "${DVC_REMOTE}" "${dvc_file}" || true
+  echo "Status for ${dvc_file} (remote: ${remote}):"
+  dvc status -r "${remote}" "${dvc_file}" || true
 done
 
 echo

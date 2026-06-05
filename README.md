@@ -103,7 +103,7 @@ DSC-288R-Capstone-Final-Project/
 │   └── utils/                     #   io_utils, paths_utils, pyspark_utils
 ├── notebooks/                     # Exploration layer — numbered analysis notebooks
 ├── scripts/                       # Execution layer — shell entrypoints
-│   ├── fetch_all_sampled_data.sh  #   pull sampled data from S3 via DVC
+│   ├── fetch_all_dvc_files.sh     #   pull data, images & models from S3 via DVC
 │   └── render_all_notebooks.sh    #   render notebooks → HTML reports
 ├── configs/                       # Config layer (future) — *.yaml
 ├── docs/                          # DVC workflow notes, roadmaps, pipeline details
@@ -276,27 +276,31 @@ git, and the actual parquet is pulled on demand.
 
 1. **Grant execute permission on the fetch script** (required):
    ```bash
-   chmod +x scripts/fetch_all_sampled_data.sh
+   chmod +x scripts/fetch_all_dvc_files.sh
    ```
 2. **Run the fetch script from the repo root:**
    ```bash
-   bash scripts/fetch_all_sampled_data.sh
+   bash scripts/fetch_all_dvc_files.sh
    ```
 
 What the script does: validates the repo, builds a Python virtual environment,
-installs `dvc[s3]`, loads your reader credentials, and runs `dvc pull` against the
-`s3_sample` remote.
+installs `dvc[s3]`, loads your reader credentials, and runs `dvc pull` for the
+data, images, and models against the `s3_sample`, `s3_images`, and `s3_models`
+remotes respectively.
 
 **DVC remotes** (from `.dvc/config`):
 
 | Remote | URL | Use |
 |--------|-----|-----|
 | `s3_sample` *(default)* | `s3://dsc-288r-capstone-steam-review-sampled-data/dvcstore` | Pull sampled data from S3 |
+| `s3_images` | `s3://dsc-288r-capstone-steam-review-sampled-data/dvcstore/imagestore` | Pull images from S3 |
+| `s3_models` | `s3://dsc-288r-capstone-steam-review-sampled-data/dvcstore/modelstore` | Pull models from S3 |
 | `local_sample` | `../dvcstore` | Local fallback store |
 
 After the pull, the datasets land in `data/`:
 `subsampled_parquet/`, `cleaned_sampled_parquet/`,
-`feature_engineered_sampled_parquet/`, `train_val_test_splits/` and `steam_tfidf_nn_recommender_v2.parquet`
+`feature_engineered_sampled_parquet/`, `train_val_test_splits/` and `steam_tfidf_nn_recommender_v2.parquet`.
+Images land in `images/` and models in `models/`.
 
 ⏱️ **The fetch completes in under ~17 minutes.** After that, open Jupyter and run
 the notebooks.
@@ -417,7 +421,7 @@ straight from the repo, no setup required.
 
 | Symptom | Fix |
 |---------|-----|
-| `Permission denied` on fetch script | `chmod +x scripts/fetch_all_sampled_data.sh` |
+| `Permission denied` on fetch script | `chmod +x scripts/fetch_all_dvc_files.sh` |
 | Missing-credentials error | Confirm `.env.reader` exists and is populated |
 | `dvc pull` auth / 403 errors | Clear stale AWS env vars (`unset AWS_SESSION_TOKEN AWS_PROFILE …`, see [§6](#6-aws-credentials-setup) step 1), then verify the reader keys and `AWS_DEFAULT_REGION` (note: keys are rotated after grading) |
 | `ModuleNotFoundError` in a notebook, but `pip show <pkg>` finds it | The notebook kernel isn't your `.venv`. In VS Code, use the **kernel picker (top-right)** → select `./.venv/bin/python`. Verify with `import sys; print(sys.executable)`. |
