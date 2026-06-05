@@ -3,7 +3,7 @@
 <html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>3_data_health_audit_&amp;_prep_sample</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>8_ML_tuning</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <style type="text/css">
     pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -7510,18 +7510,18 @@ a.anchor-link {
 <!-- End of mermaid configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
 <main>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2f4a57f0-b07b-4c61-ab9a-a943dadf5de4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Data-Health-Audit-&amp;-Preparation">Data Health Audit &amp; Preparation<a class="anchor-link" href="#Data-Health-Audit-&amp;-Preparation">¶</a></h1>
+<h1 id="Machine-Learning-Finetuning">Machine Learning Finetuning<a class="anchor-link" href="#Machine-Learning-Finetuning">¶</a></h1>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=46f71827-0357-4b0e-a285-880db39f5432">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7531,12 +7531,12 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5bc5db2b-a203-4b68-aab3-8573ba2081a3">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Make sure you are at the parent directory</span>
@@ -7605,1853 +7605,14 @@ a.anchor-link {
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>JAVA_HOME: /opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home
-MODE: LOCAL
+<pre>MODE: LOCAL
 PROJECT_ROOT: /Users/steveg/Desktop/DSC-288R-Capstone-Final-Project
 </pre>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
-<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
-
-<span class="kn">from</span> <span class="nn">src.utils.pyspark_utils</span> <span class="kn">import</span> <span class="n">create_spark_session</span>
-<span class="kn">from</span> <span class="nn">src.utils.paths_utils</span> <span class="kn">import</span> <span class="n">ProjectPaths</span>
-<span class="kn">from</span> <span class="nn">src.utils.io_utils</span> <span class="kn">import</span> <span class="n">read_pandas_parquet</span><span class="p">,</span> <span class="n">write_spark_parquet</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Read-Subsample-Data-Parquet-File">Read Subsample Data Parquet File<a class="anchor-link" href="#Read-Subsample-Data-Parquet-File">¶</a></h2>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">paths</span> <span class="o">=</span> <span class="n">ProjectPaths</span><span class="p">(</span><span class="n">MODE</span><span class="p">)</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">read_pandas_parquet</span><span class="p">(</span><span class="n">paths</span><span class="o">.</span><span class="n">sampled_parquet</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Read Pandas parquet from: /Users/steveg/Desktop/DSC-288R-Capstone-Final-Project/data/subsampled_parquet
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Understand-the-Attribute-Semantics">Understand the Attribute Semantics<a class="anchor-link" href="#Understand-the-Attribute-Semantics">¶</a></h2>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<table>
-<thead>
-<tr>
-<th>Feature Group</th>
-<th>Column Name</th>
-<th>Description</th>
-<th>Data Type</th>
-<th>Variable Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>User / Game Features</td>
-<td><code>author_steamid</code></td>
-<td>The user's SteamID</td>
-<td>Integer</td>
-<td>NQ</td>
-</tr>
-<tr>
-<td>User / Game Features</td>
-<td><code>appid</code></td>
-<td>The unique app ID for every app on Steam</td>
-<td>Integer</td>
-<td>NQ</td>
-</tr>
-<tr>
-<td>User / Game Features</td>
-<td><code>author_num_games_owned</code></td>
-<td>Number of games owned by the user</td>
-<td>Integer</td>
-<td>DQ</td>
-</tr>
-<tr>
-<td>User / Game Features</td>
-<td><code>author_num_reviews</code></td>
-<td>Number of reviews written by the user</td>
-<td>Integer</td>
-<td>DQ</td>
-</tr>
-<tr>
-<td>User / Game Features</td>
-<td><code>author_playtime_forever</code></td>
-<td>Lifetime playtime tracked in this app, in minutes</td>
-<td>Integer</td>
-<td>DQ</td>
-</tr>
-<tr>
-<td>User / Game Features</td>
-<td><code>author_playtime_last_two_weeks</code></td>
-<td>Playtime tracked in the past two weeks for this app</td>
-<td>Integer</td>
-<td>DQ</td>
-</tr>
-<tr>
-<td>User / Game Features</td>
-<td><code>author_playtime_at_review</code></td>
-<td>Playtime when the review was written</td>
-<td>Integer</td>
-<td>DQ</td>
-</tr>
-<tr>
-<td>User / Game Features</td>
-<td><code>author_last_played</code></td>
-<td>Time when the user last played, represented as Unix time</td>
-<td>Integer / Unix timestamp</td>
-<td>DQ</td>
-</tr>
-<tr>
-<td>Review Features</td>
-<td><code>review</code></td>
-<td>Text of the written review</td>
-<td>String</td>
-<td>Text</td>
-</tr>
-<tr>
-<td>Review Features</td>
-<td><code>voted_up</code></td>
-<td>Whether the review was a positive recommendation</td>
-<td>Boolean</td>
-<td>NQ</td>
-</tr>
-<tr>
-<td>Review Features</td>
-<td><code>votes_up</code></td>
-<td>Number of users who found this review helpful</td>
-<td>Integer</td>
-<td>DQ</td>
-</tr>
-<tr>
-<td>Review Features</td>
-<td><code>votes_funny</code></td>
-<td>Number of users who found this review funny</td>
-<td>Integer</td>
-<td>DQ</td>
-</tr>
-<tr>
-<td>Review Features</td>
-<td><code>weighted_vote_score</code></td>
-<td>Helpfulness score</td>
-<td>Float</td>
-<td>CQ</td>
-</tr>
-<tr>
-<td>Review Features</td>
-<td><code>comment_count</code></td>
-<td>Number of comments posted on this review</td>
-<td>Integer</td>
-<td>DQ</td>
-</tr>
-<tr>
-<td>Review Features</td>
-<td><code>written_during_early_access</code></td>
-<td>Whether the user posted this review while the game was in Early Access</td>
-<td>Boolean</td>
-<td>NQ</td>
-</tr>
-<tr>
-<td>Review Features</td>
-<td><code>language</code></td>
-<td>Language the user indicated when authoring the review</td>
-<td>String</td>
-<td>NQ</td>
-</tr>
-<tr>
-<td>Data Origin Feature</td>
-<td><code>timestamp_created</code></td>
-<td>Date the review was created, represented as Unix timestamp</td>
-<td>Integer / Unix timestamp</td>
-<td>DQ</td>
-</tr>
-<tr>
-<td>Data Origin Feature</td>
-<td><code>timestamp_updated</code></td>
-<td>Date the review was last updated, represented as Unix timestamp</td>
-<td>Integer / Unix timestamp</td>
-<td>DQ</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable Type Notes</strong></p>
-<table>
-<thead>
-<tr>
-<th>Abbreviation</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>NQ</td>
-<td>Nominal qualitative</td>
-</tr>
-<tr>
-<td>DQ</td>
-<td>Discrete quantitative</td>
-</tr>
-<tr>
-<td>CQ</td>
-<td>Continuous quantitative</td>
-</tr>
-<tr>
-<td>Text</td>
-<td>Unstructured text feature</td>
-</tr>
-</tbody>
-</table>
-<hr/>
-<hr/>
-<hr/>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>The following features are discarded, or discarded after data cleaning, because they are not selected for the final churn analysis feature set.</strong></p>
-<table>
-<thead>
-<tr>
-<th>Feature Group</th>
-<th>Column Name</th>
-<th>Description</th>
-<th>Data Type</th>
-<th>Variable Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Irrelevant / Platform Features</td>
-<td><code>hidden_in_steam_china</code></td>
-<td>Whether the review or app is hidden in Steam China</td>
-<td>Integer / Boolean-like</td>
-<td>NQ</td>
-</tr>
-<tr>
-<td>Irrelevant / Platform Features</td>
-<td><code>steam_china_location</code></td>
-<td>Steam China location information, represented with Chinese characters</td>
-<td>String</td>
-<td>NQ</td>
-</tr>
-<tr>
-<td>Identifier Features</td>
-<td><code>recommendationid</code></td>
-<td>Unique ID of the recommendation / review record</td>
-<td>Integer</td>
-<td>NQ</td>
-</tr>
-<tr>
-<td>Review Metadata Features</td>
-<td><code>language</code></td>
-<td>Language the user indicated when authoring the review</td>
-<td>String</td>
-<td>NQ</td>
-</tr>
-<tr>
-<td>Purchase Metadata Features</td>
-<td><code>steam_purchase</code></td>
-<td>Whether the user purchased the game on Steam</td>
-<td>Integer / Boolean-like</td>
-<td>NQ</td>
-</tr>
-<tr>
-<td>Purchase Metadata Features</td>
-<td><code>received_for_free</code></td>
-<td>Whether the user indicated that they received the app for free</td>
-<td>Integer / Boolean-like</td>
-<td>NQ</td>
-</tr>
-</tbody>
-</table>
-<p>These variables are excluded for the following reasons:</p>
-<ul>
-<li><code>hidden_in_steam_china</code> is not useful for churn analysis because it is a region/platform visibility flag rather than a behavioral user feature.</li>
-<li><code>steam_china_location</code> is not useful for churn analysis because most values are missing, and the available values appear too limited to provide meaningful predictive information.</li>
-<li><code>recommendationid</code> is a record identifier. It is useful for database management, but it should not be treated as a predictive feature.</li>
-<li><code>language</code> is removed after data cleaning because the analysis focuses only on English reviews. However, it may still be useful during cleaning to check whether reviews labeled as English contain non-Latin text.</li>
-<li><code>steam_purchase</code> and <code>received_for_free</code> are excluded for now because their combined meaning is ambiguous. For example, <code>steam_purchase = 1</code> and <code>received_for_free = 1</code> may seem contradictory unless Steam treats free installations or free apps as Steam purchases. Because of this uncertainty, these variables are set aside unless more documentation or API evidence is found.</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Health-Check---Dataset-Structure">Health Check - Dataset Structure<a class="anchor-link" href="#Health-Check---Dataset-Structure">¶</a></h2>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">## Shape</span>
-<span class="c1"># (# of rows, # of columns)</span>
-<span class="n">display</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">---------------------------------------</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
-
-<span class="c1"># Total cells</span>
-<span class="n">display</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">---------------------------------------</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
-
-<span class="c1">## Concise summary on columns details &amp; memory usage</span>
-<span class="n">df</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>(2105211, 18)</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>
----------------------------------------
-
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>37893798</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>
----------------------------------------
-
-&lt;class 'pandas.core.frame.DataFrame'&gt;
-RangeIndex: 2105211 entries, 0 to 2105210
-Data columns (total 18 columns):
- #   Column                          Dtype  
----  ------                          -----  
- 0   author_steamid                  int64  
- 1   appid                           float64
- 2   author_num_games_owned          int32  
- 3   author_num_reviews              int32  
- 4   author_playtime_forever         int32  
- 5   author_playtime_last_two_weeks  int32  
- 6   author_playtime_at_review       int32  
- 7   author_last_played              int64  
- 8   review                          object 
- 9   voted_up                        object 
- 10  votes_up                        float64
- 11  votes_funny                     float64
- 12  weighted_vote_score             float32
- 13  comment_count                   float64
- 14  written_during_early_access     object 
- 15  language                        object 
- 16  timestamp_created               int64  
- 17  timestamp_updated               float64
-dtypes: float32(1), float64(5), int32(5), int64(3), object(4)
-memory usage: 240.9+ MB
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Observations:</p>
-<ul>
-<li>The dataframe consists of ~1.4 M rows and 17 columns. It also occupied ~150 MB of memory.</li>
-<li>Pandas inferred some column types differently from our intended schema.</li>
-</ul>
-<p>Several integer-like columns were inferred as non-nullable numeric types.
-    - Columns intended to be integer values may appear as <code>int32</code> or <code>float64</code>, even though the dataset contains null values. Since standard NumPy integer types such as <code>int32</code> are not nullable, these columns should use Pandas nullable integer types such as <code>Int32</code> or <code>Int64</code>.
-    - <code>appid</code> was inferred as <code>float64</code>, but it should represent an app identifier.Since appid is a unique Steam app ID, it should be stored as an integer-like identifier, preferably <code>Int32</code> if missing values are possible.
-    - <code>voted_up</code> and <code>written_during_early_access</code> were inferred as numeric values instead of <code>boolean</code>.These columns represent true/false conditions, so they should be converted to Pandas nullable Boolean type, boolean
-    - <code>timestamp_updated</code> was inferred as a floating-point column, but it should be an integer Unix timestamp.</p>
-<p>Suggestions for Data Processing/Feature Engineering:</p>
-<ul>
-<li><em>(Feature Engineering)</em> Convert all <code>int32</code> to <code>Int32</code> OR <code>int64</code> to <code>Int64</code> to improve the robustness to null values</li>
-<li><em>(Feature Engineering)</em> Convert all identifier &amp; temporal columns to be <code>Int64</code></li>
-<li><em>(Feature Engineering)</em> Convert all categorical columns to be <code>Boolean</code></li>
-<li><em>(Feature Engineering)</em> Ensure <code>weighted_score</code> column to be <code>Float64</code></li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Data-Preparation---Type-Conversion">Data Preparation - Type Conversion<a class="anchor-link" href="#Data-Preparation---Type-Conversion">¶</a></h2>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">organize_columns</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-    <span class="c1"># Define type to convert</span>
-    <span class="n">int32_cols</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">"author_num_games_owned"</span><span class="p">,</span>
-        <span class="s2">"author_num_reviews"</span><span class="p">,</span>
-        <span class="s2">"author_playtime_forever"</span><span class="p">,</span>
-        <span class="s2">"author_playtime_last_two_weeks"</span><span class="p">,</span>
-        <span class="s2">"author_playtime_at_review"</span><span class="p">,</span>
-        <span class="s2">"votes_up"</span><span class="p">,</span>
-        <span class="s2">"comment_count"</span><span class="p">,</span>
-    <span class="p">]</span>
-
-    <span class="n">int64_cols</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">"author_steamid"</span><span class="p">,</span>
-        <span class="s2">"appid"</span><span class="p">,</span>
-        <span class="s2">"author_last_played"</span><span class="p">,</span>
-        <span class="s2">"timestamp_created"</span><span class="p">,</span>
-        <span class="s2">"timestamp_updated"</span><span class="p">,</span>
-        <span class="s2">"votes_funny"</span><span class="p">,</span>
-    <span class="p">]</span>
-
-    <span class="n">float32_cols</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">"weighted_vote_score"</span>
-    <span class="p">]</span>
-
-    <span class="n">bool_cols</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">"voted_up"</span><span class="p">,</span>
-        <span class="s2">"written_during_early_access"</span>
-    <span class="p">]</span>
-
-    <span class="n">datetime_cols</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">"timestamp_created"</span><span class="p">,</span>
-        <span class="s2">"timestamp_updated"</span><span class="p">,</span>
-        <span class="s2">"author_last_played"</span>
-    <span class="p">]</span>
-
-    <span class="n">text_cols</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">"review"</span>
-    <span class="p">]</span>
-
-    <span class="c1"># Organize it to config map</span>
-    <span class="n">type_to_convert</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">type_to_convert</span><span class="o">.</span><span class="n">extend</span><span class="p">([(</span><span class="n">col</span><span class="p">,</span> <span class="s1">'Int32'</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">int32_cols</span><span class="p">])</span>
-    <span class="n">type_to_convert</span><span class="o">.</span><span class="n">extend</span><span class="p">([(</span><span class="n">col</span><span class="p">,</span> <span class="s1">'Int64'</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">int64_cols</span><span class="p">])</span>
-    <span class="n">type_to_convert</span><span class="o">.</span><span class="n">extend</span><span class="p">([(</span><span class="n">col</span><span class="p">,</span> <span class="s1">'Float32'</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">float32_cols</span><span class="p">])</span>
-    <span class="n">type_to_convert</span><span class="o">.</span><span class="n">extend</span><span class="p">([(</span><span class="n">col</span><span class="p">,</span> <span class="s1">'boolean'</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">bool_cols</span><span class="p">])</span>
-    <span class="c1"># FOR FUTURE DEVELOPMENT</span>
-    <span class="c1"># type_to_convert.extend([(col, 'datetime') for col in datetime_cols])</span>
-    <span class="n">type_to_convert</span><span class="o">.</span><span class="n">extend</span><span class="p">([(</span><span class="n">col</span><span class="p">,</span> <span class="s1">'Int64'</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">datetime_cols</span><span class="p">])</span>
-    <span class="n">type_to_convert</span><span class="o">.</span><span class="n">extend</span><span class="p">([(</span><span class="n">col</span><span class="p">,</span> <span class="s1">'string'</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">text_cols</span><span class="p">])</span>
-
-    <span class="k">return</span> <span class="n">type_to_convert</span>
-
-<span class="k">def</span> <span class="nf">type_conversion</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
-    <span class="n">map_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
-    <span class="c1"># Convert types using astype(), to_datetime()</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">col_name</span><span class="p">,</span> <span class="n">col_type</span><span class="p">)</span> <span class="ow">in</span> <span class="n">map_func</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">col_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">'datetime'</span><span class="p">:</span>
-            <span class="n">df</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col_name</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">"s"</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">"coerce"</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">df</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">col_name</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">col_type</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">df</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">type_conversion</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">organize_columns</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>&lt;class 'pandas.core.frame.DataFrame'&gt;
-RangeIndex: 2105211 entries, 0 to 2105210
-Data columns (total 18 columns):
- #   Column                          Dtype  
----  ------                          -----  
- 0   author_steamid                  Int64  
- 1   appid                           Int64  
- 2   author_num_games_owned          Int32  
- 3   author_num_reviews              Int32  
- 4   author_playtime_forever         Int32  
- 5   author_playtime_last_two_weeks  Int32  
- 6   author_playtime_at_review       Int32  
- 7   author_last_played              Int64  
- 8   review                          string 
- 9   voted_up                        boolean
- 10  votes_up                        Int32  
- 11  votes_funny                     Int64  
- 12  weighted_vote_score             Float32
- 13  comment_count                   Int32  
- 14  written_during_early_access     boolean
- 15  language                        object 
- 16  timestamp_created               Int64  
- 17  timestamp_updated               Int64  
-dtypes: Float32(1), Int32(7), Int64(6), boolean(2), object(1), string(1)
-memory usage: 228.9+ MB
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Health-Check---Completeness">Health Check - Completeness<a class="anchor-link" href="#Health-Check---Completeness">¶</a></h2>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">## Compeleteness helps us investigate missing value and if we have useful</span>
-<span class="c1">## features for prediction problems</span>
-
-<span class="c1"># 1. Identify missing values per column</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"1. Identify missing values per column"</span><span class="p">)</span>
-<span class="n">missing_values</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="n">df</span>
-    <span class="o">.</span><span class="n">isnull</span><span class="p">()</span>
-    <span class="o">.</span><span class="n">sum</span><span class="p">()[</span><span class="n">missing_values</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
-    <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">---------------------------------------</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
-
-<span class="c1"># 2. Calculate percentage of missing values</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"2. Calculate percentage of missing values"</span><span class="p">)</span>
-<span class="n">percentage_missing_values</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="n">percentage_missing_values</span><span class="p">[</span><span class="n">percentage_missing_values</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
-        <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="p">)</span>
-
-<span class="c1"># 3. Check if the data is enough for ML tasks and are the features</span>
-<span class="c1"># for the analysis</span>
-
-<span class="c1"># Based on the previous observation, we know that we have 1.4M data points,</span>
-<span class="c1"># which is enough for classical machine learning task. Since this is only 2%</span>
-<span class="c1"># of the full dataset, we ensure that we are doing big data analytics.</span>
-<span class="c1"># Regarding churn analysis, since we have user and time behavior on review,</span>
-<span class="c1"># it should give us a quite good idea on player behavior on using Steam.</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>1. Identify missing values per column
-voted_up                       50
-timestamp_updated              33
-votes_up                       27
-written_during_early_access    27
-weighted_vote_score            26
-votes_funny                    25
-comment_count                  23
-appid                           3
-dtype: int64
-
----------------------------------------
-
-2. Calculate percentage of missing values
-voted_up                       0.002375
-timestamp_updated              0.001568
-votes_up                       0.001283
-written_during_early_access    0.001283
-weighted_vote_score            0.001235
-votes_funny                    0.001188
-comment_count                  0.001093
-appid                          0.000143
-dtype: float64
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Observations:</p>
-<ul>
-<li>All columns with missing values are only between 0 ~ 0.002% of all data, which could be negligible for the ML task. However, we are still interested in how the columns with missing value possibly depends on other columns in later EDA report</li>
-</ul>
-<p>Suggestions for Data Processing/Feature Engineering:</p>
-<ul>
-<li><em>(Data Processing)</em> Despite missing proportion is so small comparing the full dataset, we don't know which 0.2% are they missing. I will expect a possible distribution change due to uncertainty; practically speaking however, If the missing rows are not concentrated in important user, game, time, or target-related groups, removal is unlikely to meaningfully affect the overall distribution. We decided to perform list deletion for now.</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Data-Preparation---Missing-Value-Removal">Data Preparation - Missing Value Removal<a class="anchor-link" href="#Data-Preparation---Missing-Value-Removal">¶</a></h2>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="n">df</span>
-    <span class="o">.</span><span class="n">isnull</span><span class="p">()</span>
-    <span class="o">.</span><span class="n">sum</span><span class="p">()[</span><span class="n">missing_values</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
-    <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>appid                          0
-voted_up                       0
-votes_up                       0
-votes_funny                    0
-weighted_vote_score            0
-comment_count                  0
-written_during_early_access    0
-timestamp_updated              0
-dtype: int64
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Health-Audit---Consistency-&amp;-Validity">Health Audit - Consistency &amp; Validity<a class="anchor-link" href="#Health-Audit---Consistency-&amp;-Validity">¶</a></h2>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">## Consistency helps us question "Do columns agree with each other logically"?</span>
-
-<span class="c1"># 1. timestamp_created should usually be &lt;= timestamp_updated</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"1. timestamp_created should usually be &lt;= timestamp_updated"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"timestamp_created"</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'int64'</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"timestamp_updated"</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'int64'</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">---------------------------------------</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
-
-<span class="c1"># 2. playtime_at_review &amp; playtime_last two weeks should be less than lifetime playtime</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"2. playtime_at_review &amp; playtime_last two weeks should be less than lifetime playtim"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"author_playtime_at_review"</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"author_playtime_forever"</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"author_playtime_last_two_weeks"</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"author_playtime_forever"</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">---------------------------------------</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
-
-<span class="c1"># 3. all user in the dataset should have at least 1 numbers of review</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"3. all user in the dataset should have at least 1 numbers of review"</span><span class="p">)</span>
-<span class="n">invalid_user_lst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'author_steamid'</span><span class="p">)[</span><span class="s1">'author_num_reviews'</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"List of user should be concerns:  </span><span class="si">{</span><span class="n">invalid_user_lst</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">---------------------------------------</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
-
-<span class="c1"># 4. author_playtime_forever at later review time should not be lower than earlier review time</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"4. author_playtime_forever at later review time should not be lower than earlier review time"</span><span class="p">)</span>
-<span class="c1"># Sort and shift to previous playtime_forever if possible</span>
-<span class="n">df_sorted</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">df</span>
-    <span class="o">.</span><span class="n">sort_values</span><span class="p">([</span><span class="s2">"author_steamid"</span><span class="p">,</span> <span class="s2">"appid"</span><span class="p">,</span> <span class="s2">"timestamp_created"</span><span class="p">])</span>
-    <span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s2">"prev_playtime_forever"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="p">(</span>
-        <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">"author_steamid"</span><span class="p">,</span> <span class="s2">"appid"</span><span class="p">])</span>
-        <span class="p">[</span><span class="s2">"author_playtime_forever"</span><span class="p">]</span>
-        <span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="p">)})</span>
-<span class="p">)</span>
-<span class="c1"># Compare previous to current playtime forever</span>
-<span class="n">decreasing_playtime</span> <span class="o">=</span> <span class="n">df_sorted</span><span class="p">[</span>
-    <span class="n">df_sorted</span><span class="p">[</span><span class="s2">"author_playtime_forever"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">df_sorted</span><span class="p">[</span><span class="s2">"prev_playtime_forever"</span><span class="p">]</span>
-<span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Numbers of instance violating the rule: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">decreasing_playtime</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">---------------------------------------</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
-
-<span class="c1">## Validity helps us question "Do columns within reasonable range"?</span>
-
-<span class="c1"># 5. Count-like columns should not be negative</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"5. Count-like columns should not be negative"</span><span class="p">)</span>
-<span class="n">count_cols</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">"author_num_games_owned"</span><span class="p">,</span>
-    <span class="s2">"author_num_reviews"</span><span class="p">,</span>
-    <span class="s2">"author_playtime_forever"</span><span class="p">,</span>
-    <span class="s2">"author_playtime_last_two_weeks"</span><span class="p">,</span>
-    <span class="s2">"author_playtime_at_review"</span><span class="p">,</span>
-    <span class="s2">"votes_up"</span><span class="p">,</span>
-    <span class="s2">"votes_funny"</span><span class="p">,</span>
-    <span class="s2">"comment_count"</span><span class="p">,</span>
-<span class="p">]</span>
-<span class="nb">print</span><span class="p">((</span><span class="n">df</span><span class="p">[</span><span class="n">count_cols</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">---------------------------------------</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
-
-<span class="c1"># 6. weighted_vote_score should be between 0 and 1</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"6. weighted_vote_score should be between 0 and 1"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">df</span><span class="p">[</span><span class="s1">'weighted_vote_score'</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>1. timestamp_created should usually be &lt;= timestamp_updated
-True
-
----------------------------------------
-
-2. playtime_at_review &amp; playtime_last two weeks should be less than lifetime playtim
-True
-True
-
----------------------------------------
-
-3. all user in the dataset should have at least 1 numbers of review
-List of user should be concerns:  []
-
----------------------------------------
-
-4. author_playtime_forever at later review time should not be lower than earlier review time
-Numbers of instance violating the rule: 0
-
----------------------------------------
-
-5. Count-like columns should not be negative
-author_num_games_owned            0
-author_num_reviews                0
-author_playtime_forever           0
-author_playtime_last_two_weeks    0
-author_playtime_at_review         0
-votes_up                          0
-votes_funny                       0
-comment_count                     0
-dtype: Int64
-
----------------------------------------
-
-6. weighted_vote_score should be between 0 and 1
-True
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Observations: All above scenarios are tested to have consistency</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Health-Audit--Anomaly-&amp;-Outliers">Health Audit- Anomaly &amp; Outliers<a class="anchor-link" href="#Health-Audit--Anomaly-&amp;-Outliers">¶</a></h2>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">## Anomaly indicates suspicious value, not automatically wrong</span>
-
-<span class="c1"># 1. Check for outlier value using summary statistics</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"1. Check for outlier value using summary statistics</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-<span class="n">numeric_cols</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">"author_num_games_owned"</span><span class="p">,</span>
-    <span class="s2">"author_num_reviews"</span><span class="p">,</span>
-    <span class="s2">"author_playtime_forever"</span><span class="p">,</span>
-    <span class="s2">"author_playtime_last_two_weeks"</span><span class="p">,</span>
-    <span class="s2">"author_playtime_at_review"</span><span class="p">,</span>
-    <span class="s2">"votes_up"</span><span class="p">,</span>
-    <span class="s2">"votes_funny"</span><span class="p">,</span>
-    <span class="s2">"weighted_vote_score"</span><span class="p">,</span>
-    <span class="s2">"comment_count"</span><span class="p">,</span>
-<span class="p">]</span>
-<span class="n">display</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">numeric_cols</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">percentiles</span><span class="o">=</span><span class="p">[</span><span class="mf">.01</span><span class="p">,</span> <span class="mf">.05</span><span class="p">,</span> <span class="mf">.25</span><span class="p">,</span> <span class="mf">.5</span><span class="p">,</span> <span class="mf">.75</span><span class="p">,</span> <span class="mf">.95</span><span class="p">,</span> <span class="mf">.99</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">---------------------------------------</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
-
-<span class="c1"># 2. Create report regarding anomaly report for suspicious features (1) votes_funny artifact</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"2. Create report regarding anomaly report for suspicious features (1) votes_funny artifact; (2) author_playtime_last_two_weeks </span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-
-<span class="c1"># Define the extreme limits</span>
-<span class="n">df_anomaly</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">VOTES_FUNNY_ARTIFACT_THRESHOLD</span> <span class="o">=</span> <span class="mi">4_000_000_000</span>
-<span class="n">VOTES_FUNNY_MAX</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="mi">32</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># This equals to the max value of votes_funny from summary statistics, but in compact form</span>
-<span class="n">MAX_2W_MINUTES</span> <span class="o">=</span> <span class="mi">14</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">60</span>
-
-<span class="c1"># Create new features representing flag/no flag suspicious behavior</span>
-<span class="n">df_anomaly</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">df_anomaly</span>
-    <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="o">**</span><span class="p">{</span>
-        <span class="s1">'votes_funny_is_uint32_artifact'</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">'votes_funny'</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">VOTES_FUNNY_ARTIFACT_THRESHOLD</span><span class="p">,</span>
-        <span class="s1">'votes_funny_near_exact_uint32_artifact_max'</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">'votes_funny'</span><span class="p">]</span><span class="o">.</span><span class="n">between</span><span class="p">(</span><span class="n">VOTES_FUNNY_ARTIFACT_THRESHOLD</span><span class="p">,</span> <span class="n">VOTES_FUNNY_MAX</span><span class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="s1">'left'</span><span class="p">),</span>
-        <span class="s1">'playtime_2w_near_limit'</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">'author_playtime_last_two_weeks'</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mf">0.90</span> <span class="o">*</span> <span class="n">MAX_2W_MINUTES</span><span class="p">,</span>
-        <span class="s1">'playtime_2w_exceeds_limit'</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s1">'author_playtime_last_two_weeks'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">MAX_2W_MINUTES</span>
-    <span class="p">})</span>
-    <span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-<span class="p">)</span>
-
-<span class="c1"># Create anomaly report</span>
-<span class="n">display</span><span class="p">(</span>
-    <span class="n">pd</span>
-    <span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-        <span class="s2">"flag_count"</span><span class="p">:</span> <span class="n">df_anomaly</span><span class="p">[</span><span class="n">df_anomaly</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span>
-        <span class="s2">"flag_rate"</span><span class="p">:</span> <span class="n">df_anomaly</span><span class="p">[</span><span class="n">df_anomaly</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-    <span class="p">})</span>
-    <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">"flag_count"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">---------------------------------------</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
-
-<span class="c1"># 3. Check for instances where votes_funny reached max value</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"3. Check for instances where votes_funny reached max value</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-<span class="n">display</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"votes_funny"</span><span class="p">]</span> <span class="o">==</span> <span class="n">VOTES_FUNNY_MAX</span><span class="p">]</span>
-        <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">"votes_funny"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="p">[</span><span class="n">numeric_cols</span><span class="p">]</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">---------------------------------------</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
-
-<span class="c1"># 4. Check for instances where votes_funny near max value</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"4. Check for instance where votes_funny near max value"</span><span class="p">)</span>
-<span class="n">display</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"votes_funny"</span><span class="p">]</span><span class="o">.</span><span class="n">between</span><span class="p">(</span><span class="n">VOTES_FUNNY_ARTIFACT_THRESHOLD</span><span class="p">,</span> <span class="n">VOTES_FUNNY_MAX</span><span class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="s1">'left'</span><span class="p">)]</span>
-        <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">"votes_funny"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="p">[</span><span class="n">numeric_cols</span><span class="p">]</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">---------------------------------------</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
-
-<span class="c1"># 5. Find the largest vote_funny value that follows right after ARTIFACT_THRESHOLD, compute its propoertion comparing to max value</span>
-<span class="c1"># If it's between 60% - 95%, it will indicate broader range of artifact from API and we will need to dive deeper</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"5. Find the largest vote_funny value that follows right after ARTIFACT_THRESHOLD, compute its propoertion comparing to max value"</span><span class="p">)</span>
-<span class="n">proportion</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="p">(</span>
-        <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"votes_funny"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">VOTES_FUNNY_ARTIFACT_THRESHOLD</span><span class="p">]</span>
-        <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">"votes_funny"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"votes_funny"</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">/</span> <span class="n">VOTES_FUNNY_MAX</span> <span class="o">*</span> <span class="mi">100</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"This value is </span><span class="si">{</span><span class="n">proportion</span><span class="si">}</span><span class="s2">% of VOTES_FUNNY_MAX value!"</span><span class="p">)</span>
-
-<span class="k">del</span> <span class="n">df_anomaly</span><span class="p">,</span> <span class="n">proportion</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>1. Check for outlier value using summary statistics
-
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th></th>
-<th>count</th>
-<th>mean</th>
-<th>std</th>
-<th>min</th>
-<th>1%</th>
-<th>5%</th>
-<th>25%</th>
-<th>50%</th>
-<th>75%</th>
-<th>95%</th>
-<th>99%</th>
-<th>max</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>author_num_games_owned</th>
-<td>2105161.0</td>
-<td>114.226471</td>
-<td>371.015141</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>2.0</td>
-<td>98.0</td>
-<td>503.0</td>
-<td>1442.0</td>
-<td>20481.0</td>
-</tr>
-<tr>
-<th>author_num_reviews</th>
-<td>2105161.0</td>
-<td>19.62353</td>
-<td>55.164638</td>
-<td>1.0</td>
-<td>1.0</td>
-<td>1.0</td>
-<td>2.0</td>
-<td>6.0</td>
-<td>16.0</td>
-<td>75.0</td>
-<td>237.0</td>
-<td>941.0</td>
-</tr>
-<tr>
-<th>author_playtime_forever</th>
-<td>2105161.0</td>
-<td>15850.705158</td>
-<td>46324.619402</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>40.0</td>
-<td>586.0</td>
-<td>2373.0</td>
-<td>10472.0</td>
-<td>79067.0</td>
-<td>202435.8</td>
-<td>3815539.0</td>
-</tr>
-<tr>
-<th>author_playtime_last_two_weeks</th>
-<td>2105161.0</td>
-<td>63.881836</td>
-<td>473.854041</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>175.0</td>
-<td>1669.0</td>
-<td>20156.0</td>
-</tr>
-<tr>
-<th>author_playtime_at_review</th>
-<td>2105161.0</td>
-<td>7163.961216</td>
-<td>24329.299949</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>24.0</td>
-<td>272.0</td>
-<td>928.0</td>
-<td>3746.0</td>
-<td>35408.0</td>
-<td>105216.8</td>
-<td>2835307.0</td>
-</tr>
-<tr>
-<th>votes_up</th>
-<td>2105161.0</td>
-<td>2.117855</td>
-<td>33.477302</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>1.0</td>
-<td>5.0</td>
-<td>30.0</td>
-<td>14583.0</td>
-</tr>
-<tr>
-<th>votes_funny</th>
-<td>2105161.0</td>
-<td>73448.221202</td>
-<td>17760894.856098</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>1.0</td>
-<td>8.0</td>
-<td>4294967295.0</td>
-</tr>
-<tr>
-<th>weighted_vote_score</th>
-<td>2105161.0</td>
-<td>0.179188</td>
-<td>0.250308</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.492399</td>
-<td>0.549365</td>
-<td>0.70266</td>
-<td>0.994626</td>
-</tr>
-<tr>
-<th>comment_count</th>
-<td>2105161.0</td>
-<td>0.103504</td>
-<td>1.624198</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>2.0</td>
-<td>1131.0</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>
----------------------------------------
-
-2. Create report regarding anomaly report for suspicious features (1) votes_funny artifact; (2) author_playtime_last_two_weeks 
-
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th></th>
-<th>flag_count</th>
-<th>flag_rate</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>playtime_2w_near_limit</th>
-<td>221</td>
-<td>0.000105</td>
-</tr>
-<tr>
-<th>votes_funny_is_uint32_artifact</th>
-<td>36</td>
-<td>0.000017</td>
-</tr>
-<tr>
-<th>votes_funny_near_exact_uint32_artifact_max</th>
-<td>8</td>
-<td>0.000004</td>
-</tr>
-<tr>
-<th>playtime_2w_exceeds_limit</th>
-<td>0</td>
-<td>0.0</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>
----------------------------------------
-
-3. Check for instances where votes_funny reached max value
-
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th></th>
-<th>author_num_games_owned</th>
-<th>author_num_reviews</th>
-<th>author_playtime_forever</th>
-<th>author_playtime_last_two_weeks</th>
-<th>author_playtime_at_review</th>
-<th>votes_up</th>
-<th>votes_funny</th>
-<th>weighted_vote_score</th>
-<th>comment_count</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>4177</th>
-<td>1152</td>
-<td>438</td>
-<td>1758</td>
-<td>0</td>
-<td>1387</td>
-<td>1</td>
-<td>4294967295</td>
-<td>0.409136</td>
-<td>0</td>
-</tr>
-<tr>
-<th>54995</th>
-<td>918</td>
-<td>62</td>
-<td>2842</td>
-<td>0</td>
-<td>1035</td>
-<td>0</td>
-<td>4294967295</td>
-<td>0.49647</td>
-<td>0</td>
-</tr>
-<tr>
-<th>2015432</th>
-<td>0</td>
-<td>1</td>
-<td>14247</td>
-<td>0</td>
-<td>1366</td>
-<td>0</td>
-<td>4294967295</td>
-<td>0.47619</td>
-<td>0</td>
-</tr>
-<tr>
-<th>1957033</th>
-<td>49</td>
-<td>1</td>
-<td>215991</td>
-<td>111</td>
-<td>12917</td>
-<td>2</td>
-<td>4294967295</td>
-<td>0.539789</td>
-<td>0</td>
-</tr>
-<tr>
-<th>1950642</th>
-<td>35</td>
-<td>1</td>
-<td>15857</td>
-<td>0</td>
-<td>2039</td>
-<td>3</td>
-<td>4294967295</td>
-<td>0.511475</td>
-<td>1</td>
-</tr>
-<tr>
-<th>1948370</th>
-<td>0</td>
-<td>2</td>
-<td>140952</td>
-<td>470</td>
-<td>4772</td>
-<td>0</td>
-<td>4294967295</td>
-<td>0.497512</td>
-<td>2</td>
-</tr>
-<tr>
-<th>1726861</th>
-<td>0</td>
-<td>1</td>
-<td>151</td>
-<td>0</td>
-<td>150</td>
-<td>0</td>
-<td>4294967295</td>
-<td>0.497512</td>
-<td>0</td>
-</tr>
-<tr>
-<th>1532914</th>
-<td>159</td>
-<td>83</td>
-<td>12657</td>
-<td>0</td>
-<td>4385</td>
-<td>1</td>
-<td>4294967295</td>
-<td>0.502488</td>
-<td>0</td>
-</tr>
-<tr>
-<th>1450255</th>
-<td>121</td>
-<td>5</td>
-<td>795</td>
-<td>0</td>
-<td>712</td>
-<td>1</td>
-<td>4294967295</td>
-<td>0.502488</td>
-<td>0</td>
-</tr>
-<tr>
-<th>1242396</th>
-<td>0</td>
-<td>8</td>
-<td>24441</td>
-<td>0</td>
-<td>5326</td>
-<td>2</td>
-<td>4294967295</td>
-<td>0.485516</td>
-<td>0</td>
-</tr>
-<tr>
-<th>1111853</th>
-<td>0</td>
-<td>5</td>
-<td>6079</td>
-<td>0</td>
-<td>3994</td>
-<td>1</td>
-<td>4294967295</td>
-<td>0.495108</td>
-<td>0</td>
-</tr>
-<tr>
-<th>1111852</th>
-<td>0</td>
-<td>1</td>
-<td>1161</td>
-<td>0</td>
-<td>900</td>
-<td>1</td>
-<td>4294967295</td>
-<td>0.5</td>
-<td>0</td>
-</tr>
-<tr>
-<th>1074121</th>
-<td>0</td>
-<td>6</td>
-<td>748</td>
-<td>0</td>
-<td>402</td>
-<td>1</td>
-<td>4294967295</td>
-<td>0.478689</td>
-<td>0</td>
-</tr>
-<tr>
-<th>1020893</th>
-<td>0</td>
-<td>1</td>
-<td>834</td>
-<td>0</td>
-<td>834</td>
-<td>5</td>
-<td>4294967295</td>
-<td>0.532524</td>
-<td>0</td>
-</tr>
-<tr>
-<th>949969</th>
-<td>0</td>
-<td>21</td>
-<td>293</td>
-<td>0</td>
-<td>293</td>
-<td>1</td>
-<td>4294967295</td>
-<td>0.521739</td>
-<td>0</td>
-</tr>
-<tr>
-<th>898948</th>
-<td>0</td>
-<td>7</td>
-<td>1459</td>
-<td>0</td>
-<td>1427</td>
-<td>1</td>
-<td>4294967295</td>
-<td>0.525862</td>
-<td>0</td>
-</tr>
-<tr>
-<th>879538</th>
-<td>0</td>
-<td>2</td>
-<td>180</td>
-<td>0</td>
-<td>180</td>
-<td>6</td>
-<td>4294967295</td>
-<td>0.527614</td>
-<td>0</td>
-</tr>
-<tr>
-<th>720261</th>
-<td>0</td>
-<td>34</td>
-<td>7</td>
-<td>0</td>
-<td>7</td>
-<td>1</td>
-<td>4294967295</td>
-<td>0.502488</td>
-<td>0</td>
-</tr>
-<tr>
-<th>623330</th>
-<td>184</td>
-<td>1</td>
-<td>557</td>
-<td>0</td>
-<td>502</td>
-<td>1</td>
-<td>4294967295</td>
-<td>0.502488</td>
-<td>0</td>
-</tr>
-<tr>
-<th>612048</th>
-<td>149</td>
-<td>5</td>
-<td>14697</td>
-<td>0</td>
-<td>14516</td>
-<td>8</td>
-<td>4294967295</td>
-<td>0.605863</td>
-<td>0</td>
-</tr>
-<tr>
-<th>592440</th>
-<td>827</td>
-<td>60</td>
-<td>2191</td>
-<td>0</td>
-<td>1192</td>
-<td>19</td>
-<td>4294967295</td>
-<td>0.621283</td>
-<td>1</td>
-</tr>
-<tr>
-<th>240336</th>
-<td>22</td>
-<td>3</td>
-<td>335</td>
-<td>0</td>
-<td>300</td>
-<td>0</td>
-<td>4294967295</td>
-<td>0.476868</td>
-<td>0</td>
-</tr>
-<tr>
-<th>237240</th>
-<td>96</td>
-<td>3</td>
-<td>141</td>
-<td>0</td>
-<td>119</td>
-<td>13</td>
-<td>4294967295</td>
-<td>0.168718</td>
-<td>5</td>
-</tr>
-<tr>
-<th>175586</th>
-<td>47</td>
-<td>4</td>
-<td>245899</td>
-<td>0</td>
-<td>3389</td>
-<td>3</td>
-<td>4294967295</td>
-<td>0.548872</td>
-<td>0</td>
-</tr>
-<tr>
-<th>137854</th>
-<td>0</td>
-<td>41</td>
-<td>6847</td>
-<td>0</td>
-<td>1215</td>
-<td>76</td>
-<td>4294967295</td>
-<td>0.728008</td>
-<td>0</td>
-</tr>
-<tr>
-<th>136680</th>
-<td>33</td>
-<td>1</td>
-<td>26</td>
-<td>0</td>
-<td>12</td>
-<td>3</td>
-<td>4294967295</td>
-<td>0.502463</td>
-<td>0</td>
-</tr>
-<tr>
-<th>69086</th>
-<td>0</td>
-<td>11</td>
-<td>2175</td>
-<td>0</td>
-<td>1077</td>
-<td>4</td>
-<td>4294967295</td>
-<td>0.522334</td>
-<td>2</td>
-</tr>
-<tr>
-<th>2103172</th>
-<td>37</td>
-<td>3</td>
-<td>228094</td>
-<td>1289</td>
-<td>124048</td>
-<td>0</td>
-<td>4294967295</td>
-<td>0.478261</td>
-<td>0</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>
----------------------------------------
-
-4. Check for instance where votes_funny near max value
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th></th>
-<th>author_num_games_owned</th>
-<th>author_num_reviews</th>
-<th>author_playtime_forever</th>
-<th>author_playtime_last_two_weeks</th>
-<th>author_playtime_at_review</th>
-<th>votes_up</th>
-<th>votes_funny</th>
-<th>weighted_vote_score</th>
-<th>comment_count</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>207333</th>
-<td>0</td>
-<td>1</td>
-<td>160</td>
-<td>0</td>
-<td>0</td>
-<td>1</td>
-<td>4294967294</td>
-<td>0.502488</td>
-<td>0</td>
-</tr>
-<tr>
-<th>399424</th>
-<td>244</td>
-<td>16</td>
-<td>3474</td>
-<td>0</td>
-<td>2741</td>
-<td>2</td>
-<td>4294967294</td>
-<td>0.527406</td>
-<td>0</td>
-</tr>
-<tr>
-<th>965323</th>
-<td>89</td>
-<td>25</td>
-<td>35110</td>
-<td>0</td>
-<td>18448</td>
-<td>1</td>
-<td>4294967294</td>
-<td>0.502488</td>
-<td>0</td>
-</tr>
-<tr>
-<th>1295206</th>
-<td>73</td>
-<td>2</td>
-<td>81434</td>
-<td>0</td>
-<td>11682</td>
-<td>6</td>
-<td>4294967294</td>
-<td>0.474069</td>
-<td>3</td>
-</tr>
-<tr>
-<th>1732816</th>
-<td>0</td>
-<td>7</td>
-<td>53478</td>
-<td>0</td>
-<td>14113</td>
-<td>6</td>
-<td>4294967294</td>
-<td>0.609823</td>
-<td>0</td>
-</tr>
-<tr>
-<th>1087214</th>
-<td>318</td>
-<td>13</td>
-<td>82215</td>
-<td>0</td>
-<td>32603</td>
-<td>0</td>
-<td>4294967293</td>
-<td>0.464773</td>
-<td>0</td>
-</tr>
-<tr>
-<th>257117</th>
-<td>111</td>
-<td>4</td>
-<td>1029</td>
-<td>0</td>
-<td>956</td>
-<td>4</td>
-<td>4294967291</td>
-<td>0.404808</td>
-<td>0</td>
-</tr>
-<tr>
-<th>2104470</th>
-<td>0</td>
-<td>1</td>
-<td>25882</td>
-<td>0</td>
-<td>7381</td>
-<td>1</td>
-<td>4294967290</td>
-<td>0.502488</td>
-<td>1</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>
----------------------------------------
-
-5. Find the largest vote_funny value that follows right after ARTIFACT_THRESHOLD, compute its propoertion comparing to max value
-This value is 0.00055241398526179% of VOTES_FUNNY_MAX value!
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Observations:</p>
-<ul>
-<li><code>author_num_games_owned</code>: This is very skewed, but not automatically wrong. Some Steam users can own many games.</li>
-<li><code>author_num_reviews</code>: This looks reasonable. Heavy reviewers exist.</li>
-<li><code>author_playtime_forever</code>: Extreme outlier, but not automatically invalid.</li>
-<li>*<strong><code>author_playtime_last_two_weeks</code>: max = 20156 minutes ≈ 335.9 hours, which is almost exactly 2 weeks, it's physically possible if the player did not exit the steam/game (depends on how they measure playtime) and its activities is recorded continuously</strong>*</li>
-<li><code>author_playtime_at_review</code>: Outliers are expected, but playtime_at_review &gt; playtime_forever would be a consistency issue.</li>
-<li><code>votes_up</code>: Not invalid, but highly sparse and heavy-tailed.</li>
-<li>*<strong><code>votes_funny</code>: Major anomaly --&gt; likely API data artifact or an unsigned integer overflow</strong>*</li>
-<li><code>weighted_vote_score</code>: No obvious range issue.</li>
-<li><code>comment_count</code>: Very sparse, strongly right-skewed. Most reviews have no comments, but a few may have large discussions.</li>
-</ul>
-<p>Suggestions for Data Processing/Feature Engineering:</p>
-<ul>
-<li><p><em>(Feature Engineering)</em> Regarding <code>author_playtime_last_two_weeks</code>: Only 31 records are near the physical maximum of two-week playtime, representing roughly 0.004% of the sample. These values are suspicious but possible because Steam playtime may reflect application runtime rather than active human gameplay. I therefore flag these records for quality tracking rather than remove them.</p>
-</li>
-<li><p><em>(Data Processing)</em> Regarding <code>votes_funny</code>:  Several values are equal or very close to 2^32 - 1, the maximum unsigned 32-bit integer. These values are separated from the plausible range by a large discontinuity: normal high values are only in the thousands, while the suspicious values jump to over 4 billion. Because these records also have low votes_up and only moderate weighted_vote_score, I treat them as likely integer/API artifacts rather than genuine engagement counts. Thus I will remove the suspicious values.</p>
-</li>
-<li><p><em>(Feature Engineering)</em> For skewed count variables, apply <code>log1p</code> transformation:</p>
-<ul>
-<li><code>log_votes_up = log1p(votes_up)</code></li>
-<li><code>log_votes_funny = log1p(votes_funny)</code></li>
-<li><code>log_comment_count = log1p(comment_count)</code></li>
-<li><code>log_playtime_last_two_weeks = log1p(author_playtime_last_two_weeks)</code></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Data-Preparation---Remove-Invalid-Outlier">Data Preparation - Remove Invalid Outlier<a class="anchor-link" href="#Data-Preparation---Remove-Invalid-Outlier">¶</a></h2>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7af6c020-0c5c-4c8c-92b4-83b1bd622077">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -9459,25 +7620,31 @@ This value is 0.00055241398526179% of VOTES_FUNNY_MAX value!
 <div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Remove rows with vote funny with artifact values</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"votes_funny"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">VOTES_FUNNY_ARTIFACT_THRESHOLD</span><span class="p">]</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">functions</span> <span class="k">as</span> <span class="n">F</span>
+
+<span class="kn">from</span> <span class="nn">src.utils.pyspark_utils</span> <span class="kn">import</span> <span class="n">create_spark_session</span>
+<span class="kn">from</span> <span class="nn">src.utils.paths_utils</span> <span class="kn">import</span> <span class="n">ProjectPaths</span>
+<span class="kn">from</span> <span class="nn">src.utils.io_utils</span> <span class="kn">import</span> <span class="n">read_spark_parquet</span>
+<span class="kn">import</span> <span class="nn">src.pipelines.ML_modeling</span> <span class="k">as</span> <span class="nn">ml</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
 </pre></div>
 </div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b33URKqPx4XV">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Health-Audit---Noise">Health Audit - Noise<a class="anchor-link" href="#Health-Audit---Noise">¶</a></h2>
+<h2 id="Read-Train/Validation/Test-Full/Sampled-Dataset-From-Parquet">Read Train/Validation/Test Full/Sampled Dataset From Parquet<a class="anchor-link" href="#Read-Train/Validation/Test-Full/Sampled-Dataset-From-Parquet">¶</a></h2>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=pdBmUpqmDkmf">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -9485,19 +7652,23 @@ This value is 0.00055241398526179% of VOTES_FUNNY_MAX value!
 <div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">## Noises are values that are valid but possibly not useful &amp; unstable</span>
-
-<span class="c1"># 1. Check for columns with mostly zeros</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"# 1. Check for columns with mostly zeros"</span><span class="p">)</span>
-<span class="n">categorical_cols</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">"voted_up"</span><span class="p">,</span>
-    <span class="s2">"written_during_early_access"</span>
-<span class="p">]</span>
-<span class="n">display</span><span class="p">(</span>
-    <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">numeric_cols</span> <span class="o">+</span> <span class="n">categorical_cols</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-    <span class="o">.</span><span class="n">sort_values</span><span class="p">()</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Set up for Spark app &amp; resource allocation</span>
+<span class="c1"># spark = create_spark_session("steam_reviews_machine_learning_modeling")</span>
+<span class="n">spark</span> <span class="o">=</span> <span class="n">create_spark_session</span><span class="p">(</span>
+    <span class="s2">"steam_reviews_machine_learning_finetuning"</span><span class="p">,</span>
+    <span class="n">extra_configs</span><span class="o">=</span><span class="p">{</span><span class="s2">"spark.driver.memory"</span><span class="p">:</span> <span class="s2">"4g"</span><span class="p">,</span> <span class="s2">"spark.master"</span><span class="p">:</span> <span class="s2">"local[*]"</span><span class="p">},</span>
 <span class="p">)</span>
+
+<span class="c1"># Load data</span>
+<span class="n">paths</span> <span class="o">=</span> <span class="n">ProjectPaths</span><span class="p">(</span><span class="n">MODE</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">MODE</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"EXPANSE"</span><span class="p">:</span>
+    <span class="n">train</span> <span class="o">=</span> <span class="n">read_spark_parquet</span><span class="p">(</span><span class="n">spark</span><span class="o">=</span><span class="n">spark</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">paths</span><span class="o">.</span><span class="n">random_row_train_parquet</span><span class="p">)</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">read_spark_parquet</span><span class="p">(</span><span class="n">spark</span><span class="o">=</span><span class="n">spark</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">paths</span><span class="o">.</span><span class="n">random_row_val_parquet</span><span class="p">)</span>
+    <span class="n">test</span> <span class="o">=</span> <span class="n">read_spark_parquet</span><span class="p">(</span><span class="n">spark</span><span class="o">=</span><span class="n">spark</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">paths</span><span class="o">.</span><span class="n">random_row_test_parquet</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">train</span> <span class="o">=</span> <span class="n">read_spark_parquet</span><span class="p">(</span><span class="n">spark</span><span class="o">=</span><span class="n">spark</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">paths</span><span class="o">.</span><span class="n">random_row_train_sampled_parquet</span><span class="p">)</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">read_spark_parquet</span><span class="p">(</span><span class="n">spark</span><span class="o">=</span><span class="n">spark</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">paths</span><span class="o">.</span><span class="n">random_row_val_sampled_parquet</span><span class="p">)</span>
+    <span class="n">test</span> <span class="o">=</span> <span class="n">read_spark_parquet</span><span class="p">(</span><span class="n">spark</span><span class="o">=</span><span class="n">spark</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">paths</span><span class="o">.</span><span class="n">random_row_test_sampled_parquet</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -9510,96 +7681,58 @@ This value is 0.00055241398526179% of VOTES_FUNNY_MAX value!
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre># 1. Check for columns with mostly zeros
+<pre>Read Spark parquet from: /Users/steveg/Desktop/DSC-288R-Capstone-Final-Project/data/train_val_test_splits/random_row/train_sampled_parquet
+Read Spark parquet from: /Users/steveg/Desktop/DSC-288R-Capstone-Final-Project/data/train_val_test_splits/random_row/val_sampled_parquet
+Read Spark parquet from: /Users/steveg/Desktop/DSC-288R-Capstone-Final-Project/data/train_val_test_splits/random_row/test_sampled_parquet
 </pre>
 </div>
 </div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>author_num_reviews                     0.0
-author_playtime_forever            0.01495
-author_playtime_at_review         0.016125
-voted_up                          0.136853
-author_num_games_owned            0.495344
-weighted_vote_score               0.655016
-votes_up                          0.694739
-votes_funny                       0.877833
-written_during_early_access       0.891307
-author_playtime_last_two_weeks     0.90153
-comment_count                     0.959832
-dtype: Float64</pre>
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=wI63GRiyFvcQ">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Observations:</p>
+<h2 id="Hyperparameter-Tuning-with-Cross-Validation">Hyperparameter Tuning with Cross-Validation<a class="anchor-link" href="#Hyperparameter-Tuning-with-Cross-Validation">¶</a></h2><p>We tune each model with k-fold cross-validation through the shared
+<code>src.pipelines.ML_modeling</code> (<code>ml</code>) helpers, so the estimators, evaluators, and
+label handling stay identical to the baseline modeling notebook:</p>
 <ul>
-<li>Several columns are <strong>highly zero-inflated</strong>, meaning most records contain <code>0</code> rather than a positive value.</li>
-<li><code>comment_count</code> is the sparsest numeric feature:<ul>
-<li>About <strong>95.8%</strong> of rows have <code>comment_count = 0</code>.</li>
-<li>This suggests most reviews receive no comments.</li>
-</ul>
-</li>
-<li><code>author_playtime_last_two_weeks</code> is also highly sparse:<ul>
-<li>About <strong>90.8%</strong> of rows have <code>0</code> recent playtime.</li>
-<li>This may be important for churn because recent inactivity is directly related to churn behavior.</li>
-</ul>
-</li>
-<li><code>votes_funny</code> is highly sparse:<ul>
-<li>About <strong>87.7%</strong> of rows have <code>0</code>.</li>
-<li>This feature may still contain signal, but mostly as a rare engagement indicator.</li>
-</ul>
-</li>
-<li><code>votes_up</code> is moderately to highly sparse:<ul>
-<li>About <strong>69.2%</strong> of rows have <code>0</code>.</li>
-<li>The raw count may be less useful than a binary indicator or transformed value.</li>
-</ul>
-</li>
-<li><code>weighted_vote_score</code> has many zeros:<ul>
-<li>About <strong>65.2%</strong> of rows have <code>0</code>.</li>
-<li>This suggests the score may be unavailable, uninformative, or only meaningful when reviews receive enough voting activity.</li>
-</ul>
-</li>
-<li><code>author_num_games_owned</code> has about <strong>50.0%</strong> zeros:<ul>
-<li>This is suspicious from a behavioral perspective because many Steam users likely own at least one game.</li>
-<li>The underlying data-generating mechanism for <code>author_num_games_owned = 0</code> cannot be fully determined from the dataset alone. Although the value is observed as zero, it may represent true zero ownership, unavailable/private ownership metadata, API default behavior, free-to-play access patterns, or a mismatch between review time and data collection time. Therefore, this field is treated as “zero recorded owned games” rather than literal proof that the user owns no games.</li>
-</ul>
-</li>
-</ul>
-<p>Suggestions for Data Processing/Feature Engineering:</p>
-<ul>
-<li><em>(Feature Engineering)</em>: For highly zero-inflated count columns, consider creating binary indicator features:<ul>
-<li><code>has_comments = comment_count &gt; 0</code></li>
-<li><code>has_votes_up = votes_up &gt; 0</code></li>
-<li><code>has_funny_votes = votes_funny &gt; 0</code></li>
-<li><code>has_recent_playtime = author_playtime_last_two_weeks &gt; 0</code></li>
-<li><code>has_weighted_vote_score = weighted_vote_score &gt; 0</code></li>
-</ul>
-</li>
+<li><code>ml.cross_validate_model(...)</code> builds the estimator from <code>ml.build_models</code>,
+searches a param grid with <code>CrossValidator</code>, and returns the fitted CV model,
+the refit <code>best_model</code>, the winning params, and a tidy <code>results_df</code>.</li>
+<li><code>ml.evaluate_split(...)</code> scores the tuned <code>best_model</code> on the held-out test
+split using the same metric definitions as <code>ml.evaluate_model</code>.</li>
 </ul>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=UMLN0YBwF27w">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Health-Audit---Uniqueness-&amp;-Duplicates">Health Audit - Uniqueness &amp; Duplicates<a class="anchor-link" href="#Health-Audit---Uniqueness-&amp;-Duplicates">¶</a></h2>
+<h3 id="Logistic-Regression">Logistic Regression<a class="anchor-link" href="#Logistic-Regression">¶</a></h3>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=E6x_r0-dKVJ0">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>Cross-Validation Results (Logistic Regression):
+To evaluate model stability, we applied 5-fold cross-validation using Logistic Regression as a baseline classifier. The model achieved a final ROC-AUC score of 0.864 on the held-out test set. An ROC-AUC value above 0.80 is generally considered strong discrimination performance, indicating that the model is effective at distinguishing between churned and retained players across a range of classification thresholds. These results suggest that the behavioral features derived from player activity contain meaningful predictive information and that the model's performance remains robust when evaluated across multiple validation folds rather than relying on a single train-validation split.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=GvwDGDW_Fu-W">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -9607,43 +7740,26 @@ dtype: Float64</pre>
 <div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1">## Uniqueness of catgorical features tells us insight of categories, while for numerical features,</span>
-<span class="c1">## it indicates potential few_unique_values_per_column issue or possibility for discretization to a categorical type</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
-<span class="c1"># 1. Numbers of unique values for categorical/numerical &amp; ID columns</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"1. Numbers of unique values for categorical/numerical &amp; ID columns"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">[</span><span class="n">categorical_cols</span><span class="p">]</span>
-    <span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
-    <span class="o">.</span><span class="n">sort_values</span><span class="p">()</span>
+<span class="c1"># Tune regularization strength + elastic-net mix via 5-fold CV.</span>
+<span class="n">lr_cv</span> <span class="o">=</span> <span class="n">ml</span><span class="o">.</span><span class="n">cross_validate_model</span><span class="p">(</span>
+    <span class="n">model_name</span><span class="o">=</span><span class="s2">"log_reg"</span><span class="p">,</span>
+    <span class="n">train_final_df</span><span class="o">=</span><span class="n">train</span><span class="p">,</span>
+    <span class="n">spark</span><span class="o">=</span><span class="n">spark</span><span class="p">,</span>
+    <span class="n">param_grid</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">"regParam"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+        <span class="s2">"elasticNetParam"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+    <span class="p">},</span>
+    <span class="n">num_folds</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">metric</span><span class="o">=</span><span class="s2">"areaUnderROC"</span><span class="p">,</span>
+    <span class="n">parallelism</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="n">MODE</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="nb">print</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">[</span><span class="n">numeric_cols</span><span class="p">]</span>
-    <span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
-    <span class="o">.</span><span class="n">sort_values</span><span class="p">()</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">[[</span><span class="s2">"author_steamid"</span><span class="p">,</span> <span class="s2">"appid"</span><span class="p">]]</span>
-    <span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
-    <span class="o">.</span><span class="n">sort_values</span><span class="p">()</span>
-<span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">---------------------------------------</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">lr_cv</span><span class="p">[</span><span class="s2">"results_df"</span><span class="p">])</span>
 
-<span class="c1">## Duplicate tells us how many rows has exact duplicates and how frequent would a user to review the same game</span>
-
-<span class="c1"># 2. Numbers of duplicate found in dataframe</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"2. Numbers of duplicate found in dataframe"</span><span class="p">)</span>
-<span class="n">exact_dup_mask</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">duplicated</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">exact_dup_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">---------------------------------------</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
-
-<span class="c1"># 3. Does the same user appear to have created multiple review records for the same game at the same time?</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"3. Does the same user appear to have created multiple review records for the same game at the same time?"</span><span class="p">)</span>
-<span class="n">key_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"author_steamid"</span><span class="p">,</span> <span class="s2">"appid"</span><span class="p">,</span> <span class="s2">"timestamp_created"</span><span class="p">]</span>
-<span class="n">combo_dup_mask</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">duplicated</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="n">key_cols</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">combo_dup_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Logistic Regression CV took: </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -9656,1156 +7772,8 @@ dtype: Float64</pre>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>1. Numbers of unique values for categorical/numerical &amp; ID columns
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>voted_up                       2
-written_during_early_access    2
-dtype: int64
-
-comment_count                        130
-author_num_reviews                   302
-votes_funny                          681
-votes_up                             985
-author_num_games_owned              2549
-author_playtime_last_two_weeks      7182
-author_playtime_at_review          98171
-author_playtime_forever           152108
-weighted_vote_score               231940
-dtype: int64
-
-appid              40418
-author_steamid    722995
-dtype: int64
-
----------------------------------------
-
-2. Numbers of duplicate found in dataframe
-30
-
----------------------------------------
-
-3. Does the same user appear to have created multiple review records for the same game at the same time?
-44
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># 4. Inspect more details ("author_steamid", "appid", "timestamp_created") regarding instances in #3</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"4. Inspect more details from other columns regarding instance from last part"</span><span class="p">)</span>
-<span class="n">combo_dup</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="c1"># Count distinct full rows inside each duplicate-key group</span>
-    <span class="n">df</span><span class="p">[</span><span class="n">combo_dup_mask</span><span class="p">]</span>
-    <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key_cols</span><span class="p">,</span> <span class="n">dropna</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># First de-duplicate and then do row count</span>
-    <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">"n_distinct_full_rows"</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
-    <span class="c1"># Keep key groups where duplicate-key rows are not all exact copies</span>
-    <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">"n_distinct_full_rows &gt; 1"</span><span class="p">)</span>
-    <span class="c1"># Reduce compution when joining</span>
-    <span class="p">[</span><span class="n">key_cols</span><span class="p">]</span>
-    <span class="c1"># Join to filter combo duplicate that don't contain exact duplicate in the final result</span>
-    <span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-        <span class="n">df</span><span class="p">[</span><span class="n">combo_dup_mask</span><span class="p">],</span>
-        <span class="n">on</span><span class="o">=</span><span class="n">key_cols</span><span class="p">,</span>
-        <span class="n">how</span><span class="o">=</span><span class="s2">"inner"</span>
-    <span class="p">)</span>
-    <span class="c1"># Format nicely</span>
-    <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">key_cols</span><span class="p">)</span>
-<span class="p">)</span>
-<span class="n">display</span><span class="p">(</span><span class="n">combo_dup</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Rows involved:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">combo_dup</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">---------------------------------------</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
-
-<span class="c1"># 5. Print out the duplicate reviews</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"5. Print out the duplicate reviews</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">review</span> <span class="ow">in</span> <span class="n">combo_dup</span><span class="p">[</span><span class="s1">'review'</span><span class="p">]:</span> <span class="nb">print</span><span class="p">(</span><span class="n">review</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>4. Inspect more details from other columns regarding instance from last part
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>/var/folders/61/1pzzb_697tvd2m0ys5f0wg5c0000gn/T/ipykernel_73718/3891078007.py:7: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
-  .apply(lambda g: g.drop_duplicates().shape[0])  # First de-duplicate and then do row count
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th></th>
-<th>author_steamid</th>
-<th>appid</th>
-<th>timestamp_created</th>
-<th>author_num_games_owned</th>
-<th>author_num_reviews</th>
-<th>author_playtime_forever</th>
-<th>author_playtime_last_two_weeks</th>
-<th>author_playtime_at_review</th>
-<th>author_last_played</th>
-<th>review</th>
-<th>voted_up</th>
-<th>votes_up</th>
-<th>votes_funny</th>
-<th>weighted_vote_score</th>
-<th>comment_count</th>
-<th>written_during_early_access</th>
-<th>language</th>
-<th>timestamp_updated</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>0</th>
-<td>76561198024366938</td>
-<td>255710</td>
-<td>1434917838</td>
-<td>0</td>
-<td>1</td>
-<td>854</td>
-<td>0</td>
-<td>146</td>
-<td>1683986641</td>
-<td>MacBook Pro (Retina, 15', Mitte 2014), 2,5 GHz...</td>
-<td>False</td>
-<td>0</td>
-<td>0</td>
-<td>0.0</td>
-<td>0</td>
-<td>False</td>
-<td>english</td>
-<td>1434917838</td>
-</tr>
-<tr>
-<th>1</th>
-<td>76561198024366938</td>
-<td>255710</td>
-<td>1434917838</td>
-<td>0</td>
-<td>1</td>
-<td>854</td>
-<td>0</td>
-<td>146</td>
-<td>1683986641</td>
-<td>MacBook Pro (Retina, 15', Mitte 2014), 2,5 GHz...</td>
-<td>False</td>
-<td>0</td>
-<td>0</td>
-<td>0.0</td>
-<td>0</td>
-<td>False</td>
-<td>german</td>
-<td>1434917838</td>
-</tr>
-<tr>
-<th>2</th>
-<td>76561198024366938</td>
-<td>255710</td>
-<td>1434917838</td>
-<td>0</td>
-<td>1</td>
-<td>854</td>
-<td>0</td>
-<td>146</td>
-<td>1683986641</td>
-<td>MacBook Pro (Retina, 15', Mitte 2014), 2,5 GHz...</td>
-<td>False</td>
-<td>0</td>
-<td>0</td>
-<td>0.0</td>
-<td>0</td>
-<td>False</td>
-<td>german</td>
-<td>1434917838</td>
-</tr>
-<tr>
-<th>3</th>
-<td>76561198024366938</td>
-<td>255710</td>
-<td>1434917838</td>
-<td>0</td>
-<td>1</td>
-<td>854</td>
-<td>0</td>
-<td>146</td>
-<td>1683986641</td>
-<td>MacBook Pro (Retina, 15', Mitte 2014), 2,5 GHz...</td>
-<td>False</td>
-<td>0</td>
-<td>0</td>
-<td>0.0</td>
-<td>0</td>
-<td>False</td>
-<td>german</td>
-<td>1434917838</td>
-</tr>
-<tr>
-<th>4</th>
-<td>76561198030127910</td>
-<td>201810</td>
-<td>1401975135</td>
-<td>0</td>
-<td>30</td>
-<td>7173</td>
-<td>0</td>
-<td>2176</td>
-<td>1509278312</td>
-<td>Амосфернейший шутер, давно не было коридороног...</td>
-<td>True</td>
-<td>1</td>
-<td>1</td>
-<td>0.52381</td>
-<td>0</td>
-<td>False</td>
-<td>russian</td>
-<td>1402750864</td>
-</tr>
-<tr>
-<th>5</th>
-<td>76561198030127910</td>
-<td>201810</td>
-<td>1401975135</td>
-<td>0</td>
-<td>30</td>
-<td>7173</td>
-<td>0</td>
-<td>664</td>
-<td>1509278312</td>
-<td>Амосфернейший шутер, давно не было коридороног...</td>
-<td>True</td>
-<td>0</td>
-<td>0</td>
-<td>0.0</td>
-<td>0</td>
-<td>False</td>
-<td>russian</td>
-<td>1401975135</td>
-</tr>
-<tr>
-<th>6</th>
-<td>76561198074796884</td>
-<td>730</td>
-<td>1394826767</td>
-<td>636</td>
-<td>1</td>
-<td>93443</td>
-<td>0</td>
-<td>3637</td>
-<td>1696762155</td>
-<td>best game evarrrrrrrrrrr!!!!!!!!!!!!!!!!!!!!!!...</td>
-<td>True</td>
-<td>3</td>
-<td>0</td>
-<td>0.565217</td>
-<td>0</td>
-<td>False</td>
-<td>german</td>
-<td>1394826767</td>
-</tr>
-<tr>
-<th>7</th>
-<td>76561198074796884</td>
-<td>730</td>
-<td>1394826767</td>
-<td>636</td>
-<td>1</td>
-<td>93443</td>
-<td>0</td>
-<td>3637</td>
-<td>1696762155</td>
-<td>best game evarrrrrrrrrrr!!!!!!!!!!!!!!!!!!!!!!...</td>
-<td>True</td>
-<td>1</td>
-<td>0</td>
-<td>0.52381</td>
-<td>0</td>
-<td>False</td>
-<td>german</td>
-<td>1394826767</td>
-</tr>
-<tr>
-<th>8</th>
-<td>76561198074796884</td>
-<td>730</td>
-<td>1394826767</td>
-<td>636</td>
-<td>1</td>
-<td>93443</td>
-<td>0</td>
-<td>3637</td>
-<td>1696762155</td>
-<td>best game evarrrrrrrrrrr!!!!!!!!!!!!!!!!!!!!!!...</td>
-<td>True</td>
-<td>0</td>
-<td>0</td>
-<td>0.0</td>
-<td>0</td>
-<td>False</td>
-<td>german</td>
-<td>1394826767</td>
-</tr>
-<tr>
-<th>9</th>
-<td>76561198074796884</td>
-<td>730</td>
-<td>1394826767</td>
-<td>636</td>
-<td>1</td>
-<td>93443</td>
-<td>0</td>
-<td>3637</td>
-<td>1696762155</td>
-<td>best game evarrrrrrrrrrr!!!!!!!!!!!!!!!!!!!!!!...</td>
-<td>True</td>
-<td>0</td>
-<td>0</td>
-<td>0.0</td>
-<td>0</td>
-<td>False</td>
-<td>english</td>
-<td>1394826767</td>
-</tr>
-<tr>
-<th>10</th>
-<td>76561198076163882</td>
-<td>113200</td>
-<td>1394816470</td>
-<td>596</td>
-<td>32</td>
-<td>329</td>
-<td>0</td>
-<td>259</td>
-<td>1490897933</td>
-<td>Bardzo polecam. Rogualike jakiego nie było. Mo...</td>
-<td>True</td>
-<td>1</td>
-<td>1</td>
-<td>0.522613</td>
-<td>0</td>
-<td>False</td>
-<td>polish</td>
-<td>1394816470</td>
-</tr>
-<tr>
-<th>11</th>
-<td>76561198076163882</td>
-<td>113200</td>
-<td>1394816470</td>
-<td>596</td>
-<td>32</td>
-<td>329</td>
-<td>0</td>
-<td>259</td>
-<td>1490897933</td>
-<td>Bardzo polecam. Rogualike jakiego nie było. Mo...</td>
-<td>True</td>
-<td>0</td>
-<td>1</td>
-<td>0.0</td>
-<td>0</td>
-<td>False</td>
-<td>polish</td>
-<td>1394816470</td>
-</tr>
-<tr>
-<th>12</th>
-<td>76561198078970398</td>
-<td>50130</td>
-<td>1394821667</td>
-<td>354</td>
-<td>18</td>
-<td>2687</td>
-<td>0</td>
-<td>475</td>
-<td>1490556519</td>
-<td>Hodně dobrá hra :)</td>
-<td>True</td>
-<td>0</td>
-<td>0</td>
-<td>0.0</td>
-<td>0</td>
-<td>False</td>
-<td>czech</td>
-<td>1394821667</td>
-</tr>
-<tr>
-<th>13</th>
-<td>76561198078970398</td>
-<td>50130</td>
-<td>1394821667</td>
-<td>354</td>
-<td>18</td>
-<td>2687</td>
-<td>0</td>
-<td>475</td>
-<td>1490556519</td>
-<td>Hodně dobrá hra :)</td>
-<td>True</td>
-<td>0</td>
-<td>1</td>
-<td>0.0</td>
-<td>0</td>
-<td>False</td>
-<td>czech</td>
-<td>1394821667</td>
-</tr>
-<tr>
-<th>14</th>
-<td>76561198123783241</td>
-<td>356000</td>
-<td>1426499371</td>
-<td>0</td>
-<td>14</td>
-<td>112</td>
-<td>0</td>
-<td>92</td>
-<td>1436673221</td>
-<td>"I thought this game is enjoyable and the conc...</td>
-<td>True</td>
-<td>5</td>
-<td>1</td>
-<td>0.527405</td>
-<td>0</td>
-<td>False</td>
-<td>english</td>
-<td>1426499371</td>
-</tr>
-<tr>
-<th>15</th>
-<td>76561198123783241</td>
-<td>356000</td>
-<td>1426499371</td>
-<td>0</td>
-<td>14</td>
-<td>112</td>
-<td>0</td>
-<td>92</td>
-<td>1436673221</td>
-<td>"I thought this game is enjoyable and the conc...</td>
-<td>True</td>
-<td>0</td>
-<td>0</td>
-<td>0.482456</td>
-<td>0</td>
-<td>False</td>
-<td>english</td>
-<td>1426499371</td>
-</tr>
-<tr>
-<th>16</th>
-<td>76561198137371138</td>
-<td>243930</td>
-<td>1401901280</td>
-<td>121</td>
-<td>6</td>
-<td>736</td>
-<td>0</td>
-<td>670</td>
-<td>1559036015</td>
-<td>DAS SPIEL IST GUT NUR DAS DER KAMPF MIT SCHWAR...</td>
-<td>True</td>
-<td>0</td>
-<td>1</td>
-<td>0.417859</td>
-<td>0</td>
-<td>False</td>
-<td>german</td>
-<td>1401901280</td>
-</tr>
-<tr>
-<th>17</th>
-<td>76561198137371138</td>
-<td>243930</td>
-<td>1401901280</td>
-<td>121</td>
-<td>6</td>
-<td>736</td>
-<td>0</td>
-<td>670</td>
-<td>1559036015</td>
-<td>DAS SPIEL IST GUT NUR DAS DER KAMPF MIT SCHWAR...</td>
-<td>True</td>
-<td>0</td>
-<td>0</td>
-<td>0.0</td>
-<td>0</td>
-<td>False</td>
-<td>german</td>
-<td>1401901280</td>
-</tr>
-<tr>
-<th>18</th>
-<td>76561198137371138</td>
-<td>243930</td>
-<td>1401901280</td>
-<td>121</td>
-<td>6</td>
-<td>736</td>
-<td>0</td>
-<td>670</td>
-<td>1559036015</td>
-<td>DAS SPIEL IST GUT NUR DAS DER KAMPF MIT SCHWAR...</td>
-<td>True</td>
-<td>0</td>
-<td>0</td>
-<td>0.0</td>
-<td>0</td>
-<td>False</td>
-<td>german</td>
-<td>1401901280</td>
-</tr>
-<tr>
-<th>19</th>
-<td>76561198137371138</td>
-<td>243930</td>
-<td>1401901280</td>
-<td>121</td>
-<td>6</td>
-<td>736</td>
-<td>0</td>
-<td>670</td>
-<td>1559036015</td>
-<td>DAS SPIEL IST GUT NUR DAS DER KAMPF MIT SCHWAR...</td>
-<td>True</td>
-<td>0</td>
-<td>0</td>
-<td>0.0</td>
-<td>0</td>
-<td>False</td>
-<td>german</td>
-<td>1401901280</td>
-</tr>
-<tr>
-<th>20</th>
-<td>76561198151549673</td>
-<td>730</td>
-<td>1423992043</td>
-<td>0</td>
-<td>1</td>
-<td>113157</td>
-<td>0</td>
-<td>16858</td>
-<td>1529774062</td>
-<td>geras :)</td>
-<td>True</td>
-<td>1</td>
-<td>0</td>
-<td>0.52381</td>
-<td>0</td>
-<td>False</td>
-<td>english</td>
-<td>1423992043</td>
-</tr>
-<tr>
-<th>21</th>
-<td>76561198151549673</td>
-<td>730</td>
-<td>1423992043</td>
-<td>0</td>
-<td>1</td>
-<td>113157</td>
-<td>0</td>
-<td>16858</td>
-<td>1529774062</td>
-<td>geras :)</td>
-<td>True</td>
-<td>1</td>
-<td>0</td>
-<td>0.52381</td>
-<td>0</td>
-<td>False</td>
-<td>english</td>
-<td>1423992043</td>
-</tr>
-<tr>
-<th>22</th>
-<td>76561198151549673</td>
-<td>730</td>
-<td>1423992043</td>
-<td>0</td>
-<td>1</td>
-<td>113157</td>
-<td>0</td>
-<td>16858</td>
-<td>1529774062</td>
-<td>geras :)</td>
-<td>True</td>
-<td>0</td>
-<td>0</td>
-<td>0.0</td>
-<td>0</td>
-<td>False</td>
-<td>english</td>
-<td>1423992043</td>
-</tr>
-<tr>
-<th>23</th>
-<td>76561198151549673</td>
-<td>730</td>
-<td>1423992043</td>
-<td>0</td>
-<td>1</td>
-<td>113157</td>
-<td>0</td>
-<td>16858</td>
-<td>1529774062</td>
-<td>geras :)</td>
-<td>True</td>
-<td>0</td>
-<td>0</td>
-<td>0.0</td>
-<td>0</td>
-<td>False</td>
-<td>english</td>
-<td>1423992043</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Rows involved: 24
-
----------------------------------------
-
-5. Print out the duplicate reviews
-
-MacBook Pro (Retina, 15', Mitte 2014), 2,5 GHz Intel Core i7, 16 GB 1600 MHz DDR3, NVIDIA GeForce GT 750M 2048 MB;  Setting the Graphics Settings all to low and using a Full HD Resolution my Fans are going crazy and the MacBook is heating up. This is a really awful performance. I can play games like Diablo 3 with amazing Graphics and the fans will remain absolutely silent. I wan't my money back!
-MacBook Pro (Retina, 15', Mitte 2014), 2,5 GHz Intel Core i7, 16 GB 1600 MHz DDR3, NVIDIA GeForce GT 750M 2048 MB;  Setting the Graphics Settings all to low and using a Full HD Resolution my Fans are going crazy and the MacBook is heating up. This is a really awful performance. I can play games like Diablo 3 with amazing Graphics and the fans will remain absolutely silent. I wan't my money back!
-MacBook Pro (Retina, 15', Mitte 2014), 2,5 GHz Intel Core i7, 16 GB 1600 MHz DDR3, NVIDIA GeForce GT 750M 2048 MB;  Setting the Graphics Settings all to low and using a Full HD Resolution my Fans are going crazy and the MacBook is heating up. This is a really awful performance. I can play games like Diablo 3 with amazing Graphics and the fans will remain absolutely silent. I wan't my money back!
-MacBook Pro (Retina, 15', Mitte 2014), 2,5 GHz Intel Core i7, 16 GB 1600 MHz DDR3, NVIDIA GeForce GT 750M 2048 MB;  Setting the Graphics Settings all to low and using a Full HD Resolution my Fans are going crazy and the MacBook is heating up. This is a really awful performance. I can play games like Diablo 3 with amazing Graphics and the fans will remain absolutely silent. I wan't my money back!
-Амосфернейший шутер, давно не было коридороного хардкора. Хотя некоторые локации поражают  вариативностью их прохождения.  Почитал интернеты и был удивлен что у многих есть тех. проблемы с запуском и игровым процессом. Имея среднюю конфигурацию (т.к. моноблок, см. ниже) играю на высоких настройках. Дошел до 6 главы и не заметил ни единой проблемы, FPS проседало до 30, но это было пару раз, в основном за 40 кадров в секунду. Прогрузка текстур при быстром повороте игровой камеры не в счет, это недостаток самого движка, лечится снижением графических настроек.  Конфигурация: Моноблок Lenovo IdeaCentre B520   CPU: Intel Core i5-2320 2.8 ГГц; Turbo Boost до 3.1 ГГц; RAM (ОЗУ): DDR3, 12 Gb; GPU: GeForce GT 555M, 2 Gb, nVidia driver 337.88; SSD: PLEXTOR PX-128M6M           Read :   512.918 MB/s           Write :   322.044 MB/s; OS : Windows 8  [6.2 Build 9200] (x64).
-Амосфернейший шутер, давно не было коридороного хардкора.
-best game evarrrrrrrrrrr!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!¨¨  10 times better than COD
-best game evarrrrrrrrrrr!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!¨¨  10 times better than COD
-best game evarrrrrrrrrrr!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!¨¨  10 times better than COD
-best game evarrrrrrrrrrr!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!¨¨  10 times better than COD
-Bardzo polecam. Rogualike jakiego nie było. Można przy nim spędzić mnostwo godzin
-Bardzo polecam. Rogualike jakiego nie było. Można przy nim spędzić mnostwo godzin
-Hodně dobrá hra :)
-Hodně dobrá hra :)
-"I thought this game is enjoyable and the concept is very clever, i like the fact taht there are different ""classes"" you can choose from and the choose your own adventure genre is one that should get more praise (the walking dead has given it a it) however i found that during some parts it was a long duration of time before you actually got to make a descison. Overall though i thought it was fun and would recommend it!"
-"I thought this game is enjoyable and the concept is very clever, i like the fact taht there are different ""classes"" you can choose from and the choose your own adventure genre is one that should get more praise (the walking dead has given it a it) however i found that during some parts it was a long duration of time before you actually got to make a descison. Overall though i thought it was fun and would recommend it!"
-DAS SPIEL IST GUT NUR DAS DER KAMPF MIT SCHWARZFROST UNMÖGLICH IST IMMMOMENT WEILER ALLE DEINE FREUNDE AUF SEINE SEITE ZIEHT MIT EINEM ZAUBER UND DIE DANN GEGEN DICH KÄMPFEN ABER SONNST GEILES SPIEL LOHNENS WERT DAS GELD  
-DAS SPIEL IST GUT NUR DAS DER KAMPF MIT SCHWARZFROST UNMÖGLICH IST IMMMOMENT WEILER ALLE DEINE FREUNDE AUF SEINE SEITE ZIEHT MIT EINEM ZAUBER UND DIE DANN GEGEN DICH KÄMPFEN ABER SONNST GEILES SPIEL LOHNENS WERT DAS GELD  
-DAS SPIEL IST GUT NUR DAS DER KAMPF MIT SCHWARZFROST UNMÖGLICH IST IMMMOMENT WEILER ALLE DEINE FREUNDE AUF SEINE SEITE ZIEHT MIT EINEM ZAUBER UND DIE DANN GEGEN DICH KÄMPFEN ABER SONNST GEILES SPIEL LOHNENS WERT DAS GELD  
-DAS SPIEL IST GUT NUR DAS DER KAMPF MIT SCHWARZFROST UNMÖGLICH IST IMMMOMENT WEILER ALLE DEINE FREUNDE AUF SEINE SEITE ZIEHT MIT EINEM ZAUBER UND DIE DANN GEGEN DICH KÄMPFEN ABER SONNST GEILES SPIEL LOHNENS WERT DAS GELD  
-geras :)
-geras :)
-geras :)
-geras :)
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># 6. Create report on metadata difference on same (author ID, game ID, review date created)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"6. Create report on metadata difference on same (author ID, game ID, review date created)"</span><span class="p">)</span>
-
-<span class="c1"># Explanation see #4</span>
-<span class="n">n_distinct_full_rows</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">df</span><span class="p">[</span><span class="n">combo_dup_mask</span><span class="p">]</span>
-    <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key_cols</span><span class="p">,</span> <span class="n">dropna</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">"n_distinct_full_rows"</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
-<span class="p">)</span>
-
-<span class="n">diagnostic_report</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="c1"># Compute various stats inside each duplicate-key group</span>
-    <span class="n">df</span><span class="p">[</span><span class="n">combo_dup_mask</span><span class="p">]</span>
-    <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key_cols</span><span class="p">,</span> <span class="n">dropna</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">agg</span><span class="p">(</span>
-        <span class="n">n_rows</span><span class="o">=</span><span class="p">(</span><span class="s2">"appid"</span><span class="p">,</span> <span class="s2">"size"</span><span class="p">),</span>
-        <span class="n">n_distinct_full_rows</span><span class="o">=</span><span class="p">(</span><span class="s2">"appid"</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="kc">None</span><span class="p">),</span>  <span class="c1"># placeholder, see below</span>
-        <span class="n">n_review_texts</span><span class="o">=</span><span class="p">(</span><span class="s2">"review"</span><span class="p">,</span> <span class="s2">"nunique"</span><span class="p">),</span>
-        <span class="n">n_languages</span><span class="o">=</span><span class="p">(</span><span class="s2">"language"</span><span class="p">,</span> <span class="s2">"nunique"</span><span class="p">),</span>
-        <span class="n">n_timestamp_updated</span><span class="o">=</span><span class="p">(</span><span class="s2">"timestamp_updated"</span><span class="p">,</span> <span class="s2">"nunique"</span><span class="p">),</span>
-        <span class="n">n_playtime_at_review</span><span class="o">=</span><span class="p">(</span><span class="s2">"author_playtime_at_review"</span><span class="p">,</span> <span class="s2">"nunique"</span><span class="p">),</span>
-        <span class="n">n_votes_up</span><span class="o">=</span><span class="p">(</span><span class="s2">"votes_up"</span><span class="p">,</span> <span class="s2">"nunique"</span><span class="p">),</span>
-        <span class="n">n_votes_funny</span><span class="o">=</span><span class="p">(</span><span class="s2">"votes_funny"</span><span class="p">,</span> <span class="s2">"nunique"</span><span class="p">),</span>
-        <span class="n">n_weighted_vote_score</span><span class="o">=</span><span class="p">(</span><span class="s2">"weighted_vote_score"</span><span class="p">,</span> <span class="s2">"nunique"</span><span class="p">),</span>
-    <span class="p">)</span>
-    <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
-    <span class="c1"># Join to filter combo duplicate that don't contain exact duplicate in the final result</span>
-    <span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-        <span class="n">n_distinct_full_rows</span><span class="p">,</span>
-        <span class="n">on</span><span class="o">=</span><span class="n">key_cols</span><span class="p">,</span>
-        <span class="n">how</span><span class="o">=</span><span class="s2">"left"</span>
-    <span class="p">)</span>
-    <span class="c1"># Drop extra columns</span>
-    <span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"n_distinct_full_rows_x"</span><span class="p">])</span>
-    <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">"n_distinct_full_rows_y"</span><span class="p">:</span> <span class="s2">"n_distinct_full_rows"</span><span class="p">})</span>
-    <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">"n_rows"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="p">)</span>
-<span class="n">display</span><span class="p">(</span><span class="n">diagnostic_report</span><span class="p">)</span>
-<span class="k">del</span> <span class="n">diagnostic_report</span><span class="p">,</span> <span class="n">n_distinct_full_rows</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>6. Create report on metadata difference on same (author ID, game ID, review date created)
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>/var/folders/61/1pzzb_697tvd2m0ys5f0wg5c0000gn/T/ipykernel_73718/2976787689.py:8: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
-  .apply(lambda g: g.drop_duplicates().shape[0])
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th></th>
-<th>author_steamid</th>
-<th>appid</th>
-<th>timestamp_created</th>
-<th>n_rows</th>
-<th>n_review_texts</th>
-<th>n_languages</th>
-<th>n_timestamp_updated</th>
-<th>n_playtime_at_review</th>
-<th>n_votes_up</th>
-<th>n_votes_funny</th>
-<th>n_weighted_vote_score</th>
-<th>n_distinct_full_rows</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>2</th>
-<td>76561198024366938</td>
-<td>255710</td>
-<td>1434917838</td>
-<td>4</td>
-<td>1</td>
-<td>2</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>2</td>
-</tr>
-<tr>
-<th>7</th>
-<td>76561198074796884</td>
-<td>730</td>
-<td>1394826767</td>
-<td>4</td>
-<td>1</td>
-<td>2</td>
-<td>1</td>
-<td>1</td>
-<td>3</td>
-<td>1</td>
-<td>3</td>
-<td>4</td>
-</tr>
-<tr>
-<th>12</th>
-<td>76561198133914594</td>
-<td>272350</td>
-<td>1401889835</td>
-<td>4</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr>
-<th>14</th>
-<td>76561198137371138</td>
-<td>243930</td>
-<td>1401901280</td>
-<td>4</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>2</td>
-<td>2</td>
-<td>2</td>
-</tr>
-<tr>
-<th>15</th>
-<td>76561198151549673</td>
-<td>730</td>
-<td>1423992043</td>
-<td>4</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>2</td>
-<td>1</td>
-<td>2</td>
-<td>2</td>
-</tr>
-<tr>
-<th>1</th>
-<td>76561198013036300</td>
-<td>104900</td>
-<td>1394820950</td>
-<td>3</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr>
-<th>5</th>
-<td>76561198065215070</td>
-<td>258160</td>
-<td>1425125834</td>
-<td>3</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr>
-<th>0</th>
-<td>76561197960430758</td>
-<td>43160</td>
-<td>1401897619</td>
-<td>2</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr>
-<th>3</th>
-<td>76561198030127910</td>
-<td>201810</td>
-<td>1401975135</td>
-<td>2</td>
-<td>2</td>
-<td>1</td>
-<td>2</td>
-<td>2</td>
-<td>2</td>
-<td>2</td>
-<td>2</td>
-<td>2</td>
-</tr>
-<tr>
-<th>4</th>
-<td>76561198057462316</td>
-<td>730</td>
-<td>1394819839</td>
-<td>2</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr>
-<th>6</th>
-<td>76561198070870953</td>
-<td>206190</td>
-<td>1403046720</td>
-<td>2</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr>
-<th>8</th>
-<td>76561198076163882</td>
-<td>113200</td>
-<td>1394816470</td>
-<td>2</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>2</td>
-<td>1</td>
-<td>2</td>
-<td>2</td>
-</tr>
-<tr>
-<th>9</th>
-<td>76561198078970398</td>
-<td>50130</td>
-<td>1394821667</td>
-<td>2</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>2</td>
-<td>1</td>
-<td>2</td>
-</tr>
-<tr>
-<th>10</th>
-<td>76561198079501598</td>
-<td>4000</td>
-<td>1401975621</td>
-<td>2</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr>
-<th>11</th>
-<td>76561198123783241</td>
-<td>356000</td>
-<td>1426499371</td>
-<td>2</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>2</td>
-<td>2</td>
-<td>2</td>
-<td>2</td>
-</tr>
-<tr>
-<th>13</th>
-<td>76561198136541357</td>
-<td>251670</td>
-<td>1402054577</td>
-<td>2</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Observations:</p>
-<ul>
-<li><p>The uniqueness checks show expected behavior. Boolean categorical variables each contain two unique values, matching their expected binary structure. Numeric variables show different levels of cardinality: count-based variables such as comment_count, votes_funny, votes_up, and author_num_reviews have fewer unique values, while playtime and weighted score variables have much higher cardinality. This pattern is expected and does not indicate a data quality problem by itself.</p>
-</li>
-<li><p>The ID columns have high cardinality, with many unique users and games. This is expected because author_steamid and appid are entity identifiers. They should not be treated as ordinary continuous numeric variables. Instead, they should be used for grouping, aggregation, deduplication, and possible user-level or game-level feature engineering.</p>
-</li>
-<li><p>The duplicate check found 21 exact duplicate rows, indicating a small amount of fully redundant data.</p>
-</li>
-<li><p>The composite review-key check using author_steamid, appid, and timestamp_created found 29 duplicate-key records. After inspecting duplicate-key records that are not exact duplicates, 12 rows across 6 duplicate-key groups show differences in other fields. Some duplicate-key rows differ in language labels despite having identical review text, suggesting possible source-level language classification noise. Other groups differ in votes_up, votes_funny, weighted_vote_score, author_playtime_at_review, review text, or timestamp_updated. This suggests that some records may represent updated review versions or time-varying review engagement metrics rather than independent review events.</p>
-</li>
-</ul>
-<p>Suggestions for Data Processing/Feature Engineering:</p>
-<ul>
-<li><p><em>(Data Processing)</em> Remove exact duplicate, because they provide no additional information and may bias count-based summaries.</p>
-</li>
-<li><p><em>(Data Processing)</em> Remaining duplicate review-key records should be resolved using a deterministic rule, such as keeping the row with the latest timestamp_updated for each author_steamid-appid-timestamp_created group. This avoids double-counting the same review event while preserving the most recent available version.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Data-Preparation---Remove-Duplicates">Data Preparation - Remove Duplicates<a class="anchor-link" href="#Data-Preparation---Remove-Duplicates">¶</a></h2>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Remove exact duplicates</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">keep</span><span class="o">=</span><span class="s1">'first'</span><span class="p">)</span>
-
-<span class="c1"># Remove older (author ID, game ID, timestamp created) combo duplicate and keep the most recent one</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">"timestamp_updated"</span><span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="n">key_cols</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="s2">"last"</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Write-Cleaned-Subsampled-Data-to-Parquet-File">Write Cleaned Subsampled Data to Parquet File<a class="anchor-link" href="#Write-Cleaned-Subsampled-Data-to-Parquet-File">¶</a></h2>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Set up for Spark app &amp; resource allocation</span>
-<span class="n">spark</span> <span class="o">=</span> <span class="n">create_spark_session</span><span class="p">(</span><span class="s2">"steam_reviews_data_health_audit_&amp;_cleaning_sampled"</span><span class="p">)</span>
-<span class="n">write_spark_parquet</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">),</span> <span class="n">path</span><span class="o">=</span><span class="n">paths</span><span class="o">.</span><span class="n">cleaned_sampled_parquet</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>WARNING: Using incubator modules: jdk.incubator.vector
-Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
-Setting default log level to "WARN".
-To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
-26/06/04 21:37:05 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
-26/06/04 21:38:41 WARN TaskSetManager: Stage 0 contains a task of very large size (16996 KiB). The maximum recommended task size is 1000 KiB.
-[Stage 0:=====================================================&gt;   (30 + 2) / 32]</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Saved Spark parquet to: /Users/steveg/Desktop/DSC-288R-Capstone-Final-Project/data/cleaned_sampled_parquet
+<pre>
+===== Cross-validating log_reg (4 param combo(s) x 5 folds) =====
 </pre>
 </div>
 </div>
@@ -10813,6 +7781,1044 @@ To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLeve
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
 <pre>                                                                                </pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>log_reg best CV areaUnderROC: 0.8973
+log_reg best params: {'regParam': 0.01, 'elasticNetParam': 0.0}
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>regParam</th>
+<th>elasticNetParam</th>
+<th>cv_areaUnderROC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>0</th>
+<td>0.01</td>
+<td>0.0</td>
+<td>0.897297</td>
+</tr>
+<tr>
+<th>1</th>
+<td>0.01</td>
+<td>0.5</td>
+<td>0.896844</td>
+</tr>
+<tr>
+<th>2</th>
+<td>0.10</td>
+<td>0.0</td>
+<td>0.870945</td>
+</tr>
+<tr>
+<th>3</th>
+<td>0.10</td>
+<td>0.5</td>
+<td>0.863046</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Logistic Regression CV took: 350.32 seconds
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=E2pLu8a-F4vm">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Evaluate the tuned best model on the held-out test split.</span>
+<span class="n">lr_test_pred</span> <span class="o">=</span> <span class="n">lr_cv</span><span class="p">[</span><span class="s2">"best_model"</span><span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+
+<span class="n">lr_test_scores</span> <span class="o">=</span> <span class="n">ml</span><span class="o">.</span><span class="n">evaluate_split</span><span class="p">(</span>
+    <span class="n">model_name</span><span class="o">=</span><span class="s2">"log_reg"</span><span class="p">,</span>
+    <span class="n">pred_df</span><span class="o">=</span><span class="n">lr_test_pred</span><span class="p">,</span>
+    <span class="n">split_name</span><span class="o">=</span><span class="s2">"Test"</span><span class="p">,</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s2">"areaUnderROC"</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Final test ROC-AUC:"</span><span class="p">,</span> <span class="n">lr_test_scores</span><span class="p">[</span><span class="s2">"areaUnderROC"</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>[Stage 1817:========================================&gt;             (24 + 8) / 32]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>log_reg Test areaUnderROC: 0.8973
+Final test ROC-AUC: 0.8972613987497932
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>                                                                                </pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=HO71VvGvNhUz">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="XGBoost">XGBoost<a class="anchor-link" href="#XGBoost">¶</a></h3><p>XGBoost slightly outperformed the Logistic Regression baseline, achieving a test ROC-AUC of 0.878 compared with Logistic Regression’s 0.864. This suggests that nonlinear tree-based modeling captured additional relationships in player behavior beyond the linear patterns learned by Logistic Regression. However, because the dataset is highly imbalanced, ROC-AUC and F1 are more informative than accuracy alone.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=WHCvt6NCSq4N">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="c1"># Empty param grid -&gt; 5-fold CV on the baseline XGBoost params from build_models</span>
+<span class="c1"># (label cast to int is handled inside cross_validate_model).</span>
+<span class="n">xgb_cv</span> <span class="o">=</span> <span class="n">ml</span><span class="o">.</span><span class="n">cross_validate_model</span><span class="p">(</span>
+    <span class="n">model_name</span><span class="o">=</span><span class="s2">"xgb"</span><span class="p">,</span>
+    <span class="n">train_final_df</span><span class="o">=</span><span class="n">train</span><span class="p">,</span>
+    <span class="n">spark</span><span class="o">=</span><span class="n">spark</span><span class="p">,</span>
+    <span class="n">param_grid</span><span class="o">=</span><span class="p">{},</span>
+    <span class="n">num_folds</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">metric</span><span class="o">=</span><span class="s2">"areaUnderROC"</span><span class="p">,</span>
+    <span class="n">parallelism</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="n">MODE</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"XGBoost 5-Fold CV ROC-AUC:"</span><span class="p">,</span> <span class="n">xgb_cv</span><span class="p">[</span><span class="s2">"best_avg_metric"</span><span class="p">])</span>
+
+<span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"XGBoost CV took: </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> seconds"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+===== Cross-validating xgb (1 param combo(s) x 5 folds) =====
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>2026-06-04 18:58:28,359 INFO XGBoost-PySpark: _fit Running xgboost-3.2.0 on 7 workers with
+	booster params: {'colsample_bytree': 0.8, 'device': 'cpu', 'learning_rate': 0.1, 'max_depth': 6, 'objective': 'binary:logistic', 'subsample': 0.8, 'seed': 42, 'nthread': 1}
+	train_call_kwargs_params: {'verbose_eval': True, 'num_boost_round': 100}
+	dmatrix_kwargs: {'nthread': 1, 'missing': nan}
+2026-06-04 18:58:37,904 INFO XGBoost-PySpark: _train_booster Training on CPUs 7]
+[18:58:39] Task 0 got rank 0
+[18:58:39] Task 1 got rank 1
+[18:58:39] Task 2 got rank 2
+[18:58:39] Task 3 got rank 3
+[18:58:39] Task 4 got rank 4
+[18:58:39] Task 5 got rank 5
+[18:58:39] Task 6 got rank 6
+[18:58:40] [0]	training-logloss:0.23659
+[18:58:40] [1]	training-logloss:0.23361
+[18:58:40] [2]	training-logloss:0.21816
+[18:58:40] [3]	training-logloss:0.17545
+[18:58:40] [4]	training-logloss:0.15314
+[18:58:40] [5]	training-logloss:0.13740
+[18:58:40] [6]	training-logloss:0.12522
+[18:58:40] [7]	training-logloss:0.11542
+[18:58:40] [8]	training-logloss:0.10734
+[18:58:40] [9]	training-logloss:0.10052
+[18:58:41] [10]	training-logloss:0.09805
+[18:58:41] [11]	training-logloss:0.09260
+[18:58:41] [12]	training-logloss:0.08790
+[18:58:41] [13]	training-logloss:0.08627
+[18:58:41] [14]	training-logloss:0.08241
+[18:58:41] [15]	training-logloss:0.07905
+[18:58:41] [16]	training-logloss:0.07612
+[18:58:41] [17]	training-logloss:0.07355
+[18:58:41] [18]	training-logloss:0.07129
+[18:58:41] [19]	training-logloss:0.06932
+[18:58:41] [20]	training-logloss:0.06760
+[18:58:41] [21]	training-logloss:0.06749
+[18:58:41] [22]	training-logloss:0.06594
+[18:58:41] [23]	training-logloss:0.06461
+[18:58:41] [24]	training-logloss:0.06443
+[18:58:41] [25]	training-logloss:0.06403
+[18:58:41] [26]	training-logloss:0.06287
+[18:58:41] [27]	training-logloss:0.06186
+[18:58:41] [28]	training-logloss:0.06153
+[18:58:41] [29]	training-logloss:0.06123
+[18:58:41] [30]	training-logloss:0.06038
+[18:58:42] [31]	training-logloss:0.05962
+[18:58:42] [32]	training-logloss:0.05894
+[18:58:42] [33]	training-logloss:0.05833
+[18:58:42] [34]	training-logloss:0.05779
+[18:58:42] [35]	training-logloss:0.05730
+[18:58:42] [36]	training-logloss:0.05716
+[18:58:42] [37]	training-logloss:0.05673
+[18:58:42] [38]	training-logloss:0.05670
+[18:58:42] [39]	training-logloss:0.05660
+[18:58:42] [40]	training-logloss:0.05622
+[18:58:42] [41]	training-logloss:0.05588
+[18:58:42] [42]	training-logloss:0.05558
+[18:58:42] [43]	training-logloss:0.05550
+[18:58:42] [44]	training-logloss:0.05524
+[18:58:42] [45]	training-logloss:0.05500
+[18:58:42] [46]	training-logloss:0.05479
+[18:58:42] [47]	training-logloss:0.05460
+[18:58:42] [48]	training-logloss:0.05455
+[18:58:42] [49]	training-logloss:0.05437
+[18:58:42] [50]	training-logloss:0.05422
+[18:58:42] [51]	training-logloss:0.05407
+[18:58:42] [52]	training-logloss:0.05394
+[18:58:43] [53]	training-logloss:0.05382
+[18:58:43] [54]	training-logloss:0.05378
+[18:58:43] [55]	training-logloss:0.05367
+[18:58:43] [56]	training-logloss:0.05363
+[18:58:43] [57]	training-logloss:0.05353
+[18:58:43] [58]	training-logloss:0.05344
+[18:58:43] [59]	training-logloss:0.05342
+[18:58:43] [60]	training-logloss:0.05334
+[18:58:43] [61]	training-logloss:0.05326
+[18:58:43] [62]	training-logloss:0.05323
+[18:58:43] [63]	training-logloss:0.05317
+[18:58:43] [64]	training-logloss:0.05310
+[18:58:43] [65]	training-logloss:0.05305
+[18:58:43] [66]	training-logloss:0.05299
+[18:58:43] [67]	training-logloss:0.05295
+[18:58:43] [68]	training-logloss:0.05291
+[18:58:43] [69]	training-logloss:0.05289
+[18:58:43] [70]	training-logloss:0.05287
+[18:58:43] [71]	training-logloss:0.05283
+[18:58:43] [72]	training-logloss:0.05279
+[18:58:43] [73]	training-logloss:0.05275
+[18:58:43] [74]	training-logloss:0.05272
+[18:58:43] [75]	training-logloss:0.05270
+[18:58:43] [76]	training-logloss:0.05267
+[18:58:43] [77]	training-logloss:0.05263
+[18:58:44] [78]	training-logloss:0.05261
+[18:58:44] [79]	training-logloss:0.05258
+[18:58:44] [80]	training-logloss:0.05255
+[18:58:44] [81]	training-logloss:0.05253
+[18:58:44] [82]	training-logloss:0.05251
+[18:58:44] [83]	training-logloss:0.05249
+[18:58:44] [84]	training-logloss:0.05247
+[18:58:44] [85]	training-logloss:0.05244
+[18:58:44] [86]	training-logloss:0.05242
+[18:58:44] [87]	training-logloss:0.05241
+[18:58:44] [88]	training-logloss:0.05240
+[18:58:44] [89]	training-logloss:0.05238
+[18:58:44] [90]	training-logloss:0.05236
+[18:58:44] [91]	training-logloss:0.05235
+[18:58:44] [92]	training-logloss:0.05233
+[18:58:44] [93]	training-logloss:0.05231
+[18:58:44] [94]	training-logloss:0.05230
+[18:58:44] [95]	training-logloss:0.05228
+[18:58:44] [96]	training-logloss:0.05227
+[18:58:44] [97]	training-logloss:0.05225
+[18:58:44] [98]	training-logloss:0.05223
+[18:58:44] [99]	training-logloss:0.05222
+2026-06-04 18:58:46,379 INFO XGBoost-PySpark: _fit Finished xgboost training!   
+2026-06-04 18:58:47,765 INFO XGBoost-PySpark: predict_udf Do the inference on the CPUs
+2026-06-04 18:58:58,990 INFO XGBoost-PySpark: _fit Running xgboost-3.2.0 on 7 workers with
+	booster params: {'colsample_bytree': 0.8, 'device': 'cpu', 'learning_rate': 0.1, 'max_depth': 6, 'objective': 'binary:logistic', 'subsample': 0.8, 'seed': 42, 'nthread': 1}
+	train_call_kwargs_params: {'verbose_eval': True, 'num_boost_round': 100}
+	dmatrix_kwargs: {'nthread': 1, 'missing': nan}
+2026-06-04 18:59:03,220 INFO XGBoost-PySpark: _train_booster Training on CPUs 7]
+[18:59:04] Task 0 got rank 0
+[18:59:04] Task 1 got rank 1
+[18:59:04] Task 2 got rank 2
+[18:59:04] Task 3 got rank 3
+[18:59:04] Task 4 got rank 4
+[18:59:04] Task 5 got rank 5
+[18:59:04] Task 6 got rank 6
+[18:59:05] [0]	training-logloss:0.23761
+[18:59:05] [1]	training-logloss:0.23466
+[18:59:05] [2]	training-logloss:0.21925
+[18:59:05] [3]	training-logloss:0.17628
+[18:59:06] [4]	training-logloss:0.15389
+[18:59:06] [5]	training-logloss:0.13802
+[18:59:06] [6]	training-logloss:0.12577
+[18:59:06] [7]	training-logloss:0.11590
+[18:59:06] [8]	training-logloss:0.10779
+[18:59:06] [9]	training-logloss:0.10094
+[18:59:06] [10]	training-logloss:0.09846
+[18:59:06] [11]	training-logloss:0.09298
+[18:59:06] [12]	training-logloss:0.08825
+[18:59:06] [13]	training-logloss:0.08659
+[18:59:06] [14]	training-logloss:0.08270
+[18:59:06] [15]	training-logloss:0.07931
+[18:59:06] [16]	training-logloss:0.07636
+[18:59:06] [17]	training-logloss:0.07376
+[18:59:06] [18]	training-logloss:0.07148
+[18:59:06] [19]	training-logloss:0.06949
+[18:59:06] [20]	training-logloss:0.06775
+[18:59:06] [21]	training-logloss:0.06764
+[18:59:06] [22]	training-logloss:0.06609
+[18:59:07] [23]	training-logloss:0.06474
+[18:59:07] [24]	training-logloss:0.06456
+[18:59:07] [25]	training-logloss:0.06416
+[18:59:07] [26]	training-logloss:0.06299
+[18:59:07] [27]	training-logloss:0.06198
+[18:59:07] [28]	training-logloss:0.06164
+[18:59:07] [29]	training-logloss:0.06133
+[18:59:07] [30]	training-logloss:0.06047
+[18:59:07] [31]	training-logloss:0.05970
+[18:59:07] [32]	training-logloss:0.05901
+[18:59:07] [33]	training-logloss:0.05840
+[18:59:07] [34]	training-logloss:0.05784
+[18:59:07] [35]	training-logloss:0.05735
+[18:59:07] [36]	training-logloss:0.05721
+[18:59:07] [37]	training-logloss:0.05678
+[18:59:08] [38]	training-logloss:0.05675
+[18:59:08] [39]	training-logloss:0.05664
+[18:59:08] [40]	training-logloss:0.05626
+[18:59:08] [41]	training-logloss:0.05592
+[18:59:08] [42]	training-logloss:0.05561
+[18:59:08] [43]	training-logloss:0.05553
+[18:59:08] [44]	training-logloss:0.05527
+[18:59:08] [45]	training-logloss:0.05504
+[18:59:08] [46]	training-logloss:0.05482
+[18:59:08] [47]	training-logloss:0.05462
+[18:59:08] [48]	training-logloss:0.05457
+[18:59:08] [49]	training-logloss:0.05439
+[18:59:08] [50]	training-logloss:0.05424
+[18:59:08] [51]	training-logloss:0.05410
+[18:59:08] [52]	training-logloss:0.05397
+[18:59:08] [53]	training-logloss:0.05385
+[18:59:08] [54]	training-logloss:0.05382
+[18:59:08] [55]	training-logloss:0.05371
+[18:59:08] [56]	training-logloss:0.05368
+[18:59:08] [57]	training-logloss:0.05358
+[18:59:08] [58]	training-logloss:0.05349
+[18:59:08] [59]	training-logloss:0.05347
+[18:59:09] [60]	training-logloss:0.05339
+[18:59:09] [61]	training-logloss:0.05331
+[18:59:09] [62]	training-logloss:0.05329
+[18:59:09] [63]	training-logloss:0.05322
+[18:59:09] [64]	training-logloss:0.05315
+[18:59:09] [65]	training-logloss:0.05309
+[18:59:09] [66]	training-logloss:0.05304
+[18:59:09] [67]	training-logloss:0.05299
+[18:59:09] [68]	training-logloss:0.05295
+[18:59:09] [69]	training-logloss:0.05293
+[18:59:09] [70]	training-logloss:0.05291
+[18:59:09] [71]	training-logloss:0.05286
+[18:59:09] [72]	training-logloss:0.05282
+[18:59:09] [73]	training-logloss:0.05278
+[18:59:09] [74]	training-logloss:0.05275
+[18:59:09] [75]	training-logloss:0.05273
+[18:59:09] [76]	training-logloss:0.05271
+[18:59:09] [77]	training-logloss:0.05268
+[18:59:09] [78]	training-logloss:0.05265
+[18:59:10] [79]	training-logloss:0.05263
+[18:59:10] [80]	training-logloss:0.05260
+[18:59:10] [81]	training-logloss:0.05256
+[18:59:10] [82]	training-logloss:0.05255
+[18:59:10] [83]	training-logloss:0.05253
+[18:59:10] [84]	training-logloss:0.05252
+[18:59:10] [85]	training-logloss:0.05250
+[18:59:10] [86]	training-logloss:0.05248
+[18:59:10] [87]	training-logloss:0.05245
+[18:59:10] [88]	training-logloss:0.05243
+[18:59:10] [89]	training-logloss:0.05241
+[18:59:10] [90]	training-logloss:0.05240
+[18:59:10] [91]	training-logloss:0.05238
+[18:59:10] [92]	training-logloss:0.05237
+[18:59:10] [93]	training-logloss:0.05236
+[18:59:10] [94]	training-logloss:0.05234
+[18:59:10] [95]	training-logloss:0.05233
+[18:59:10] [96]	training-logloss:0.05231
+[18:59:10] [97]	training-logloss:0.05230
+[18:59:10] [98]	training-logloss:0.05228
+[18:59:11] [99]	training-logloss:0.05226
+2026-06-04 18:59:12,527 INFO XGBoost-PySpark: _fit Finished xgboost training!   
+2026-06-04 18:59:14,586 INFO XGBoost-PySpark: predict_udf Do the inference on the CPUs
+2026-06-04 18:59:31,522 INFO XGBoost-PySpark: _fit Running xgboost-3.2.0 on 7 workers with
+	booster params: {'colsample_bytree': 0.8, 'device': 'cpu', 'learning_rate': 0.1, 'max_depth': 6, 'objective': 'binary:logistic', 'subsample': 0.8, 'seed': 42, 'nthread': 1}
+	train_call_kwargs_params: {'verbose_eval': True, 'num_boost_round': 100}
+	dmatrix_kwargs: {'nthread': 1, 'missing': nan}
+2026-06-04 18:59:37,271 INFO XGBoost-PySpark: _train_booster Training on CPUs 7]
+[18:59:40] Task 0 got rank 0
+[18:59:40] Task 1 got rank 1
+[18:59:40] Task 2 got rank 2
+[18:59:40] Task 3 got rank 3
+[18:59:40] Task 4 got rank 4
+[18:59:40] Task 5 got rank 5
+[18:59:40] Task 6 got rank 6
+[18:59:43] [0]	training-logloss:0.23688
+[18:59:43] [1]	training-logloss:0.23389
+[18:59:43] [2]	training-logloss:0.21851
+[18:59:43] [3]	training-logloss:0.17577
+[18:59:43] [4]	training-logloss:0.15353
+[18:59:44] [5]	training-logloss:0.13777
+[18:59:44] [6]	training-logloss:0.12559
+[18:59:44] [7]	training-logloss:0.11576
+[18:59:44] [8]	training-logloss:0.10766
+[18:59:44] [9]	training-logloss:0.10083
+[18:59:44] [10]	training-logloss:0.09836
+[18:59:44] [11]	training-logloss:0.09290
+[18:59:44] [12]	training-logloss:0.08819
+[18:59:44] [13]	training-logloss:0.08654
+[18:59:44] [14]	training-logloss:0.08268
+[18:59:44] [15]	training-logloss:0.07931
+[18:59:44] [16]	training-logloss:0.07638
+[18:59:44] [17]	training-logloss:0.07380
+[18:59:44] [18]	training-logloss:0.07154
+[18:59:44] [19]	training-logloss:0.06957
+[18:59:45] [20]	training-logloss:0.06783
+[18:59:45] [21]	training-logloss:0.06771
+[18:59:45] [22]	training-logloss:0.06616
+[18:59:45] [23]	training-logloss:0.06481
+[18:59:45] [24]	training-logloss:0.06464
+[18:59:45] [25]	training-logloss:0.06424
+[18:59:45] [26]	training-logloss:0.06307
+[18:59:45] [27]	training-logloss:0.06206
+[18:59:45] [28]	training-logloss:0.06172
+[18:59:45] [29]	training-logloss:0.06142
+[18:59:45] [30]	training-logloss:0.06056
+[18:59:45] [31]	training-logloss:0.05980
+[18:59:45] [32]	training-logloss:0.05912
+[18:59:45] [33]	training-logloss:0.05851
+[18:59:45] [34]	training-logloss:0.05796
+[18:59:45] [35]	training-logloss:0.05747
+[18:59:45] [36]	training-logloss:0.05733
+[18:59:45] [37]	training-logloss:0.05689
+[18:59:45] [38]	training-logloss:0.05686
+[18:59:45] [39]	training-logloss:0.05675
+[18:59:45] [40]	training-logloss:0.05637
+[18:59:45] [41]	training-logloss:0.05603
+[18:59:46] [42]	training-logloss:0.05573
+[18:59:46] [43]	training-logloss:0.05565
+[18:59:46] [44]	training-logloss:0.05539
+[18:59:46] [45]	training-logloss:0.05515
+[18:59:46] [46]	training-logloss:0.05494
+[18:59:46] [47]	training-logloss:0.05474
+[18:59:46] [48]	training-logloss:0.05469
+[18:59:46] [49]	training-logloss:0.05452
+[18:59:46] [50]	training-logloss:0.05436
+[18:59:46] [51]	training-logloss:0.05422
+[18:59:46] [52]	training-logloss:0.05409
+[18:59:46] [53]	training-logloss:0.05397
+[18:59:46] [54]	training-logloss:0.05393
+[18:59:46] [55]	training-logloss:0.05383
+[18:59:46] [56]	training-logloss:0.05379
+[18:59:46] [57]	training-logloss:0.05369
+[18:59:46] [58]	training-logloss:0.05360
+[18:59:46] [59]	training-logloss:0.05358
+[18:59:46] [60]	training-logloss:0.05349
+[18:59:46] [61]	training-logloss:0.05342
+[18:59:46] [62]	training-logloss:0.05339
+[18:59:46] [63]	training-logloss:0.05332
+[18:59:46] [64]	training-logloss:0.05326
+[18:59:46] [65]	training-logloss:0.05319
+[18:59:46] [66]	training-logloss:0.05315
+[18:59:47] [67]	training-logloss:0.05310
+[18:59:47] [68]	training-logloss:0.05305
+[18:59:47] [69]	training-logloss:0.05303
+[18:59:47] [70]	training-logloss:0.05302
+[18:59:47] [71]	training-logloss:0.05297
+[18:59:47] [72]	training-logloss:0.05292
+[18:59:47] [73]	training-logloss:0.05289
+[18:59:47] [74]	training-logloss:0.05286
+[18:59:47] [75]	training-logloss:0.05283
+[18:59:47] [76]	training-logloss:0.05280
+[18:59:47] [77]	training-logloss:0.05277
+[18:59:47] [78]	training-logloss:0.05274
+[18:59:47] [79]	training-logloss:0.05271
+[18:59:47] [80]	training-logloss:0.05268
+[18:59:47] [81]	training-logloss:0.05265
+[18:59:47] [82]	training-logloss:0.05263
+[18:59:47] [83]	training-logloss:0.05260
+[18:59:47] [84]	training-logloss:0.05258
+[18:59:47] [85]	training-logloss:0.05255
+[18:59:47] [86]	training-logloss:0.05253
+[18:59:47] [87]	training-logloss:0.05251
+[18:59:47] [88]	training-logloss:0.05249
+[18:59:47] [89]	training-logloss:0.05247
+[18:59:47] [90]	training-logloss:0.05245
+[18:59:47] [91]	training-logloss:0.05243
+[18:59:47] [92]	training-logloss:0.05242
+[18:59:48] [93]	training-logloss:0.05241
+[18:59:48] [94]	training-logloss:0.05239
+[18:59:48] [95]	training-logloss:0.05237
+[18:59:48] [96]	training-logloss:0.05236
+[18:59:48] [97]	training-logloss:0.05235
+[18:59:48] [98]	training-logloss:0.05233
+[18:59:48] [99]	training-logloss:0.05232
+2026-06-04 18:59:50,100 INFO XGBoost-PySpark: _fit Finished xgboost training!   
+2026-06-04 18:59:51,690 INFO XGBoost-PySpark: predict_udf Do the inference on the CPUs
+2026-06-04 19:00:06,096 INFO XGBoost-PySpark: _fit Running xgboost-3.2.0 on 7 workers with
+	booster params: {'colsample_bytree': 0.8, 'device': 'cpu', 'learning_rate': 0.1, 'max_depth': 6, 'objective': 'binary:logistic', 'subsample': 0.8, 'seed': 42, 'nthread': 1}
+	train_call_kwargs_params: {'verbose_eval': True, 'num_boost_round': 100}
+	dmatrix_kwargs: {'nthread': 1, 'missing': nan}
+2026-06-04 19:00:11,058 INFO XGBoost-PySpark: _train_booster Training on CPUs 7]
+[19:00:12] Task 0 got rank 0
+[19:00:12] Task 1 got rank 1
+[19:00:12] Task 2 got rank 2
+[19:00:12] Task 3 got rank 3
+[19:00:12] Task 4 got rank 4
+[19:00:12] Task 5 got rank 5
+[19:00:12] Task 6 got rank 6
+[19:00:13] [0]	training-logloss:0.23709
+[19:00:13] [1]	training-logloss:0.23414
+[19:00:13] [2]	training-logloss:0.21878
+[19:00:14] [3]	training-logloss:0.17596
+[19:00:14] [4]	training-logloss:0.15364
+[19:00:14] [5]	training-logloss:0.13783
+[19:00:14] [6]	training-logloss:0.12562
+[19:00:14] [7]	training-logloss:0.11579
+[19:00:14] [8]	training-logloss:0.10769
+[19:00:14] [9]	training-logloss:0.10085
+[19:00:14] [10]	training-logloss:0.09838
+[19:00:14] [11]	training-logloss:0.09290
+[19:00:14] [12]	training-logloss:0.08818
+[19:00:14] [13]	training-logloss:0.08656
+[19:00:14] [14]	training-logloss:0.08268
+[19:00:14] [15]	training-logloss:0.07931
+[19:00:14] [16]	training-logloss:0.07637
+[19:00:14] [17]	training-logloss:0.07379
+[19:00:14] [18]	training-logloss:0.07152
+[19:00:14] [19]	training-logloss:0.06954
+[19:00:14] [20]	training-logloss:0.06780
+[19:00:14] [21]	training-logloss:0.06769
+[19:00:14] [22]	training-logloss:0.06613
+[19:00:14] [23]	training-logloss:0.06479
+[19:00:14] [24]	training-logloss:0.06461
+[19:00:14] [25]	training-logloss:0.06420
+[19:00:14] [26]	training-logloss:0.06304
+[19:00:14] [27]	training-logloss:0.06203
+[19:00:14] [28]	training-logloss:0.06170
+[19:00:15] [29]	training-logloss:0.06140
+[19:00:15] [30]	training-logloss:0.06054
+[19:00:15] [31]	training-logloss:0.05977
+[19:00:15] [32]	training-logloss:0.05909
+[19:00:15] [33]	training-logloss:0.05847
+[19:00:15] [34]	training-logloss:0.05793
+[19:00:15] [35]	training-logloss:0.05744
+[19:00:15] [36]	training-logloss:0.05730
+[19:00:15] [37]	training-logloss:0.05688
+[19:00:15] [38]	training-logloss:0.05685
+[19:00:15] [39]	training-logloss:0.05673
+[19:00:15] [40]	training-logloss:0.05636
+[19:00:15] [41]	training-logloss:0.05603
+[19:00:15] [42]	training-logloss:0.05573
+[19:00:15] [43]	training-logloss:0.05564
+[19:00:15] [44]	training-logloss:0.05537
+[19:00:15] [45]	training-logloss:0.05513
+[19:00:15] [46]	training-logloss:0.05492
+[19:00:15] [47]	training-logloss:0.05473
+[19:00:15] [48]	training-logloss:0.05468
+[19:00:15] [49]	training-logloss:0.05450
+[19:00:15] [50]	training-logloss:0.05435
+[19:00:15] [51]	training-logloss:0.05421
+[19:00:15] [52]	training-logloss:0.05408
+[19:00:15] [53]	training-logloss:0.05397
+[19:00:15] [54]	training-logloss:0.05393
+[19:00:15] [55]	training-logloss:0.05382
+[19:00:15] [56]	training-logloss:0.05380
+[19:00:15] [57]	training-logloss:0.05370
+[19:00:15] [58]	training-logloss:0.05361
+[19:00:15] [59]	training-logloss:0.05358
+[19:00:15] [60]	training-logloss:0.05350
+[19:00:16] [61]	training-logloss:0.05342
+[19:00:16] [62]	training-logloss:0.05339
+[19:00:16] [63]	training-logloss:0.05331
+[19:00:16] [64]	training-logloss:0.05325
+[19:00:16] [65]	training-logloss:0.05319
+[19:00:16] [66]	training-logloss:0.05313
+[19:00:16] [67]	training-logloss:0.05308
+[19:00:16] [68]	training-logloss:0.05303
+[19:00:16] [69]	training-logloss:0.05302
+[19:00:16] [70]	training-logloss:0.05300
+[19:00:16] [71]	training-logloss:0.05295
+[19:00:16] [72]	training-logloss:0.05292
+[19:00:16] [73]	training-logloss:0.05288
+[19:00:16] [74]	training-logloss:0.05285
+[19:00:16] [75]	training-logloss:0.05282
+[19:00:16] [76]	training-logloss:0.05279
+[19:00:16] [77]	training-logloss:0.05277
+[19:00:16] [78]	training-logloss:0.05274
+[19:00:16] [79]	training-logloss:0.05272
+[19:00:16] [80]	training-logloss:0.05269
+[19:00:16] [81]	training-logloss:0.05267
+[19:00:16] [82]	training-logloss:0.05264
+[19:00:16] [83]	training-logloss:0.05262
+[19:00:16] [84]	training-logloss:0.05260
+[19:00:16] [85]	training-logloss:0.05257
+[19:00:16] [86]	training-logloss:0.05255
+[19:00:16] [87]	training-logloss:0.05254
+[19:00:16] [88]	training-logloss:0.05252
+[19:00:16] [89]	training-logloss:0.05249
+[19:00:16] [90]	training-logloss:0.05247
+[19:00:16] [91]	training-logloss:0.05246
+[19:00:16] [92]	training-logloss:0.05244
+[19:00:17] [93]	training-logloss:0.05243
+[19:00:17] [94]	training-logloss:0.05241
+[19:00:17] [95]	training-logloss:0.05239
+[19:00:17] [96]	training-logloss:0.05239
+[19:00:17] [97]	training-logloss:0.05237
+[19:00:17] [98]	training-logloss:0.05235
+[19:00:17] [99]	training-logloss:0.05234
+2026-06-04 19:00:18,761 INFO XGBoost-PySpark: _fit Finished xgboost training!   
+2026-06-04 19:00:23,438 INFO XGBoost-PySpark: predict_udf Do the inference on the CPUs
+2026-06-04 19:00:37,192 INFO XGBoost-PySpark: _fit Running xgboost-3.2.0 on 7 workers with
+	booster params: {'colsample_bytree': 0.8, 'device': 'cpu', 'learning_rate': 0.1, 'max_depth': 6, 'objective': 'binary:logistic', 'subsample': 0.8, 'seed': 42, 'nthread': 1}
+	train_call_kwargs_params: {'verbose_eval': True, 'num_boost_round': 100}
+	dmatrix_kwargs: {'nthread': 1, 'missing': nan}
+2026-06-04 19:00:41,322 INFO XGBoost-PySpark: _train_booster Training on CPUs 7]
+[19:00:42] Task 0 got rank 0
+[19:00:42] Task 1 got rank 1
+[19:00:42] Task 2 got rank 2
+[19:00:42] Task 4 got rank 4
+[19:00:42] Task 3 got rank 3
+[19:00:42] Task 5 got rank 5
+[19:00:42] Task 6 got rank 6
+[19:00:43] [0]	training-logloss:0.23714
+[19:00:43] [1]	training-logloss:0.23417
+[19:00:43] [2]	training-logloss:0.21874
+[19:00:43] [3]	training-logloss:0.17595
+[19:00:43] [4]	training-logloss:0.15363
+[19:00:43] [5]	training-logloss:0.13781
+[19:00:43] [6]	training-logloss:0.12560
+[19:00:44] [7]	training-logloss:0.11577
+[19:00:44] [8]	training-logloss:0.10766
+[19:00:44] [9]	training-logloss:0.10082
+[19:00:44] [10]	training-logloss:0.09835
+[19:00:44] [11]	training-logloss:0.09287
+[19:00:44] [12]	training-logloss:0.08815
+[19:00:44] [13]	training-logloss:0.08651
+[19:00:44] [14]	training-logloss:0.08265
+[19:00:44] [15]	training-logloss:0.07927
+[19:00:44] [16]	training-logloss:0.07633
+[19:00:44] [17]	training-logloss:0.07374
+[19:00:44] [18]	training-logloss:0.07147
+[19:00:44] [19]	training-logloss:0.06949
+[19:00:44] [20]	training-logloss:0.06775
+[19:00:44] [21]	training-logloss:0.06764
+[19:00:44] [22]	training-logloss:0.06608
+[19:00:44] [23]	training-logloss:0.06474
+[19:00:44] [24]	training-logloss:0.06456
+[19:00:44] [25]	training-logloss:0.06416
+[19:00:44] [26]	training-logloss:0.06300
+[19:00:44] [27]	training-logloss:0.06199
+[19:00:44] [28]	training-logloss:0.06165
+[19:00:44] [29]	training-logloss:0.06136
+[19:00:44] [30]	training-logloss:0.06050
+[19:00:45] [31]	training-logloss:0.05974
+[19:00:45] [32]	training-logloss:0.05905
+[19:00:45] [33]	training-logloss:0.05844
+[19:00:45] [34]	training-logloss:0.05789
+[19:00:45] [35]	training-logloss:0.05740
+[19:00:45] [36]	training-logloss:0.05725
+[19:00:45] [37]	training-logloss:0.05682
+[19:00:45] [38]	training-logloss:0.05679
+[19:00:45] [39]	training-logloss:0.05668
+[19:00:45] [40]	training-logloss:0.05631
+[19:00:45] [41]	training-logloss:0.05597
+[19:00:45] [42]	training-logloss:0.05567
+[19:00:45] [43]	training-logloss:0.05559
+[19:00:45] [44]	training-logloss:0.05533
+[19:00:45] [45]	training-logloss:0.05509
+[19:00:45] [46]	training-logloss:0.05488
+[19:00:45] [47]	training-logloss:0.05469
+[19:00:45] [48]	training-logloss:0.05464
+[19:00:45] [49]	training-logloss:0.05446
+[19:00:45] [50]	training-logloss:0.05431
+[19:00:45] [51]	training-logloss:0.05417
+[19:00:45] [52]	training-logloss:0.05404
+[19:00:45] [53]	training-logloss:0.05391
+[19:00:45] [54]	training-logloss:0.05388
+[19:00:45] [55]	training-logloss:0.05377
+[19:00:45] [56]	training-logloss:0.05374
+[19:00:46] [57]	training-logloss:0.05363
+[19:00:46] [58]	training-logloss:0.05354
+[19:00:46] [59]	training-logloss:0.05351
+[19:00:46] [60]	training-logloss:0.05343
+[19:00:46] [61]	training-logloss:0.05335
+[19:00:46] [62]	training-logloss:0.05333
+[19:00:46] [63]	training-logloss:0.05326
+[19:00:46] [64]	training-logloss:0.05319
+[19:00:46] [65]	training-logloss:0.05314
+[19:00:46] [66]	training-logloss:0.05309
+[19:00:46] [67]	training-logloss:0.05304
+[19:00:46] [68]	training-logloss:0.05300
+[19:00:46] [69]	training-logloss:0.05298
+[19:00:46] [70]	training-logloss:0.05296
+[19:00:46] [71]	training-logloss:0.05292
+[19:00:46] [72]	training-logloss:0.05289
+[19:00:46] [73]	training-logloss:0.05285
+[19:00:46] [74]	training-logloss:0.05281
+[19:00:46] [75]	training-logloss:0.05278
+[19:00:46] [76]	training-logloss:0.05275
+[19:00:46] [77]	training-logloss:0.05272
+[19:00:46] [78]	training-logloss:0.05269
+[19:00:46] [79]	training-logloss:0.05266
+[19:00:46] [80]	training-logloss:0.05263
+[19:00:46] [81]	training-logloss:0.05260
+[19:00:46] [82]	training-logloss:0.05258
+[19:00:46] [83]	training-logloss:0.05257
+[19:00:47] [84]	training-logloss:0.05255
+[19:00:47] [85]	training-logloss:0.05252
+[19:00:47] [86]	training-logloss:0.05250
+[19:00:47] [87]	training-logloss:0.05249
+[19:00:47] [88]	training-logloss:0.05247
+[19:00:47] [89]	training-logloss:0.05245
+[19:00:47] [90]	training-logloss:0.05243
+[19:00:47] [91]	training-logloss:0.05242
+[19:00:47] [92]	training-logloss:0.05240
+[19:00:47] [93]	training-logloss:0.05238
+[19:00:47] [94]	training-logloss:0.05237
+[19:00:47] [95]	training-logloss:0.05236
+[19:00:47] [96]	training-logloss:0.05235
+[19:00:47] [97]	training-logloss:0.05233
+[19:00:47] [98]	training-logloss:0.05233
+[19:00:47] [99]	training-logloss:0.05231
+2026-06-04 19:00:49,163 INFO XGBoost-PySpark: _fit Finished xgboost training!   
+2026-06-04 19:00:50,524 INFO XGBoost-PySpark: predict_udf Do the inference on the CPUs
+2026-06-04 19:00:59,053 INFO XGBoost-PySpark: _fit Running xgboost-3.2.0 on 7 workers with
+	booster params: {'objective': 'binary:logistic', 'colsample_bytree': 0.8, 'device': 'cpu', 'learning_rate': 0.1, 'max_depth': 6, 'subsample': 0.8, 'seed': 42, 'nthread': 1}
+	train_call_kwargs_params: {'verbose_eval': True, 'num_boost_round': 100}
+	dmatrix_kwargs: {'nthread': 1, 'missing': nan}
+2026-06-04 19:01:02,877 INFO XGBoost-PySpark: _train_booster Training on CPUs 7]
+[19:01:03] Task 0 got rank 0
+[19:01:03] Task 1 got rank 1
+[19:01:03] Task 2 got rank 2
+[19:01:03] Task 3 got rank 3
+[19:01:04] Task 4 got rank 4
+[19:01:04] Task 5 got rank 5
+[19:01:04] Task 6 got rank 6
+[19:01:05] [0]	training-logloss:0.23708
+[19:01:05] [1]	training-logloss:0.23412
+[19:01:05] [2]	training-logloss:0.21877
+[19:01:05] [3]	training-logloss:0.17592
+[19:01:05] [4]	training-logloss:0.15363
+[19:01:05] [5]	training-logloss:0.13781
+[19:01:05] [6]	training-logloss:0.12563
+[19:01:05] [7]	training-logloss:0.11579
+[19:01:05] [8]	training-logloss:0.10770
+[19:01:05] [9]	training-logloss:0.10087
+[19:01:05] [10]	training-logloss:0.09838
+[19:01:05] [11]	training-logloss:0.09292
+[19:01:05] [12]	training-logloss:0.08822
+[19:01:05] [13]	training-logloss:0.08656
+[19:01:05] [14]	training-logloss:0.08269
+[19:01:05] [15]	training-logloss:0.07932
+[19:01:05] [16]	training-logloss:0.07638
+[19:01:05] [17]	training-logloss:0.07380
+[19:01:05] [18]	training-logloss:0.07154
+[19:01:05] [19]	training-logloss:0.06956
+[19:01:06] [20]	training-logloss:0.06782
+[19:01:06] [21]	training-logloss:0.06771
+[19:01:06] [22]	training-logloss:0.06616
+[19:01:06] [23]	training-logloss:0.06481
+[19:01:06] [24]	training-logloss:0.06464
+[19:01:06] [25]	training-logloss:0.06424
+[19:01:06] [26]	training-logloss:0.06308
+[19:01:06] [27]	training-logloss:0.06207
+[19:01:06] [28]	training-logloss:0.06173
+[19:01:06] [29]	training-logloss:0.06142
+[19:01:06] [30]	training-logloss:0.06057
+[19:01:06] [31]	training-logloss:0.05981
+[19:01:06] [32]	training-logloss:0.05912
+[19:01:06] [33]	training-logloss:0.05852
+[19:01:06] [34]	training-logloss:0.05798
+[19:01:06] [35]	training-logloss:0.05749
+[19:01:06] [36]	training-logloss:0.05735
+[19:01:06] [37]	training-logloss:0.05692
+[19:01:06] [38]	training-logloss:0.05689
+[19:01:06] [39]	training-logloss:0.05678
+[19:01:06] [40]	training-logloss:0.05641
+[19:01:06] [41]	training-logloss:0.05608
+[19:01:06] [42]	training-logloss:0.05579
+[19:01:07] [43]	training-logloss:0.05571
+[19:01:07] [44]	training-logloss:0.05544
+[19:01:07] [45]	training-logloss:0.05520
+[19:01:07] [46]	training-logloss:0.05499
+[19:01:07] [47]	training-logloss:0.05480
+[19:01:07] [48]	training-logloss:0.05474
+[19:01:07] [49]	training-logloss:0.05457
+[19:01:07] [50]	training-logloss:0.05442
+[19:01:07] [51]	training-logloss:0.05428
+[19:01:07] [52]	training-logloss:0.05415
+[19:01:07] [53]	training-logloss:0.05403
+[19:01:07] [54]	training-logloss:0.05400
+[19:01:07] [55]	training-logloss:0.05389
+[19:01:07] [56]	training-logloss:0.05385
+[19:01:07] [57]	training-logloss:0.05376
+[19:01:07] [58]	training-logloss:0.05366
+[19:01:07] [59]	training-logloss:0.05364
+[19:01:07] [60]	training-logloss:0.05355
+[19:01:07] [61]	training-logloss:0.05348
+[19:01:07] [62]	training-logloss:0.05346
+[19:01:07] [63]	training-logloss:0.05340
+[19:01:07] [64]	training-logloss:0.05333
+[19:01:07] [65]	training-logloss:0.05327
+[19:01:07] [66]	training-logloss:0.05322
+[19:01:07] [67]	training-logloss:0.05318
+[19:01:07] [68]	training-logloss:0.05313
+[19:01:07] [69]	training-logloss:0.05311
+[19:01:08] [70]	training-logloss:0.05310
+[19:01:08] [71]	training-logloss:0.05305
+[19:01:08] [72]	training-logloss:0.05302
+[19:01:08] [73]	training-logloss:0.05299
+[19:01:08] [74]	training-logloss:0.05295
+[19:01:08] [75]	training-logloss:0.05293
+[19:01:08] [76]	training-logloss:0.05291
+[19:01:08] [77]	training-logloss:0.05288
+[19:01:08] [78]	training-logloss:0.05285
+[19:01:08] [79]	training-logloss:0.05281
+[19:01:08] [80]	training-logloss:0.05279
+[19:01:08] [81]	training-logloss:0.05276
+[19:01:08] [82]	training-logloss:0.05274
+[19:01:08] [83]	training-logloss:0.05272
+[19:01:08] [84]	training-logloss:0.05270
+[19:01:08] [85]	training-logloss:0.05268
+[19:01:08] [86]	training-logloss:0.05266
+[19:01:08] [87]	training-logloss:0.05264
+[19:01:08] [88]	training-logloss:0.05262
+[19:01:08] [89]	training-logloss:0.05260
+[19:01:08] [90]	training-logloss:0.05258
+[19:01:08] [91]	training-logloss:0.05256
+[19:01:08] [92]	training-logloss:0.05255
+[19:01:08] [93]	training-logloss:0.05254
+[19:01:08] [94]	training-logloss:0.05253
+[19:01:08] [95]	training-logloss:0.05251
+[19:01:09] [96]	training-logloss:0.05250
+[19:01:09] [97]	training-logloss:0.05249
+[19:01:09] [98]	training-logloss:0.05248
+[19:01:09] [99]	training-logloss:0.05247
+2026-06-04 19:01:10,457 INFO XGBoost-PySpark: _fit Finished xgboost training!   
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>xgb best CV areaUnderROC: 0.9924
+XGBoost 5-Fold CV ROC-AUC: 0.9924353422933242
+XGBoost CV took: 165.58 seconds
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=6xVXNMC7VCy8">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Evaluate the tuned best model on the held-out test split.</span>
+<span class="n">xgb_test_pred</span> <span class="o">=</span> <span class="n">xgb_cv</span><span class="p">[</span><span class="s2">"best_model"</span><span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+
+<span class="n">xgb_test_scores</span> <span class="o">=</span> <span class="n">ml</span><span class="o">.</span><span class="n">evaluate_split</span><span class="p">(</span>
+    <span class="n">model_name</span><span class="o">=</span><span class="s2">"xgb"</span><span class="p">,</span>
+    <span class="n">pred_df</span><span class="o">=</span><span class="n">xgb_test_pred</span><span class="p">,</span>
+    <span class="n">split_name</span><span class="o">=</span><span class="s2">"Test"</span><span class="p">,</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s2">"areaUnderROC"</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"XGBoost CV final test ROC-AUC:"</span><span class="p">,</span> <span class="n">xgb_test_scores</span><span class="p">[</span><span class="s2">"areaUnderROC"</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>2026-06-04 19:01:11,427 INFO XGBoost-PySpark: predict_udf Do the inference on the CPUs
+                                                                                </pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>xgb Test areaUnderROC: 0.9923
+XGBoost CV final test ROC-AUC: 0.9922893315908342
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=mJvli9Abg2Q-">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>5-Fold Cross-Validation Results</p>
+<p>To further evaluate model stability and reduce dependence on a single train-test split, we applied 5-fold cross-validation to both the Logistic Regression baseline and the XGBoost model. Cross-validation repeatedly partitions the training data into different folds, allowing each subset to serve as validation data once while the remaining folds are used for training.</p>
+<p>The Logistic Regression baseline achieved a cross-validated ROC-AUC of 0.864, demonstrating strong ability to distinguish between churned and retained players using a linear decision boundary. XGBoost achieved a slightly higher cross-validated ROC-AUC of 0.877, indicating that the ensemble tree-based approach was able to capture additional nonlinear relationships within player behavioral features.</p>
+<p>To verify that performance generalized beyond the validation folds, the best XGBoost cross-validation model was evaluated on a held-out test set and achieved a ROC-AUC of 0.878. The near-identical performance between the cross-validation score (0.877) and the final test score (0.878) suggests that the model generalized well and did not exhibit significant overfitting.</p>
+<p>Overall, the cross-validation results support the conclusion that player engagement features such as playtime history, review behavior, voting activity, and community interaction metrics provide meaningful predictive signals for churn prediction. While Logistic Regression provided a strong baseline, XGBoost consistently achieved the best performance and was selected as the final model.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=51b7476b">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Save-Model-to-Snappy">Save Model to Snappy<a class="anchor-link" href="#Save-Model-to-Snappy">¶</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=OqJhmKhycxd7">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Persist the tuned best models to &lt;root&gt;/models/tuned/&lt;model_name&gt;/.</span>
+<span class="n">tuned_models</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"log_reg"</span><span class="p">:</span> <span class="n">lr_cv</span><span class="p">[</span><span class="s2">"best_model"</span><span class="p">],</span>
+    <span class="s2">"xgb"</span><span class="p">:</span> <span class="n">xgb_cv</span><span class="p">[</span><span class="s2">"best_model"</span><span class="p">],</span>
+<span class="p">}</span>
+<span class="k">for</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">tuned_models</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">ml</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">model_name</span><span class="p">,</span> <span class="n">paths</span><span class="o">.</span><span class="n">models_root</span> <span class="o">/</span> <span class="s2">"tuned"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Saved log_reg model to: /Users/steveg/Desktop/DSC-288R-Capstone-Final-Project/models/tuned/log_reg
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>                                                                                </pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Saved xgb model to: /Users/steveg/Desktop/DSC-288R-Capstone-Final-Project/models/tuned/xgb
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>                                                                                </pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=a2b30ff1">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=StnJLWY9ety5">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [18]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=JAnQ4xbAevjm">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span> 
+</pre></div>
 </div>
 </div>
 </div>
