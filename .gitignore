@@ -1,24 +1,22 @@
 # Editor / IDE
-.claude/
 .vscode/
 
-# Caches
+# Git
+**/.DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Python
 .venv/
 __pycache__/
 *.py[cod]
-.ipynb_checkpoints/
-**/.DS_Store
 
 # Specific folders/files
-.env.publisher
-configs/
+configs
 dvc_remote_sample/
 src/legacy/
 notebooks/4_EDA_review_sampleV2.ipynb
-notebooks/5_data_merging.ipynb
 notebooks/7_ML_modelingV2.ipynb
 notebooks/7_ML_modelingV3.ipynb
 notebooks/9_data_&_ethics.ipynb
-notebooks/xgb_importance.csv
-/models
-/images

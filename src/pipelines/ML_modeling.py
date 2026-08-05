@@ -1,50 +1,3 @@
-# =============================================================================
-# FUTURE PLAN (not yet implemented -- review before acting)
-# -----------------------------------------------------------------------------
-# This module currently bundles the whole ML workflow. If/when it grows further,
-# consider splitting it by responsibility into separate files under
-# src/pipelines/. Suggested layout and dependency direction (top depends on
-# nothing internal; each lower line may import the ones above it -- no cycles):
-#
-#   ml_common.py
-#       Shared constants (FEATURE_COL, LABEL_COL, DEFAULT_METRICS,
-#       MODEL_DISPLAY_NAMES, DEFAULT_MODEL_ORDER, SEED, the SparkClassifier type)
-#       and private helpers (_build_evaluator, _model_display_name,
-#       _apply_dark_axes_style, _prepare_model_frame_for_xgb, _metric_value,
-#       _param_map_to_dict, _cv_results_to_df).
-#
-#   ml_modeling.py   (-> ml_common)
-#       Definition / fit / transform / evaluate: build_models,
-#       fit_transform_model, evaluate_model, evaluate_split.
-#
-#   ml_metric.py     (-> ml_common)
-#       Metric generation / organization: metric_dict_to_rows, rows_to_pandas_df,
-#       build_presentation_metrics, build_model_comparison_table,
-#       format_model_comparison_table, build_roc_curve_table,
-#       build_confusion_matrix_table, build_feature_importance_table.
-#
-#   ml_metric_visualization.py   (-> ml_common, ml_metric)
-#       All plot_* functions.
-#
-#   ml_tuning.py     (-> ml_common, ml_modeling)
-#       Hyperparameter tuning: DEFAULT_PARAM_GRIDS, build_param_grid,
-#       cross_validate_model.
-#
-#   ml_io.py         (-> ml_common)
-#       Model persistence: MODEL_LOADER_CLASSES, save_model, load_model
-#       (writes/reads fitted models under ProjectPaths.models_root, e.g.
-#       models/xgb/). Used by 7_ML_modeling.ipynb and 8_ML_tuning.ipynb.
-#
-#   Orchestration (fit_transform_evaluate_models, build_model_report_assets)
-#       sits above modeling + metric + visualization, so it belongs either in a
-#       dedicated ml_pipeline.py or at the top of ml_modeling.py.
-#
-# IMPORTANT: to preserve the uniform `import src.pipelines.ML_modeling as ml;
-# ml.X(...)` usage in the notebooks, keep ML_modeling.py as a thin FACADE that
-# re-exports the public names from the submodules above. That keeps notebooks 7
-# and 8 unchanged while the internals become organized by responsibility.
-# =============================================================================
-
 # -----------------------------
 # Import Modules
 # -----------------------------
@@ -59,17 +12,12 @@ from pyspark.ml.classification import (
     DecisionTreeClassifier,
     RandomForestClassifier,
     LinearSVC,
-    LogisticRegressionModel,
-    DecisionTreeClassificationModel,
-    RandomForestClassificationModel,
-    LinearSVCModel,
 )
-from xgboost.spark import SparkXGBClassifier, SparkXGBClassifierModel
+from xgboost.spark import SparkXGBClassifier
 from pyspark.ml.evaluation import (
     BinaryClassificationEvaluator,
     MulticlassClassificationEvaluator,
 )
-from pyspark.ml.tuning import CrossValidator, ParamGridBuilder
 from pyspark.mllib.evaluation import BinaryClassificationMetrics
 
 # Others
@@ -162,46 +110,8 @@ DEFAULT_MODEL_ORDER = [
     "svm",
 ]
 
-# Loader class for each model name, used by load_model() to read a saved model
-# back with the correct Spark type. Keys match build_models().
-MODEL_LOADER_CLASSES: dict[str, Any] = {
-    "log_reg": LogisticRegressionModel,
-    "decision_tree": DecisionTreeClassificationModel,
-    "random_forest": RandomForestClassificationModel,
-    "svm": LinearSVCModel,
-    "xgb": SparkXGBClassifierModel,
-}
-
 # Random Seed
 SEED = 42
-
-# Default hyperparameter search grids used by cross_validate_model(). Each entry
-# maps a model name to a {param_name: [values]} spec. The param names match the
-# Spark ML / SparkXGBClassifier params set in build_models(), so the grids tune
-# the same knobs as the baseline estimators. Override per-call by passing
-# param_grid=... to cross_validate_model().
-DEFAULT_PARAM_GRIDS: dict[str, dict[str, list[Any]]] = {
-    "log_reg": {
-        "regParam": [0.01, 0.1],
-        "elasticNetParam": [0.0, 0.5],
-    },
-    "decision_tree": {
-        "maxDepth": [5, 8, 12],
-        "minInstancesPerNode": [1, 5, 10],
-    },
-    "random_forest": {
-        "numTrees": [50, 100],
-        "maxDepth": [8, 12],
-    },
-    "svm": {
-        "regParam": [0.01, 0.1],
-        "maxIter": [50, 100],
-    },
-    "xgb": {
-        "max_depth": [4, 6, 8],
-        "learning_rate": [0.05, 0.1],
-    },
-}
 
 
 # -----------------------------
@@ -402,12 +312,18 @@ def evaluate_model(
     metric_data: dict[str, dict[str, float]] = {}
 
     for metric in metrics:
-        evaluator = _build_evaluator(
-            metric=metric,
-            label_col=label_col,
-            prediction_col=prediction_col,
-            raw_prediction_col=raw_prediction_col,
-        )
+        if metric in BINARY_METRICS:
+            evaluator = BinaryClassificationEvaluator(
+                labelCol=label_col,
+                rawPredictionCol=raw_prediction_col,
+                metricName=metric,
+            )
+        else:
+            evaluator = MulticlassClassificationEvaluator(
+                labelCol=label_col,
+                predictionCol=prediction_col,
+                metricName=metric,
+            )
 
         train_score = float(evaluator.evaluate(train_pred_df))
         test_score = float(evaluator.evaluate(test_pred_df))
@@ -427,53 +343,6 @@ def evaluate_model(
         test_pred_df.unpersist()
 
     return metric_data
-
-def evaluate_split(
-    model_name: str,
-    pred_df: DataFrame,
-    split_name: str = "Test",
-    label_col: str = LABEL_COL,
-    prediction_col: str = PREDICTION_COL,
-    raw_prediction_col: str = RAW_PREDICTION_COL,
-    metrics: Optional[list[str]] = None,
-    verbose: bool = True,
-) -> dict[str, float]:
-    """
-    Evaluate one prediction DataFrame (a single split) and return flat scores.
-
-    This is the single-split companion to ``evaluate_model`` (which scores train
-    and test together). It is handy after hyperparameter tuning, where the tuned
-    ``bestModel`` is transformed on one held-out split:
-
-        {"areaUnderROC": 0.864, "f1": 0.973, ...}
-    """
-
-    if metrics is None:
-        metrics = DEFAULT_METRICS
-
-    unsupported = set(metrics) - (BINARY_METRICS | MULTICLASS_METRICS)
-    if unsupported:
-        raise ValueError(
-            f"Unsupported metrics: {sorted(unsupported)}. "
-            f"Supported metrics are: {sorted(BINARY_METRICS | MULTICLASS_METRICS)}"
-        )
-
-    scores: dict[str, float] = {}
-    for metric in metrics:
-        evaluator = _build_evaluator(
-            metric=metric,
-            label_col=label_col,
-            prediction_col=prediction_col,
-            raw_prediction_col=raw_prediction_col,
-        )
-        score = float(evaluator.evaluate(pred_df))
-
-        if verbose:
-            print(f"{model_name} {split_name} {metric}: {score:.4f}")
-
-        scores[metric] = score
-
-    return scores
 
 
 # -------------------------------------
@@ -1731,295 +1600,8 @@ def build_model_report_assets(
 
 
 # ----------------------------------
-# Hyperparameter Tuning (Cross-Validation)
-# ----------------------------------
-def build_param_grid(
-    model: SparkClassifier,
-    param_spec: dict[str, list[Any]],
-) -> list:
-    """
-    Build a Spark ``ParamGridBuilder`` grid from a ``{param_name: [values]}`` spec.
-
-    ``param_name`` keys must match params on ``model`` (the same names used in
-    build_models, e.g. ``regParam`` for LogisticRegression or ``max_depth`` for
-    the XGBoost estimator). An empty spec yields a single-point grid that runs
-    cross-validation on the baseline params from build_models().
-    """
-
-    builder = ParamGridBuilder()
-    for param_name, values in param_spec.items():
-        try:
-            param = model.getParam(param_name)
-        except Exception as exc:  # ValueError / AttributeError depending on estimator
-            raise ValueError(
-                f"{type(model).__name__} has no tunable param '{param_name}'."
-            ) from exc
-        builder = builder.addGrid(param, list(values))
-    return builder.build()
-
-def cross_validate_model(
-    model_name: str,
-    train_final_df: DataFrame,
-    spark: SparkSession,
-    param_grid: Optional[dict[str, list[Any]]] = None,
-    num_folds: int = 5,
-    metric: str = "areaUnderROC",
-    parallelism: int = 2,
-    mode: str = "EXPANSE",
-    seed: int = SEED,
-    cast_xgb_label_to_int: bool = True,
-    label_col: str = LABEL_COL,
-    prediction_col: str = PREDICTION_COL,
-    raw_prediction_col: str = RAW_PREDICTION_COL,
-    verbose: bool = True,
-) -> dict[str, Any]:
-    """
-    Run k-fold cross-validation for one model and return the tuning results.
-
-    The estimator and its baseline params come from ``build_models`` so tuning
-    stays consistent with the rest of the modeling pipeline. ``param_grid``
-    defaults to ``DEFAULT_PARAM_GRIDS[model_name]`` when not supplied; pass
-    ``{}`` to cross-validate the baseline params with no search.
-
-    Returns
-    -------
-    dict
-        {
-            "model_name": str,
-            "cv_model": CrossValidatorModel,
-            "best_model": cv_model.bestModel (refit on full train data),
-            "evaluator": the tuning evaluator,
-            "metric": metric name used for selection,
-            "param_maps": estimatorParamMaps,
-            "avg_metrics": per-combo cross-validation scores,
-            "best_params": {param_name: value} of the winning combo,
-            "best_avg_metric": cross-validation score of the winning combo,
-            "results_df": Pandas table of params + cv score, sorted best-first,
-        }
-    """
-
-    models = build_models(spark, mode=mode)
-    if model_name not in models:
-        raise ValueError(
-            f"Model name not found: {model_name}. "
-            f"Available models: {sorted(models)}"
-        )
-    estimator = models[model_name]
-
-    if param_grid is None:
-        param_grid = DEFAULT_PARAM_GRIDS.get(model_name, {})
-    grid = build_param_grid(estimator, param_grid)
-
-    evaluator = _build_evaluator(
-        metric=metric,
-        label_col=label_col,
-        prediction_col=prediction_col,
-        raw_prediction_col=raw_prediction_col,
-    )
-
-    # XGBoost Spark expects an integer class label, matching the baseline pipeline.
-    train_for_cv = train_final_df
-    if cast_xgb_label_to_int and model_name == "xgb":
-        train_for_cv = _prepare_model_frame_for_xgb(train_for_cv, label_col=label_col)
-
-    cv = CrossValidator(
-        estimator=estimator,
-        estimatorParamMaps=grid,
-        evaluator=evaluator,
-        numFolds=num_folds,
-        seed=seed,
-        parallelism=parallelism,
-    )
-
-    if verbose:
-        print(
-            f"\n===== Cross-validating {model_name} "
-            f"({len(grid)} param combo(s) x {num_folds} folds) ====="
-        )
-
-    cv_model = cv.fit(train_for_cv)
-
-    avg_metrics = [float(m) for m in cv_model.avgMetrics]
-    results_df = _cv_results_to_df(grid, avg_metrics, metric)
-
-    # CrossValidator already refits bestModel; recover which combo it picked so we
-    # can report the winning params. isLargerBetter() handles metric direction.
-    if avg_metrics:
-        if evaluator.isLargerBetter():
-            best_index = max(range(len(avg_metrics)), key=lambda i: avg_metrics[i])
-        else:
-            best_index = min(range(len(avg_metrics)), key=lambda i: avg_metrics[i])
-        best_avg_metric = avg_metrics[best_index]
-    else:
-        best_index = 0
-        best_avg_metric = float("nan")
-
-    best_params = _param_map_to_dict(grid[best_index]) if grid else {}
-
-    if verbose:
-        print(f"{model_name} best CV {metric}: {best_avg_metric:.4f}")
-        if best_params:
-            print(f"{model_name} best params: {best_params}")
-
-    return {
-        "model_name": model_name,
-        "cv_model": cv_model,
-        "best_model": cv_model.bestModel,
-        "evaluator": evaluator,
-        "metric": metric,
-        "param_maps": grid,
-        "avg_metrics": avg_metrics,
-        "best_params": best_params,
-        "best_avg_metric": best_avg_metric,
-        "results_df": results_df,
-    }
-
-
-# ----------------------------------
-# Model Persistence (Save / Load)
-# ----------------------------------
-def save_model(
-    fitted_model: Any,
-    model_name: str,
-    models_dir: str | Path,
-    overwrite: bool = True,
-) -> str:
-    """
-    Save a fitted model to ``<models_dir>/<model_name>`` and return that path.
-
-    Works for any Spark ML model produced by this pipeline (Logistic Regression,
-    Decision Tree, Random Forest, LinearSVC) as well as the XGBoost Spark model,
-    since all expose the standard MLWritable ``write()`` API. The tuned
-    ``best_model`` from ``cross_validate_model`` is also a fitted model and can be
-    saved directly.
-
-    Reload with :func:`load_model` using the same ``model_name`` so the correct
-    Spark loader class is selected.
-    """
-
-    _require_active_spark(f"save model '{model_name}'")
-
-    path = str(Path(models_dir) / model_name)
-
-    writer = fitted_model.write()
-    if overwrite:
-        writer = writer.overwrite()
-    writer.save(path)
-
-    print(f"Saved {model_name} model to: {path}")
-    return path
-
-def load_model(
-    model_name: str,
-    models_dir: str | Path,
-) -> Any:
-    """
-    Load a fitted model saved by :func:`save_model` from
-    ``<models_dir>/<model_name>``.
-
-    ``model_name`` selects the loader class via ``MODEL_LOADER_CLASSES``, so it
-    must match the name used when saving (e.g. ``"xgb"``, ``"log_reg"``).
-    """
-
-    if model_name not in MODEL_LOADER_CLASSES:
-        raise ValueError(
-            f"No loader registered for model '{model_name}'. "
-            f"Known models: {sorted(MODEL_LOADER_CLASSES)}"
-        )
-
-    _require_active_spark(f"load model '{model_name}'")
-
-    path = str(Path(models_dir) / model_name)
-    model = MODEL_LOADER_CLASSES[model_name].load(path)
-
-    print(f"Loaded {model_name} model from: {path}")
-    return model
-
-
-# ----------------------------------
 # Helper Functions
 # ----------------------------------
-def _require_active_spark(action: str) -> None:
-    """
-    Raise a clear error if there is no active SparkSession.
-
-    Fitted Spark models are handles into the JVM, so saving/loading them needs a
-    live session. Without this guard, PySpark fails deep inside its internals
-    with a bare ``AssertionError`` (``assert sc is not None ...``). This turns
-    that into an actionable message.
-    """
-
-    if SparkSession.getActiveSession() is None:
-        raise RuntimeError(
-            f"Cannot {action}: no active SparkSession. Re-run the cell that "
-            "creates the session (create_spark_session(...)) and the training "
-            "cells before saving/loading, and call spark.stop() only as the very "
-            "last step. A fitted model cannot be written or read once its Spark "
-            "session has stopped."
-        )
-
-def _build_evaluator(
-    metric: str,
-    label_col: str = LABEL_COL,
-    prediction_col: str = PREDICTION_COL,
-    raw_prediction_col: str = RAW_PREDICTION_COL,
-):
-    """
-    Build the right Spark evaluator for a metric name.
-
-    Binary metrics use BinaryClassificationEvaluator (rawPrediction); multiclass
-    metrics use MulticlassClassificationEvaluator (prediction). Centralizing this
-    keeps evaluate_model, evaluate_split, and cross_validate_model in sync.
-    """
-
-    if metric in BINARY_METRICS:
-        return BinaryClassificationEvaluator(
-            labelCol=label_col,
-            rawPredictionCol=raw_prediction_col,
-            metricName=metric,
-        )
-    if metric in MULTICLASS_METRICS:
-        return MulticlassClassificationEvaluator(
-            labelCol=label_col,
-            predictionCol=prediction_col,
-            metricName=metric,
-        )
-    raise ValueError(
-        f"Unsupported metric: {metric}. "
-        f"Supported metrics are: {sorted(BINARY_METRICS | MULTICLASS_METRICS)}"
-    )
-
-def _param_map_to_dict(param_map: Any) -> dict[str, Any]:
-    """
-    Convert a Spark ParamMap ({Param: value}) into a readable {name: value} dict.
-    """
-
-    return {param.name: value for param, value in param_map.items()}
-
-def _cv_results_to_df(
-    param_maps: list,
-    avg_metrics: list[float],
-    metric: str,
-) -> pd.DataFrame:
-    """
-    Build a tidy Pandas table of cross-validation results, sorted best-first.
-
-    One row per param combo, with the tuned params as columns plus a
-    ``cv_<metric>`` score column.
-    """
-
-    score_col = f"cv_{metric}"
-    rows = []
-    for pm, score in zip(param_maps, avg_metrics):
-        row = _param_map_to_dict(pm)
-        row[score_col] = score
-        rows.append(row)
-
-    results_df = pd.DataFrame(rows)
-    if not results_df.empty and score_col in results_df.columns:
-        results_df = results_df.sort_values(score_col, ascending=False).reset_index(drop=True)
-    return results_df
-
 def _prepare_model_frame_for_xgb(
     df: DataFrame,
     label_col: str = LABEL_COL,

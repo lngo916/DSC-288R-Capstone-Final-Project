@@ -7520,17 +7520,6 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3d998031">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Import-Modules">Import Modules<a class="anchor-link" href="#Import-Modules">¶</a></h2>
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=J3qIWYfpNLMO">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -7542,47 +7531,20 @@ a.anchor-link {
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Make sure you are at the parent directory</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">os</span>
 
 <span class="c1"># Define MODE</span>
-<span class="n">MODE</span> <span class="o">=</span> <span class="s2">"LOCAL"</span> <span class="c1"># Either "COLAB", "LOCAL", "EXPANSE"</span>
+<span class="n">MODE</span> <span class="o">=</span> <span class="s2">"EXPANSE"</span> <span class="c1"># Either "COLAB", "LOCAL", "EXPANSE"</span>
 <span class="k">if</span> <span class="n">MODE</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'EXPANSE'</span><span class="p">,</span> <span class="s1">'COLAB'</span><span class="p">,</span> <span class="s1">'LOCAL'</span><span class="p">):</span>
     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"Invalid mode, the only acceptible are 'EXPANSE', 'COLAB', 'LOCAL'"</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">MODE</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"COLAB"</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">google.colab</span> <span class="kn">import</span> <span class="n">drive</span>
     <span class="n">drive</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s1">'/content/drive'</span><span class="p">)</span>
 
-<span class="c1"># --- Java 17 for PySpark (LOCAL) ---</span>
-<span class="c1"># PySpark 4.x requires Java 17/21. On a fresh Mac the default `java` may be older</span>
-<span class="c1"># (e.g. 15), and VS Code notebook kernels often don't inherit JAVA_HOME from your</span>
-<span class="c1"># shell -- which causes `JAVA_GATEWAY_EXITED` / UnsupportedClassVersionError when</span>
-<span class="c1"># create_spark_session() launches the JVM. Point Spark at a JDK 17 here.</span>
-<span class="k">if</span> <span class="n">MODE</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"LOCAL"</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"JAVA_HOME"</span><span class="p">):</span>
-    <span class="n">_java_candidates</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">"/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home"</span><span class="p">,</span>  <span class="c1"># Homebrew (Apple Silicon)</span>
-        <span class="s2">"/usr/local/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home"</span><span class="p">,</span>     <span class="c1"># Homebrew (Intel)</span>
-        <span class="s2">"/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home"</span><span class="p">,</span>  <span class="c1"># Temurin / Adoptium</span>
-    <span class="p">]</span>
-    <span class="k">for</span> <span class="n">_jh</span> <span class="ow">in</span> <span class="n">_java_candidates</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">_jh</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"JAVA_HOME"</span><span class="p">]</span> <span class="o">=</span> <span class="n">_jh</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"PATH"</span><span class="p">]</span> <span class="o">=</span> <span class="n">_jh</span> <span class="o">+</span> <span class="s2">"/bin:"</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"PATH"</span><span class="p">]</span>
-            <span class="k">break</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"JAVA_HOME:"</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"JAVA_HOME"</span><span class="p">,</span> <span class="s2">"(not set -- install JDK 17: brew install openjdk@17)"</span><span class="p">))</span>
-
 <span class="c1"># Root path by MODE</span>
-<span class="k">def</span> <span class="nf">find_root</span><span class="p">(</span><span class="n">markers</span><span class="o">=</span><span class="p">(</span><span class="s2">".git"</span><span class="p">,</span> <span class="s2">"requirements.txt"</span><span class="p">,</span> <span class="s2">"data"</span><span class="p">)):</span>
-<span class="w">    </span><span class="sd">"""Walk up from the current dir until we find the repo root."""</span>
-    <span class="n">here</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">cand</span> <span class="ow">in</span> <span class="p">(</span><span class="n">here</span><span class="p">,</span> <span class="o">*</span><span class="n">here</span><span class="o">.</span><span class="n">parents</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">any</span><span class="p">((</span><span class="n">cand</span> <span class="o">/</span> <span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">markers</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">cand</span>
-    <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">"Could not locate project root (no .git/requirements.txt/data found)"</span><span class="p">)</span>
-
 <span class="n">PROJECT_ROOT_BY_MODE</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"COLAB"</span><span class="p">:</span>   <span class="n">Path</span><span class="p">(</span><span class="s2">"/content/drive/MyDrive/DSC 288R/Project"</span><span class="p">),</span>
+    <span class="s2">"COLAB"</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/content/drive/MyDrive/DSC 288R/Project"</span><span class="p">),</span>
     <span class="s2">"EXPANSE"</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/home/bguo3/bguo3/DSC-288R-Capstone-Final-Project"</span><span class="p">),</span>
-    <span class="s2">"LOCAL"</span><span class="p">:</span>   <span class="n">find_root</span><span class="p">(),</span>
+    <span class="s2">"LOCAL"</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/Users/steveg/Desktop/DSC-288R-Capstone-Final-Project"</span><span class="p">),</span>
 <span class="p">}</span>
 <span class="n">ROOT</span> <span class="o">=</span> <span class="n">PROJECT_ROOT_BY_MODE</span><span class="p">[</span><span class="n">MODE</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
 
@@ -7605,15 +7567,25 @@ a.anchor-link {
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>JAVA_HOME: /opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home
-MODE: LOCAL
-PROJECT_ROOT: /Users/steveg/Desktop/DSC-288R-Capstone-Final-Project
+<pre>MODE: EXPANSE
+PROJECT_ROOT: /home/bguo3/bguo3/DSC-288R-Capstone-Final-Project
 </pre>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8eeeb062">
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=3d998031">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Import-Modules">Import Modules<a class="anchor-link" href="#Import-Modules">¶</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=8eeeb062">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7624,8 +7596,9 @@ PROJECT_ROOT: /Users/steveg/Desktop/DSC-288R-Capstone-Final-Project
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">src.utils.pyspark_utils</span> <span class="kn">import</span> <span class="n">create_spark_session</span>
 <span class="kn">from</span> <span class="nn">src.utils.paths_utils</span> <span class="kn">import</span> <span class="n">ProjectPaths</span>
 <span class="kn">from</span> <span class="nn">src.utils.io_utils</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">read_spark_parquet</span><span class="p">,</span>
-    <span class="n">write_spark_split_parquets</span>
+    <span class="n">read_spark_parquet</span><span class="p">,</span> 
+    <span class="n">write_spark_split_parquets</span><span class="p">,</span> 
+    <span class="n">write_pandas_split_parquets</span>
 <span class="p">)</span>
 <span class="kn">import</span> <span class="nn">src.pipelines.train_test_split</span> <span class="k">as</span> <span class="nn">tts</span>
 <span class="c1"># Train/Val/Test split functions under tts includes:</span>
@@ -7633,8 +7606,22 @@ PROJECT_ROOT: /Users/steveg/Desktop/DSC-288R-Capstone-Final-Project
     <span class="c1"># random_user_split</span>
     <span class="c1"># time_aware_row_split</span>
     <span class="c1"># time_aware_churn_snapshot_split</span>
+
     <span class="c1"># print_split_summary</span>
 </pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>Matplotlib created a temporary cache directory at /scratch/bguo3/job_49068525/matplotlib-6t9okytk because the default path (/home/jovyan/.cache/matplotlib) is not a writable directory; it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+</pre>
 </div>
 </div>
 </div>
@@ -7655,23 +7642,18 @@ PROJECT_ROOT: /Users/steveg/Desktop/DSC-288R-Capstone-Final-Project
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Set up for Spark app &amp; resource allocation</span>
-<span class="c1"># spark = create_spark_session("steam_reviews_train_val_test_split")</span>
-<span class="n">spark</span> <span class="o">=</span> <span class="n">create_spark_session</span><span class="p">(</span>
-    <span class="s2">"steam_reviews_train_val_test_split"</span><span class="p">,</span>
-    <span class="n">extra_configs</span><span class="o">=</span><span class="p">{</span><span class="s2">"spark.driver.memory"</span><span class="p">:</span> <span class="s2">"4g"</span><span class="p">,</span> <span class="s2">"spark.master"</span><span class="p">:</span> <span class="s2">"local[*]"</span><span class="p">},</span>
-<span class="p">)</span>
-
+<span class="n">spark</span> <span class="o">=</span> <span class="n">create_spark_session</span><span class="p">(</span><span class="s2">"steam_reviews_train_val_test_split"</span><span class="p">)</span>
 
 <span class="c1"># Load data</span>
 <span class="n">paths</span> <span class="o">=</span> <span class="n">ProjectPaths</span><span class="p">(</span><span class="n">MODE</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">MODE</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"EXPANSE"</span><span class="p">:</span>
-    <span class="n">feat_df</span> <span class="o">=</span> <span class="n">read_spark_parquet</span><span class="p">(</span><span class="n">spark</span><span class="p">,</span> <span class="n">paths</span><span class="o">.</span><span class="n">feature_engineered_parquet</span><span class="p">)</span>
+    <span class="n">clean_df</span> <span class="o">=</span> <span class="n">read_spark_parquet</span><span class="p">(</span><span class="n">spark</span><span class="p">,</span> <span class="n">paths</span><span class="o">.</span><span class="n">cleaned_parquet</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="n">feat_df</span> <span class="o">=</span> <span class="n">read_spark_parquet</span><span class="p">(</span><span class="n">spark</span><span class="p">,</span> <span class="n">paths</span><span class="o">.</span><span class="n">feature_engineered_sampled_parquet</span><span class="p">)</span>
+    <span class="n">clean_df</span> <span class="o">=</span> <span class="n">read_spark_parquet</span><span class="p">(</span><span class="n">spark</span><span class="p">,</span> <span class="n">paths</span><span class="o">.</span><span class="n">cleaned_sampled_parquet</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -7683,23 +7665,8 @@ PROJECT_ROOT: /Users/steveg/Desktop/DSC-288R-Capstone-Final-Project
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>WARNING: Using incubator modules: jdk.incubator.vector
-Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
-26/06/04 19:42:32 WARN Utils: Your hostname, MacBook-Pro.local, resolves to a loopback address: 127.0.0.1; using 192.0.0.2 instead (on interface en0)
-26/06/04 19:42:32 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
-Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
-Setting default log level to "WARN".
-To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
-26/06/04 19:42:33 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
-26/06/04 19:42:35 WARN Utils: Service 'SparkUI' could not bind on port 4040. Attempting port 4041.
-                                                                                </pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Read Spark parquet from: /Users/steveg/Desktop/DSC-288R-Capstone-Final-Project/data/feature_engineered_sampled_parquet
+<pre>Read Spark parquet from: /expanse/lustre/scratch/bguo3/temp_project/steam_reviews/cleaned_parquet
 </pre>
 </div>
 </div>
@@ -7757,7 +7724,7 @@ User C review 1  ---&gt; Validation
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">row_train_df</span><span class="p">,</span> <span class="n">row_val_df</span><span class="p">,</span> <span class="n">row_test_df</span> <span class="o">=</span> <span class="n">tts</span><span class="o">.</span><span class="n">random_row_split</span><span class="p">(</span>
-    <span class="n">feat_df</span><span class="p">,</span>
+    <span class="n">clean_df</span><span class="p">,</span>
     <span class="n">train_ratio</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
     <span class="n">val_ratio</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
     <span class="n">test_ratio</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
@@ -7786,52 +7753,13 @@ User C review 1  ---&gt; Validation
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>
 ===== Random Row Split =====
+Train rows: 76405108
+Validation rows: 16373962
+Test rows: 16379417
+Train users: 30589316
+Validation users: 10821019
+Test users: 10823699
 </pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>                                                                                </pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Train rows: 1473271
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>                                                                                </pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Validation rows: 315613
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>[Stage 7:==========================================&gt;              (24 + 8) / 32]</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Test rows: 316213
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>                                                                                </pre>
 </div>
 </div>
 </div>
@@ -7883,7 +7811,7 @@ User D reviews  ---&gt; Test
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5d2d658a">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5d2d658a">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7891,24 +7819,44 @@ User D reviews  ---&gt; Test
 <div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># user_train_df, user_val_df, user_test_df = tts.random_user_split(</span>
-<span class="c1">#     feat_df,</span>
-<span class="c1">#     user_col="author_steamid",</span>
-<span class="c1">#     train_ratio=0.7,</span>
-<span class="c1">#     val_ratio=0.15,</span>
-<span class="c1">#     test_ratio=0.15,</span>
-<span class="c1">#     seed=42</span>
-<span class="c1"># )</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">user_train_df</span><span class="p">,</span> <span class="n">user_val_df</span><span class="p">,</span> <span class="n">user_test_df</span> <span class="o">=</span> <span class="n">tts</span><span class="o">.</span><span class="n">random_user_split</span><span class="p">(</span>
+    <span class="n">clean_df</span><span class="p">,</span>
+    <span class="n">user_col</span><span class="o">=</span><span class="s2">"author_steamid"</span><span class="p">,</span>
+    <span class="n">train_ratio</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+    <span class="n">val_ratio</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
+    <span class="n">test_ratio</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
 
-<span class="c1"># # Inspect results</span>
-<span class="c1"># tts.print_split_summary(</span>
-<span class="c1">#     "Random User Split",</span>
-<span class="c1">#     user_train_df,</span>
-<span class="c1">#     user_val_df,</span>
-<span class="c1">#     user_test_df,</span>
-<span class="c1">#     user_col="author_steamid"</span>
-<span class="c1"># )</span>
+<span class="c1"># Inspect results</span>
+<span class="n">tts</span><span class="o">.</span><span class="n">print_split_summary</span><span class="p">(</span>
+    <span class="s2">"Random User Split"</span><span class="p">,</span>
+    <span class="n">user_train_df</span><span class="p">,</span>
+    <span class="n">user_val_df</span><span class="p">,</span>
+    <span class="n">user_test_df</span><span class="p">,</span>
+    <span class="n">user_col</span><span class="o">=</span><span class="s2">"author_steamid"</span>
+<span class="p">)</span>
 </pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+===== Random User Split =====
+Train rows: 76415988
+Validation rows: 16371732
+Test rows: 16370767
+Train users: 26266043
+Validation users: 5624007
+Test users: 5631001
+</pre>
 </div>
 </div>
 </div>
@@ -7954,7 +7902,7 @@ Reviews after cutoff 2         ---&gt; Test
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=25093543">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=25093543">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -7962,26 +7910,48 @@ Reviews after cutoff 2         ---&gt; Test
 <div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># time_train_df, time_val_df, time_test_df, train_cutoff, val_cutoff = tts.time_aware_row_split(</span>
-<span class="c1">#     feat_df,</span>
-<span class="c1">#     timestamp_col="timestamp_created",</span>
-<span class="c1">#     train_quantile=0.7,</span>
-<span class="c1">#     val_quantile=0.85</span>
-<span class="c1"># )</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">time_train_df</span><span class="p">,</span> <span class="n">time_val_df</span><span class="p">,</span> <span class="n">time_test_df</span><span class="p">,</span> <span class="n">train_cutoff</span><span class="p">,</span> <span class="n">val_cutoff</span> <span class="o">=</span> <span class="n">tts</span><span class="o">.</span><span class="n">time_aware_row_split</span><span class="p">(</span>
+    <span class="n">clean_df</span><span class="p">,</span>
+    <span class="n">timestamp_col</span><span class="o">=</span><span class="s2">"timestamp_created"</span><span class="p">,</span>
+    <span class="n">train_quantile</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+    <span class="n">val_quantile</span><span class="o">=</span><span class="mf">0.85</span>
+<span class="p">)</span>
 
-<span class="c1"># # Check cutoff points</span>
-<span class="c1"># print("Train cutoff:", train_cutoff)</span>
-<span class="c1"># print("Validation cutoff:", val_cutoff)</span>
+<span class="c1"># Check cutoff points</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Train cutoff:"</span><span class="p">,</span> <span class="n">train_cutoff</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Validation cutoff:"</span><span class="p">,</span> <span class="n">val_cutoff</span><span class="p">)</span>
 
-<span class="c1"># # Inspect results</span>
-<span class="c1"># tts.print_split_summary(</span>
-<span class="c1">#     "Time-Aware Row Split",</span>
-<span class="c1">#     time_train_df,</span>
-<span class="c1">#     time_val_df,</span>
-<span class="c1">#     time_test_df,</span>
-<span class="c1">#     user_col="author_steamid"</span>
-<span class="c1"># )</span>
+<span class="c1"># Inspect results</span>
+<span class="n">tts</span><span class="o">.</span><span class="n">print_split_summary</span><span class="p">(</span>
+    <span class="s2">"Time-Aware Row Split"</span><span class="p">,</span>
+    <span class="n">time_train_df</span><span class="p">,</span>
+    <span class="n">time_val_df</span><span class="p">,</span>
+    <span class="n">time_test_df</span><span class="p">,</span>
+    <span class="n">user_col</span><span class="o">=</span><span class="s2">"author_steamid"</span>
+<span class="p">)</span>
 </pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Train cutoff: 1645414594
+Validation cutoff: 1673163567
+
+===== Time-Aware Row Split =====
+Train rows: 76380850
+Validation rows: 16368522
+Test rows: 16409115
+Train users: 28443159
+Validation users: 9420044
+Test users: 9402705
+</pre>
 </div>
 </div>
 </div>
@@ -8021,18 +7991,18 @@ User behavior before T  ---&gt;  Predict churn in next 30 days
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=27a56d52">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=27a56d52">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1">## For FUTURE DEVELOPMENT</span>
 
 <span class="c1"># snapshot_train_df, snapshot_val_df, snapshot_test_df, T_train, T_val, T_test = tts.time_aware_churn_snapshot_split(</span>
-<span class="c1">#     feat_df,</span>
+<span class="c1">#     clean_df,</span>
 <span class="c1">#     timestamp_col="timestamp_created",</span>
 <span class="c1">#     horizon_days=30,</span>
 <span class="c1">#     train_cutoff_quantile=0.70,</span>
@@ -8055,6 +8025,29 @@ User behavior before T  ---&gt;  Predict churn in next 30 days
 <span class="c1">#     user_col="author_steamid"</span>
 <span class="c1"># )</span>
 </pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>T_train: 1645414594
+T_val: 1665646487
+T_test: 1681537656
+
+===== Time-Aware Churn Snapshot Split =====
+Train rows: 28443159
+Validation rows: 31570801
+Test rows: 34489804
+Train users: 28443159
+Validation users: 31570801
+Test users: 34489804
+</pre>
 </div>
 </div>
 </div>
@@ -8085,19 +8078,41 @@ User behavior before T  ---&gt;  Predict churn in next 30 days
         <span class="n">row_train_df</span><span class="p">,</span>
         <span class="n">row_val_df</span><span class="p">,</span>
         <span class="n">row_test_df</span><span class="p">,</span>
-        <span class="n">paths</span><span class="o">.</span><span class="n">random_row_train_parquet</span><span class="p">,</span>
-        <span class="n">paths</span><span class="o">.</span><span class="n">random_row_val_parquet</span><span class="p">,</span>
-        <span class="n">paths</span><span class="o">.</span><span class="n">random_row_test_parquet</span><span class="p">,</span>
+        <span class="n">paths</span><span class="o">.</span><span class="n">random_row_train_parquet_spark</span><span class="p">,</span>
+        <span class="n">paths</span><span class="o">.</span><span class="n">random_row_val_parquet_spark</span><span class="p">,</span>
+        <span class="n">paths</span><span class="o">.</span><span class="n">random_row_test_parquet_spark</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="n">write_spark_split_parquets</span><span class="p">(</span>
-        <span class="n">row_train_df</span><span class="p">,</span>
-        <span class="n">row_val_df</span><span class="p">,</span>
-        <span class="n">row_test_df</span><span class="p">,</span>
+    <span class="n">write_pandas_split_parquets</span><span class="p">(</span>
+        <span class="n">row_train_df</span><span class="o">.</span><span class="n">toPandas</span><span class="p">(),</span>
+        <span class="n">row_val_df</span><span class="o">.</span><span class="n">toPandas</span><span class="p">(),</span>
+        <span class="n">row_test_df</span><span class="o">.</span><span class="n">toPandas</span><span class="p">(),</span>
         <span class="n">paths</span><span class="o">.</span><span class="n">random_row_train_sampled_parquet</span><span class="p">,</span>
         <span class="n">paths</span><span class="o">.</span><span class="n">random_row_val_sampled_parquet</span><span class="p">,</span>
         <span class="n">paths</span><span class="o">.</span><span class="n">random_row_test_sampled_parquet</span><span class="p">,</span>
     <span class="p">)</span>
+
+
+<span class="c1">## For FUTURE DEVELOPMENT</span>
+<span class="c1"># # Random User Split</span>
+<span class="c1"># write_spark_split_parquets(</span>
+<span class="c1">#     row_train_df,</span>
+<span class="c1">#     row_val_df,</span>
+<span class="c1">#     row_test_df,</span>
+<span class="c1">#     paths.random_user_train_parquet_spark,</span>
+<span class="c1">#     paths.random_user_val_parquet_spark,</span>
+<span class="c1">#     paths.random_user_test_parquet_spark,</span>
+<span class="c1"># )</span>
+
+<span class="c1"># # Time-Aware Row Split</span>
+<span class="c1"># write_spark_split_parquets(</span>
+<span class="c1">#     row_train_df,</span>
+<span class="c1">#     row_val_df,</span>
+<span class="c1">#     row_test_df,</span>
+<span class="c1">#     paths.time_aware_row_train_parquet_spark,</span>
+<span class="c1">#     paths.time_aware_row_val_parquet_spark,</span>
+<span class="c1">#     paths.time_aware_row_test_parquet_spark,</span>
+<span class="c1"># )</span>
 </pre></div>
 </div>
 </div>
@@ -8109,47 +8124,15 @@ User behavior before T  ---&gt;  Predict churn in next 30 days
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>                                                                                </pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Saved Spark parquet to: /Users/steveg/Desktop/DSC-288R-Capstone-Final-Project/data/train_val_test_splits/random_row/train_sampled_parquet
+<pre>Saved Spark parquet to: file:/expanse/lustre/scratch/bguo3/temp_project/steam_reviews/splits/random_row/train_parquet
+Saved Spark parquet to: file:/expanse/lustre/scratch/bguo3/temp_project/steam_reviews/splits/random_row/val_parquet
+Saved Spark parquet to: file:/expanse/lustre/scratch/bguo3/temp_project/steam_reviews/splits/random_row/test_parquet
+Saved Spark parquet to:
+Train path: file:/expanse/lustre/scratch/bguo3/temp_project/steam_reviews/splits/random_row/train_parquet
+Validation path: file:/expanse/lustre/scratch/bguo3/temp_project/steam_reviews/splits/random_row/val_parquet
+Test path: file:/expanse/lustre/scratch/bguo3/temp_project/steam_reviews/splits/random_row/test_parquet
 </pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>                                                                                </pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Saved Spark parquet to: /Users/steveg/Desktop/DSC-288R-Capstone-Final-Project/data/train_val_test_splits/random_row/val_sampled_parquet
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>[Stage 12:=============================================&gt;          (26 + 6) / 32]</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Saved Spark parquet to: /Users/steveg/Desktop/DSC-288R-Capstone-Final-Project/data/train_val_test_splits/random_row/test_sampled_parquet
-</pre>
-</div>
-</div>
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>                                                                                </pre>
 </div>
 </div>
 </div>
@@ -8173,7 +8156,7 @@ User behavior before T  ---&gt;  Predict churn in next 30 days
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>

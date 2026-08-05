@@ -1,5 +1,0 @@
-outs:
-- md5: 2cb2f4fe955599900cadc113c647d4dd
-  size: 174104507
-  hash: md5
-  path: steam_tfidf_nn_recommender_v2.parquet

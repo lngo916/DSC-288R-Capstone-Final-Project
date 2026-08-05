@@ -36,30 +36,6 @@ class ProjectPaths:
 
 
     # ------------------------------------------------------------------
-    # Project root
-    # ------------------------------------------------------------------
-    @property
-    def project_root(self) -> Path:
-        """
-        Root directory of the project, used for non-data artifacts (e.g. models).
-
-        Mirrors the per-mode roots used by the notebook bootstrap code.
-        """
-        if self.mode_upper == "EXPANSE":
-            return Path("/home/bguo3/bguo3/DSC-288R-Capstone-Final-Project")
-
-        if self.mode_upper == "COLAB":
-            return Path("/content/drive/MyDrive/DSC 288R/Project")
-
-        if self.mode_upper == "LOCAL":
-            # This file is at <repo>/src/utils/paths_utils.py, so parents[2] is
-            # the repo root.
-            return Path(__file__).resolve().parents[2]
-
-        raise ValueError(f"Unsupported mode: {self.mode}")
-
-
-    # ------------------------------------------------------------------
     # Data roots
     # ------------------------------------------------------------------
     @property
@@ -77,22 +53,9 @@ class ProjectPaths:
             return Path("/content/drive/MyDrive/DSC 288R/Project/data")
 
         if self.mode_upper == "LOCAL":
-            # Repo-relative so it works on any machine: this file is at
-            # <repo>/src/utils/paths_utils.py, so parents[2] is the repo root.
-            return Path(__file__).resolve().parents[2] / "data"
+            return Path("/Users/steveg/Desktop/DSC-288R-Capstone-Final-Project")
 
         raise ValueError(f"Unsupported mode: {self.mode}")
-
-
-    # ------------------------------------------------------------------
-    # Trained model artifacts
-    # ------------------------------------------------------------------
-    @property
-    def models_root(self) -> Path:
-        """
-        Root directory for saved (fitted) model artifacts, e.g. models/xgb/.
-        """
-        return self.project_root / "models"
 
 
     # ------------------------------------------------------------------

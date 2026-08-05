@@ -1,0 +1,11 @@
+md5: 5593550f0cae2940753ae5850b5f64dd
+frozen: true
+deps:
+- md5: 27bc7466b8e3e4658cefcb4e71d051cf
+  size: 176428262
+  hash: md5
+  path: 
+    /expanse/lustre/scratch/bguo3/temp_project/steam_reviews/game_KNN.parquet
+outs:
+- hash: md5
+  path: game_KNN.parquet

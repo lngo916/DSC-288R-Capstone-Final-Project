@@ -10,4 +10,6 @@
 /cleaned_sampled_parquet
 /feature_engineered_sampled_parquet
 /train_val_test_splits
-/steam_tfidf_nn_recommender_v2.parquet
+
+# Other dataset
+/game_KNN.parquet
