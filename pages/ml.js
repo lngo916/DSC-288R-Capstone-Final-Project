@@ -5,7 +5,7 @@ const MODELS = {
     desc:'Gradient-boosted decision trees via XGBoost4J-Spark. Achieves the highest AUC-ROC (0.877) with a near-zero generalization gap — the top performer in this pipeline.',
     auc:'0.877', aucpr:'0.990', acc:'93.4%', f1:'0.910',
     trainAUC:0.8802, valAUC:0.8772,
-    cm:{ tp:1671, fp:1367, fn:19551, tn:292916 },
+    cm:{ tp:18259, fp:3004, fn:5142, tn:289042 },
     roc:[
       {x:0.0, y:0.114},
       {x:0.1, y:0.682},
@@ -99,8 +99,8 @@ const MODELS = {
   dt: {
     name:'Decision Tree', tag:'TREE', tagClass:'tag-tree',
     desc:'Single interpretable decision tree — fastest non-linear option (101s). Matched Logistic Regression exactly on AUC and accuracy, suggesting natural decision boundaries in this dataset.',
-    auc:'0.826', aucpr:'0.981', acc:'93.3%', f1:'0.911',
-    trainAUC:0.8255, valAUC:0.8257,
+    auc:'0.755', aucpr:'0.9676', acc:'93.3%', f1:'0.9042',
+    trainAUC:0.7548, valAUC:0.7550,
     cm:{ tp:669, fp:20553, fn:658, tn:293625 },
     roc:[
       {x:0.0, y:0.000},
