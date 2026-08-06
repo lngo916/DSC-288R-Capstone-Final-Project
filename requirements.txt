@@ -1,0 +1,46 @@
+# DSC-288R Capstone — Python dependencies
+# Tested on Python 3.11. Create a virtual environment, then:
+#     pip install -r requirements.txt
+#
+# Versions are left unpinned so the grader picks compatible builds for their
+# platform (macOS / Linux / SDSC Expanse). If you hit a conflict, install the
+# core stack first (pyspark, pandas, numpy) and re-run.
+
+# --- Core data & compute ---
+pyspark
+pandas
+numpy
+scipy
+
+# --- Data versioning & cloud storage ---
+dvc[s3]
+
+# --- Source dataset access ---
+kagglehub
+requests
+
+# --- ML & modeling ---
+scikit-learn
+xgboost
+pyarrow >= 15.0.0
+
+# --- EDA & profiling ---
+ydata-profiling
+visions
+phik                # correlation for mixed-type variables
+imagehash
+matplotlib
+seaborn
+
+# --- Validation & templating (used by profiling / reports) ---
+pydantic
+jinja2
+
+# --- Notebook environment ---
+jupyter
+notebook
+nbconvert
+ipykernel
+
+# Note: notebooks that mount Google Drive use `google.colab`, which is
+# pre-installed in Google Colab only and is NOT required for local runs.

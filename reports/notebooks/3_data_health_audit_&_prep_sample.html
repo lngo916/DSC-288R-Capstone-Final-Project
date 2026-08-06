@@ -7520,31 +7520,69 @@ a.anchor-link {
 </div>
 </div>
 </div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="Import-Modules">Import Modules<a class="anchor-link" href="#Import-Modules">¶</a></h2>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Make sure you are at the parent directory</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
 <span class="c1"># Define MODE</span>
-<span class="n">MODE</span> <span class="o">=</span> <span class="s2">"COLAB"</span> <span class="c1"># Either "COLAB", "LOCAL", "EXPANSE"</span>
+<span class="n">MODE</span> <span class="o">=</span> <span class="s2">"LOCAL"</span> <span class="c1"># Either "COLAB", "LOCAL", "EXPANSE"</span>
 <span class="k">if</span> <span class="n">MODE</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">'EXPANSE'</span><span class="p">,</span> <span class="s1">'COLAB'</span><span class="p">,</span> <span class="s1">'LOCAL'</span><span class="p">):</span>
     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"Invalid mode, the only acceptible are 'EXPANSE', 'COLAB', 'LOCAL'"</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">MODE</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"COLAB"</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">google.colab</span> <span class="kn">import</span> <span class="n">drive</span>
     <span class="n">drive</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s1">'/content/drive'</span><span class="p">)</span>
 
+<span class="c1"># --- Java 17 for PySpark (LOCAL) ---</span>
+<span class="c1"># PySpark 4.x requires Java 17/21. On a fresh Mac the default `java` may be older</span>
+<span class="c1"># (e.g. 15), and VS Code notebook kernels often don't inherit JAVA_HOME from your</span>
+<span class="c1"># shell -- which causes `JAVA_GATEWAY_EXITED` / UnsupportedClassVersionError when</span>
+<span class="c1"># create_spark_session() launches the JVM. Point Spark at a JDK 17 here.</span>
+<span class="k">if</span> <span class="n">MODE</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"LOCAL"</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"JAVA_HOME"</span><span class="p">):</span>
+    <span class="n">_java_candidates</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">"/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home"</span><span class="p">,</span>  <span class="c1"># Homebrew (Apple Silicon)</span>
+        <span class="s2">"/usr/local/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home"</span><span class="p">,</span>     <span class="c1"># Homebrew (Intel)</span>
+        <span class="s2">"/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home"</span><span class="p">,</span>  <span class="c1"># Temurin / Adoptium</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">_jh</span> <span class="ow">in</span> <span class="n">_java_candidates</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">_jh</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"JAVA_HOME"</span><span class="p">]</span> <span class="o">=</span> <span class="n">_jh</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"PATH"</span><span class="p">]</span> <span class="o">=</span> <span class="n">_jh</span> <span class="o">+</span> <span class="s2">"/bin:"</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"PATH"</span><span class="p">]</span>
+            <span class="k">break</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"JAVA_HOME:"</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"JAVA_HOME"</span><span class="p">,</span> <span class="s2">"(not set -- install JDK 17: brew install openjdk@17)"</span><span class="p">))</span>
+
 <span class="c1"># Root path by MODE</span>
+<span class="k">def</span> <span class="nf">find_root</span><span class="p">(</span><span class="n">markers</span><span class="o">=</span><span class="p">(</span><span class="s2">".git"</span><span class="p">,</span> <span class="s2">"requirements.txt"</span><span class="p">,</span> <span class="s2">"data"</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">"""Walk up from the current dir until we find the repo root."""</span>
+    <span class="n">here</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">cand</span> <span class="ow">in</span> <span class="p">(</span><span class="n">here</span><span class="p">,</span> <span class="o">*</span><span class="n">here</span><span class="o">.</span><span class="n">parents</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">((</span><span class="n">cand</span> <span class="o">/</span> <span class="n">m</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">markers</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">cand</span>
+    <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">"Could not locate project root (no .git/requirements.txt/data found)"</span><span class="p">)</span>
+
 <span class="n">PROJECT_ROOT_BY_MODE</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"COLAB"</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/content/drive/MyDrive/DSC 288R/Project"</span><span class="p">),</span>
+    <span class="s2">"COLAB"</span><span class="p">:</span>   <span class="n">Path</span><span class="p">(</span><span class="s2">"/content/drive/MyDrive/DSC 288R/Project"</span><span class="p">),</span>
     <span class="s2">"EXPANSE"</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/home/bguo3/bguo3/DSC-288R-Capstone-Final-Project"</span><span class="p">),</span>
-    <span class="s2">"LOCAL"</span><span class="p">:</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"/Users/steveg/Desktop/DSC-288R-Capstone-Final-Project"</span><span class="p">),</span>
+    <span class="s2">"LOCAL"</span><span class="p">:</span>   <span class="n">find_root</span><span class="p">(),</span>
 <span class="p">}</span>
 <span class="n">ROOT</span> <span class="o">=</span> <span class="n">PROJECT_ROOT_BY_MODE</span><span class="p">[</span><span class="n">MODE</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
 
@@ -7567,22 +7605,11 @@ a.anchor-link {
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Drive already mounted at /content/drive; to attempt to forcibly remount, call drive.mount("/content/drive", force_remount=True).
-MODE: COLAB
-PROJECT_ROOT: /content/drive/MyDrive/DSC 288R/Project
+<pre>JAVA_HOME: /opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home
+MODE: LOCAL
+PROJECT_ROOT: /Users/steveg/Desktop/DSC-288R-Capstone-Final-Project
 </pre>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Import-Modules">Import Modules<a class="anchor-link" href="#Import-Modules">¶</a></h2>
 </div>
 </div>
 </div>
@@ -7591,7 +7618,7 @@ PROJECT_ROOT: /content/drive/MyDrive/DSC 288R/Project
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -7599,8 +7626,9 @@ PROJECT_ROOT: /content/drive/MyDrive/DSC 288R/Project
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Callable</span>
 
+<span class="kn">from</span> <span class="nn">src.utils.pyspark_utils</span> <span class="kn">import</span> <span class="n">create_spark_session</span>
 <span class="kn">from</span> <span class="nn">src.utils.paths_utils</span> <span class="kn">import</span> <span class="n">ProjectPaths</span>
-<span class="kn">from</span> <span class="nn">src.utils.io_utils</span> <span class="kn">import</span> <span class="n">read_pandas_parquet</span><span class="p">,</span> <span class="n">write_pandas_parquet</span>
+<span class="kn">from</span> <span class="nn">src.utils.io_utils</span> <span class="kn">import</span> <span class="n">read_pandas_parquet</span><span class="p">,</span> <span class="n">write_spark_parquet</span>
 </pre></div>
 </div>
 </div>
@@ -7622,7 +7650,7 @@ PROJECT_ROOT: /content/drive/MyDrive/DSC 288R/Project
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">paths</span> <span class="o">=</span> <span class="n">ProjectPaths</span><span class="p">(</span><span class="n">MODE</span><span class="p">)</span>
@@ -7639,7 +7667,7 @@ PROJECT_ROOT: /content/drive/MyDrive/DSC 288R/Project
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Read Pandas parquet from: /content/drive/MyDrive/DSC 288R/Project/data/subsampled_parquet
+<pre>Read Pandas parquet from: /Users/steveg/Desktop/DSC-288R-Capstone-Final-Project/data/subsampled_parquet
 </pre>
 </div>
 </div>
@@ -7925,7 +7953,7 @@ PROJECT_ROOT: /content/drive/MyDrive/DSC 288R/Project
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1">## Shape</span>
@@ -8048,7 +8076,7 @@ memory usage: 240.9+ MB
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">organize_columns</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
@@ -8128,7 +8156,7 @@ memory usage: 240.9+ MB
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">type_conversion</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">organize_columns</span><span class="p">)</span>
@@ -8191,7 +8219,7 @@ memory usage: 228.9+ MB
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1">## Compeleteness helps us investigate missing value and if we have useful</span>
@@ -8239,8 +8267,8 @@ memory usage: 228.9+ MB
 <pre>1. Identify missing values per column
 voted_up                       50
 timestamp_updated              33
-written_during_early_access    27
 votes_up                       27
+written_during_early_access    27
 weighted_vote_score            26
 votes_funny                    25
 comment_count                  23
@@ -8252,8 +8280,8 @@ dtype: int64
 2. Calculate percentage of missing values
 voted_up                       0.002375
 timestamp_updated              0.001568
-written_during_early_access    0.001283
 votes_up                       0.001283
+written_during_early_access    0.001283
 weighted_vote_score            0.001235
 votes_funny                    0.001188
 comment_count                  0.001093
@@ -8298,7 +8326,7 @@ dtype: float64
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
@@ -8350,7 +8378,7 @@ dtype: int64
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [18]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1">## Consistency helps us question "Do columns agree with each other logically"?</span>
@@ -8492,7 +8520,7 @@ True
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [19]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1">## Anomaly indicates suspicious value, not automatically wrong</span>
@@ -8598,7 +8626,6 @@ True
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<div class="colab-df-container" id="df-67fee983-2616-465a-a4fa-ecce003c29d0">
 <div>
 <style scoped="">
     .dataframe tbody tr th:only-of-type {
@@ -8770,80 +8797,6 @@ True
 </tbody>
 </table>
 </div>
-<div class="colab-df-buttons">
-<div class="colab-df-container">
-<button class="colab-df-convert" onclick="convertToInteractive('df-67fee983-2616-465a-a4fa-ecce003c29d0')" style="display:none;" title="Convert this dataframe to an interactive table.">
-<svg height="24px" viewbox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg">
-<path d="M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z"></path>
-</svg>
-</button>
-<style>
-    .colab-df-container {
-      display:flex;
-      gap: 12px;
-    }
-
-    .colab-df-convert {
-      background-color: #E8F0FE;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      display: none;
-      fill: #1967D2;
-      height: 32px;
-      padding: 0 0 0 0;
-      width: 32px;
-    }
-
-    .colab-df-convert:hover {
-      background-color: #E2EBFA;
-      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
-      fill: #174EA6;
-    }
-
-    .colab-df-buttons div {
-      margin-bottom: 4px;
-    }
-
-    [theme=dark] .colab-df-convert {
-      background-color: #3B4455;
-      fill: #D2E3FC;
-    }
-
-    [theme=dark] .colab-df-convert:hover {
-      background-color: #434B5C;
-      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
-      fill: #FFFFFF;
-    }
-  </style>
-<script>
-      const buttonEl =
-        document.querySelector('#df-67fee983-2616-465a-a4fa-ecce003c29d0 button.colab-df-convert');
-      buttonEl.style.display =
-        google.colab.kernel.accessAllowed ? 'block' : 'none';
-
-      async function convertToInteractive(key) {
-        const element = document.querySelector('#df-67fee983-2616-465a-a4fa-ecce003c29d0');
-        const dataTable =
-          await google.colab.kernel.invokeFunction('convertToInteractive',
-                                                    [key], {});
-        if (!dataTable) return;
-
-        const docLinkHtml = 'Like what you see? Visit the ' +
-          '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
-          + ' to learn more about interactive tables.';
-        element.innerHTML = '';
-        dataTable['output_type'] = 'display_data';
-        await google.colab.output.renderOutput(dataTable, element);
-        const docLink = document.createElement('div');
-        docLink.innerHTML = docLinkHtml;
-        element.appendChild(docLink);
-      }
-    </script>
-</div>
-</div>
-</div>
 </div>
 </div>
 <div class="jp-OutputArea-child">
@@ -8860,7 +8813,6 @@ True
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<div class="colab-df-container" id="df-1b11be75-9cf5-4831-97b1-e7484240f5eb">
 <div>
 <style scoped="">
     .dataframe tbody tr th:only-of-type {
@@ -8907,80 +8859,6 @@ True
 </tbody>
 </table>
 </div>
-<div class="colab-df-buttons">
-<div class="colab-df-container">
-<button class="colab-df-convert" onclick="convertToInteractive('df-1b11be75-9cf5-4831-97b1-e7484240f5eb')" style="display:none;" title="Convert this dataframe to an interactive table.">
-<svg height="24px" viewbox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg">
-<path d="M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z"></path>
-</svg>
-</button>
-<style>
-    .colab-df-container {
-      display:flex;
-      gap: 12px;
-    }
-
-    .colab-df-convert {
-      background-color: #E8F0FE;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      display: none;
-      fill: #1967D2;
-      height: 32px;
-      padding: 0 0 0 0;
-      width: 32px;
-    }
-
-    .colab-df-convert:hover {
-      background-color: #E2EBFA;
-      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
-      fill: #174EA6;
-    }
-
-    .colab-df-buttons div {
-      margin-bottom: 4px;
-    }
-
-    [theme=dark] .colab-df-convert {
-      background-color: #3B4455;
-      fill: #D2E3FC;
-    }
-
-    [theme=dark] .colab-df-convert:hover {
-      background-color: #434B5C;
-      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
-      fill: #FFFFFF;
-    }
-  </style>
-<script>
-      const buttonEl =
-        document.querySelector('#df-1b11be75-9cf5-4831-97b1-e7484240f5eb button.colab-df-convert');
-      buttonEl.style.display =
-        google.colab.kernel.accessAllowed ? 'block' : 'none';
-
-      async function convertToInteractive(key) {
-        const element = document.querySelector('#df-1b11be75-9cf5-4831-97b1-e7484240f5eb');
-        const dataTable =
-          await google.colab.kernel.invokeFunction('convertToInteractive',
-                                                    [key], {});
-        if (!dataTable) return;
-
-        const docLinkHtml = 'Like what you see? Visit the ' +
-          '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
-          + ' to learn more about interactive tables.';
-        element.innerHTML = '';
-        dataTable['output_type'] = 'display_data';
-        await google.colab.output.renderOutput(dataTable, element);
-        const docLink = document.createElement('div');
-        docLink.innerHTML = docLinkHtml;
-        element.appendChild(docLink);
-      }
-    </script>
-</div>
-</div>
-</div>
 </div>
 </div>
 <div class="jp-OutputArea-child">
@@ -8997,7 +8875,6 @@ True
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<div class="colab-df-container" id="df-03968f30-53e0-4f1d-99ff-447fbff6e294">
 <div>
 <style scoped="">
     .dataframe tbody tr th:only-of-type {
@@ -9053,231 +8930,63 @@ True
 <td>0</td>
 </tr>
 <tr>
-<th>69086</th>
+<th>2015432</th>
 <td>0</td>
-<td>11</td>
-<td>2175</td>
+<td>1</td>
+<td>14247</td>
 <td>0</td>
-<td>1077</td>
-<td>4</td>
+<td>1366</td>
+<td>0</td>
 <td>4294967295</td>
-<td>0.522334</td>
+<td>0.47619</td>
+<td>0</td>
+</tr>
+<tr>
+<th>1957033</th>
+<td>49</td>
+<td>1</td>
+<td>215991</td>
+<td>111</td>
+<td>12917</td>
+<td>2</td>
+<td>4294967295</td>
+<td>0.539789</td>
+<td>0</td>
+</tr>
+<tr>
+<th>1950642</th>
+<td>35</td>
+<td>1</td>
+<td>15857</td>
+<td>0</td>
+<td>2039</td>
+<td>3</td>
+<td>4294967295</td>
+<td>0.511475</td>
+<td>1</td>
+</tr>
+<tr>
+<th>1948370</th>
+<td>0</td>
+<td>2</td>
+<td>140952</td>
+<td>470</td>
+<td>4772</td>
+<td>0</td>
+<td>4294967295</td>
+<td>0.497512</td>
 <td>2</td>
 </tr>
 <tr>
-<th>136680</th>
-<td>33</td>
-<td>1</td>
-<td>26</td>
-<td>0</td>
-<td>12</td>
-<td>3</td>
-<td>4294967295</td>
-<td>0.502463</td>
-<td>0</td>
-</tr>
-<tr>
-<th>137854</th>
-<td>0</td>
-<td>41</td>
-<td>6847</td>
-<td>0</td>
-<td>1215</td>
-<td>76</td>
-<td>4294967295</td>
-<td>0.728008</td>
-<td>0</td>
-</tr>
-<tr>
-<th>175586</th>
-<td>47</td>
-<td>4</td>
-<td>245899</td>
-<td>0</td>
-<td>3389</td>
-<td>3</td>
-<td>4294967295</td>
-<td>0.548872</td>
-<td>0</td>
-</tr>
-<tr>
-<th>237240</th>
-<td>96</td>
-<td>3</td>
-<td>141</td>
-<td>0</td>
-<td>119</td>
-<td>13</td>
-<td>4294967295</td>
-<td>0.168718</td>
-<td>5</td>
-</tr>
-<tr>
-<th>240336</th>
-<td>22</td>
-<td>3</td>
-<td>335</td>
-<td>0</td>
-<td>300</td>
-<td>0</td>
-<td>4294967295</td>
-<td>0.476868</td>
-<td>0</td>
-</tr>
-<tr>
-<th>592440</th>
-<td>827</td>
-<td>60</td>
-<td>2191</td>
-<td>0</td>
-<td>1192</td>
-<td>19</td>
-<td>4294967295</td>
-<td>0.621283</td>
-<td>1</td>
-</tr>
-<tr>
-<th>612048</th>
-<td>149</td>
-<td>5</td>
-<td>14697</td>
-<td>0</td>
-<td>14516</td>
-<td>8</td>
-<td>4294967295</td>
-<td>0.605863</td>
-<td>0</td>
-</tr>
-<tr>
-<th>623330</th>
-<td>184</td>
-<td>1</td>
-<td>557</td>
-<td>0</td>
-<td>502</td>
-<td>1</td>
-<td>4294967295</td>
-<td>0.502488</td>
-<td>0</td>
-</tr>
-<tr>
-<th>720261</th>
-<td>0</td>
-<td>34</td>
-<td>7</td>
-<td>0</td>
-<td>7</td>
-<td>1</td>
-<td>4294967295</td>
-<td>0.502488</td>
-<td>0</td>
-</tr>
-<tr>
-<th>879538</th>
-<td>0</td>
-<td>2</td>
-<td>180</td>
-<td>0</td>
-<td>180</td>
-<td>6</td>
-<td>4294967295</td>
-<td>0.527614</td>
-<td>0</td>
-</tr>
-<tr>
-<th>898948</th>
-<td>0</td>
-<td>7</td>
-<td>1459</td>
-<td>0</td>
-<td>1427</td>
-<td>1</td>
-<td>4294967295</td>
-<td>0.525862</td>
-<td>0</td>
-</tr>
-<tr>
-<th>949969</th>
-<td>0</td>
-<td>21</td>
-<td>293</td>
-<td>0</td>
-<td>293</td>
-<td>1</td>
-<td>4294967295</td>
-<td>0.521739</td>
-<td>0</td>
-</tr>
-<tr>
-<th>1020893</th>
+<th>1726861</th>
 <td>0</td>
 <td>1</td>
-<td>834</td>
+<td>151</td>
 <td>0</td>
-<td>834</td>
-<td>5</td>
+<td>150</td>
+<td>0</td>
 <td>4294967295</td>
-<td>0.532524</td>
-<td>0</td>
-</tr>
-<tr>
-<th>1074121</th>
-<td>0</td>
-<td>6</td>
-<td>748</td>
-<td>0</td>
-<td>402</td>
-<td>1</td>
-<td>4294967295</td>
-<td>0.478689</td>
-<td>0</td>
-</tr>
-<tr>
-<th>1111852</th>
-<td>0</td>
-<td>1</td>
-<td>1161</td>
-<td>0</td>
-<td>900</td>
-<td>1</td>
-<td>4294967295</td>
-<td>0.5</td>
-<td>0</td>
-</tr>
-<tr>
-<th>1111853</th>
-<td>0</td>
-<td>5</td>
-<td>6079</td>
-<td>0</td>
-<td>3994</td>
-<td>1</td>
-<td>4294967295</td>
-<td>0.495108</td>
-<td>0</td>
-</tr>
-<tr>
-<th>1242396</th>
-<td>0</td>
-<td>8</td>
-<td>24441</td>
-<td>0</td>
-<td>5326</td>
-<td>2</td>
-<td>4294967295</td>
-<td>0.485516</td>
-<td>0</td>
-</tr>
-<tr>
-<th>1450255</th>
-<td>121</td>
-<td>5</td>
-<td>795</td>
-<td>0</td>
-<td>712</td>
-<td>1</td>
-<td>4294967295</td>
-<td>0.502488</td>
+<td>0.497512</td>
 <td>0</td>
 </tr>
 <tr>
@@ -9293,64 +9002,232 @@ True
 <td>0</td>
 </tr>
 <tr>
-<th>1726861</th>
+<th>1450255</th>
+<td>121</td>
+<td>5</td>
+<td>795</td>
 <td>0</td>
+<td>712</td>
 <td>1</td>
-<td>151</td>
-<td>0</td>
-<td>150</td>
-<td>0</td>
 <td>4294967295</td>
-<td>0.497512</td>
+<td>0.502488</td>
 <td>0</td>
 </tr>
 <tr>
-<th>1948370</th>
+<th>1242396</th>
 <td>0</td>
+<td>8</td>
+<td>24441</td>
+<td>0</td>
+<td>5326</td>
 <td>2</td>
-<td>140952</td>
-<td>470</td>
-<td>4772</td>
-<td>0</td>
 <td>4294967295</td>
-<td>0.497512</td>
-<td>2</td>
+<td>0.485516</td>
+<td>0</td>
 </tr>
 <tr>
-<th>1950642</th>
-<td>35</td>
-<td>1</td>
-<td>15857</td>
+<th>1111853</th>
 <td>0</td>
-<td>2039</td>
+<td>5</td>
+<td>6079</td>
+<td>0</td>
+<td>3994</td>
+<td>1</td>
+<td>4294967295</td>
+<td>0.495108</td>
+<td>0</td>
+</tr>
+<tr>
+<th>1111852</th>
+<td>0</td>
+<td>1</td>
+<td>1161</td>
+<td>0</td>
+<td>900</td>
+<td>1</td>
+<td>4294967295</td>
+<td>0.5</td>
+<td>0</td>
+</tr>
+<tr>
+<th>1074121</th>
+<td>0</td>
+<td>6</td>
+<td>748</td>
+<td>0</td>
+<td>402</td>
+<td>1</td>
+<td>4294967295</td>
+<td>0.478689</td>
+<td>0</td>
+</tr>
+<tr>
+<th>1020893</th>
+<td>0</td>
+<td>1</td>
+<td>834</td>
+<td>0</td>
+<td>834</td>
+<td>5</td>
+<td>4294967295</td>
+<td>0.532524</td>
+<td>0</td>
+</tr>
+<tr>
+<th>949969</th>
+<td>0</td>
+<td>21</td>
+<td>293</td>
+<td>0</td>
+<td>293</td>
+<td>1</td>
+<td>4294967295</td>
+<td>0.521739</td>
+<td>0</td>
+</tr>
+<tr>
+<th>898948</th>
+<td>0</td>
+<td>7</td>
+<td>1459</td>
+<td>0</td>
+<td>1427</td>
+<td>1</td>
+<td>4294967295</td>
+<td>0.525862</td>
+<td>0</td>
+</tr>
+<tr>
+<th>879538</th>
+<td>0</td>
+<td>2</td>
+<td>180</td>
+<td>0</td>
+<td>180</td>
+<td>6</td>
+<td>4294967295</td>
+<td>0.527614</td>
+<td>0</td>
+</tr>
+<tr>
+<th>720261</th>
+<td>0</td>
+<td>34</td>
+<td>7</td>
+<td>0</td>
+<td>7</td>
+<td>1</td>
+<td>4294967295</td>
+<td>0.502488</td>
+<td>0</td>
+</tr>
+<tr>
+<th>623330</th>
+<td>184</td>
+<td>1</td>
+<td>557</td>
+<td>0</td>
+<td>502</td>
+<td>1</td>
+<td>4294967295</td>
+<td>0.502488</td>
+<td>0</td>
+</tr>
+<tr>
+<th>612048</th>
+<td>149</td>
+<td>5</td>
+<td>14697</td>
+<td>0</td>
+<td>14516</td>
+<td>8</td>
+<td>4294967295</td>
+<td>0.605863</td>
+<td>0</td>
+</tr>
+<tr>
+<th>592440</th>
+<td>827</td>
+<td>60</td>
+<td>2191</td>
+<td>0</td>
+<td>1192</td>
+<td>19</td>
+<td>4294967295</td>
+<td>0.621283</td>
+<td>1</td>
+</tr>
+<tr>
+<th>240336</th>
+<td>22</td>
+<td>3</td>
+<td>335</td>
+<td>0</td>
+<td>300</td>
+<td>0</td>
+<td>4294967295</td>
+<td>0.476868</td>
+<td>0</td>
+</tr>
+<tr>
+<th>237240</th>
+<td>96</td>
+<td>3</td>
+<td>141</td>
+<td>0</td>
+<td>119</td>
+<td>13</td>
+<td>4294967295</td>
+<td>0.168718</td>
+<td>5</td>
+</tr>
+<tr>
+<th>175586</th>
+<td>47</td>
+<td>4</td>
+<td>245899</td>
+<td>0</td>
+<td>3389</td>
 <td>3</td>
 <td>4294967295</td>
-<td>0.511475</td>
-<td>1</td>
+<td>0.548872</td>
+<td>0</td>
 </tr>
 <tr>
-<th>1957033</th>
-<td>49</td>
+<th>137854</th>
+<td>0</td>
+<td>41</td>
+<td>6847</td>
+<td>0</td>
+<td>1215</td>
+<td>76</td>
+<td>4294967295</td>
+<td>0.728008</td>
+<td>0</td>
+</tr>
+<tr>
+<th>136680</th>
+<td>33</td>
 <td>1</td>
-<td>215991</td>
-<td>111</td>
-<td>12917</td>
+<td>26</td>
+<td>0</td>
+<td>12</td>
+<td>3</td>
+<td>4294967295</td>
+<td>0.502463</td>
+<td>0</td>
+</tr>
+<tr>
+<th>69086</th>
+<td>0</td>
+<td>11</td>
+<td>2175</td>
+<td>0</td>
+<td>1077</td>
+<td>4</td>
+<td>4294967295</td>
+<td>0.522334</td>
 <td>2</td>
-<td>4294967295</td>
-<td>0.539789</td>
-<td>0</td>
-</tr>
-<tr>
-<th>2015432</th>
-<td>0</td>
-<td>1</td>
-<td>14247</td>
-<td>0</td>
-<td>1366</td>
-<td>0</td>
-<td>4294967295</td>
-<td>0.47619</td>
-<td>0</td>
 </tr>
 <tr>
 <th>2103172</th>
@@ -9367,80 +9244,6 @@ True
 </tbody>
 </table>
 </div>
-<div class="colab-df-buttons">
-<div class="colab-df-container">
-<button class="colab-df-convert" onclick="convertToInteractive('df-03968f30-53e0-4f1d-99ff-447fbff6e294')" style="display:none;" title="Convert this dataframe to an interactive table.">
-<svg height="24px" viewbox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg">
-<path d="M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z"></path>
-</svg>
-</button>
-<style>
-    .colab-df-container {
-      display:flex;
-      gap: 12px;
-    }
-
-    .colab-df-convert {
-      background-color: #E8F0FE;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      display: none;
-      fill: #1967D2;
-      height: 32px;
-      padding: 0 0 0 0;
-      width: 32px;
-    }
-
-    .colab-df-convert:hover {
-      background-color: #E2EBFA;
-      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
-      fill: #174EA6;
-    }
-
-    .colab-df-buttons div {
-      margin-bottom: 4px;
-    }
-
-    [theme=dark] .colab-df-convert {
-      background-color: #3B4455;
-      fill: #D2E3FC;
-    }
-
-    [theme=dark] .colab-df-convert:hover {
-      background-color: #434B5C;
-      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
-      fill: #FFFFFF;
-    }
-  </style>
-<script>
-      const buttonEl =
-        document.querySelector('#df-03968f30-53e0-4f1d-99ff-447fbff6e294 button.colab-df-convert');
-      buttonEl.style.display =
-        google.colab.kernel.accessAllowed ? 'block' : 'none';
-
-      async function convertToInteractive(key) {
-        const element = document.querySelector('#df-03968f30-53e0-4f1d-99ff-447fbff6e294');
-        const dataTable =
-          await google.colab.kernel.invokeFunction('convertToInteractive',
-                                                    [key], {});
-        if (!dataTable) return;
-
-        const docLinkHtml = 'Like what you see? Visit the ' +
-          '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
-          + ' to learn more about interactive tables.';
-        element.innerHTML = '';
-        dataTable['output_type'] = 'display_data';
-        await google.colab.output.renderOutput(dataTable, element);
-        const docLink = document.createElement('div');
-        docLink.innerHTML = docLinkHtml;
-        element.appendChild(docLink);
-      }
-    </script>
-</div>
-</div>
-</div>
 </div>
 </div>
 <div class="jp-OutputArea-child">
@@ -9456,7 +9259,6 @@ True
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<div class="colab-df-container" id="df-10caebba-c45e-458c-98d5-6b35bd7b39cd">
 <div>
 <style scoped="">
     .dataframe tbody tr th:only-of-type {
@@ -9586,80 +9388,6 @@ True
 </tbody>
 </table>
 </div>
-<div class="colab-df-buttons">
-<div class="colab-df-container">
-<button class="colab-df-convert" onclick="convertToInteractive('df-10caebba-c45e-458c-98d5-6b35bd7b39cd')" style="display:none;" title="Convert this dataframe to an interactive table.">
-<svg height="24px" viewbox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg">
-<path d="M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z"></path>
-</svg>
-</button>
-<style>
-    .colab-df-container {
-      display:flex;
-      gap: 12px;
-    }
-
-    .colab-df-convert {
-      background-color: #E8F0FE;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      display: none;
-      fill: #1967D2;
-      height: 32px;
-      padding: 0 0 0 0;
-      width: 32px;
-    }
-
-    .colab-df-convert:hover {
-      background-color: #E2EBFA;
-      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
-      fill: #174EA6;
-    }
-
-    .colab-df-buttons div {
-      margin-bottom: 4px;
-    }
-
-    [theme=dark] .colab-df-convert {
-      background-color: #3B4455;
-      fill: #D2E3FC;
-    }
-
-    [theme=dark] .colab-df-convert:hover {
-      background-color: #434B5C;
-      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
-      fill: #FFFFFF;
-    }
-  </style>
-<script>
-      const buttonEl =
-        document.querySelector('#df-10caebba-c45e-458c-98d5-6b35bd7b39cd button.colab-df-convert');
-      buttonEl.style.display =
-        google.colab.kernel.accessAllowed ? 'block' : 'none';
-
-      async function convertToInteractive(key) {
-        const element = document.querySelector('#df-10caebba-c45e-458c-98d5-6b35bd7b39cd');
-        const dataTable =
-          await google.colab.kernel.invokeFunction('convertToInteractive',
-                                                    [key], {});
-        if (!dataTable) return;
-
-        const docLinkHtml = 'Like what you see? Visit the ' +
-          '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
-          + ' to learn more about interactive tables.';
-        element.innerHTML = '';
-        dataTable['output_type'] = 'display_data';
-        await google.colab.output.renderOutput(dataTable, element);
-        const docLink = document.createElement('div');
-        docLink.innerHTML = docLinkHtml;
-        element.appendChild(docLink);
-      }
-    </script>
-</div>
-</div>
-</div>
 </div>
 </div>
 <div class="jp-OutputArea-child">
@@ -9728,7 +9456,7 @@ This value is 0.00055241398526179% of VOTES_FUNNY_MAX value!
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [20]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Remove rows with vote funny with artifact values</span>
@@ -9754,7 +9482,7 @@ This value is 0.00055241398526179% of VOTES_FUNNY_MAX value!
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [21]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1">## Noises are values that are valid but possibly not useful &amp; unstable</span>
@@ -9788,76 +9516,19 @@ This value is 0.00055241398526179% of VOTES_FUNNY_MAX value!
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th></th>
-<th>0</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>author_num_reviews</th>
-<td>0.0</td>
-</tr>
-<tr>
-<th>author_playtime_forever</th>
-<td>0.01495</td>
-</tr>
-<tr>
-<th>author_playtime_at_review</th>
-<td>0.016125</td>
-</tr>
-<tr>
-<th>voted_up</th>
-<td>0.136853</td>
-</tr>
-<tr>
-<th>author_num_games_owned</th>
-<td>0.495344</td>
-</tr>
-<tr>
-<th>weighted_vote_score</th>
-<td>0.655016</td>
-</tr>
-<tr>
-<th>votes_up</th>
-<td>0.694739</td>
-</tr>
-<tr>
-<th>votes_funny</th>
-<td>0.877833</td>
-</tr>
-<tr>
-<th>written_during_early_access</th>
-<td>0.891307</td>
-</tr>
-<tr>
-<th>author_playtime_last_two_weeks</th>
-<td>0.90153</td>
-</tr>
-<tr>
-<th>comment_count</th>
-<td>0.959832</td>
-</tr>
-</tbody>
-</table>
-</div><br/><label><b>dtype:</b> Float64</label>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>author_num_reviews                     0.0
+author_playtime_forever            0.01495
+author_playtime_at_review         0.016125
+voted_up                          0.136853
+author_num_games_owned            0.495344
+weighted_vote_score               0.655016
+votes_up                          0.694739
+votes_funny                       0.877833
+written_during_early_access       0.891307
+author_playtime_last_two_weeks     0.90153
+comment_count                     0.959832
+dtype: Float64</pre>
 </div>
 </div>
 </div>
@@ -9933,7 +9604,7 @@ This value is 0.00055241398526179% of VOTES_FUNNY_MAX value!
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [22]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1">## Uniqueness of catgorical features tells us insight of categories, while for numerical features,</span>
@@ -9986,7 +9657,13 @@ This value is 0.00055241398526179% of VOTES_FUNNY_MAX value!
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
 <pre>1. Numbers of unique values for categorical/numerical &amp; ID columns
-voted_up                       2
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>voted_up                       2
 written_during_early_access    2
 dtype: int64
 
@@ -10024,7 +9701,7 @@ dtype: int64
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [23]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># 4. Inspect more details ("author_steamid", "appid", "timestamp_created") regarding instances in #3</span>
@@ -10075,7 +9752,7 @@ dtype: int64
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>/tmp/ipykernel_15151/3891078007.py:7: DeprecationWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+<pre>/var/folders/61/1pzzb_697tvd2m0ys5f0wg5c0000gn/T/ipykernel_73718/3891078007.py:7: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
   .apply(lambda g: g.drop_duplicates().shape[0])  # First de-duplicate and then do row count
 </pre>
 </div>
@@ -10083,7 +9760,6 @@ dtype: int64
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<div class="colab-df-container" id="df-e02d29f4-6ad1-436d-945c-08dada254127">
 <div>
 <style scoped="">
     .dataframe tbody tr th:only-of-type {
@@ -10630,130 +10306,6 @@ dtype: int64
 </tbody>
 </table>
 </div>
-<div class="colab-df-buttons">
-<div class="colab-df-container">
-<button class="colab-df-convert" onclick="convertToInteractive('df-e02d29f4-6ad1-436d-945c-08dada254127')" style="display:none;" title="Convert this dataframe to an interactive table.">
-<svg height="24px" viewbox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg">
-<path d="M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z"></path>
-</svg>
-</button>
-<style>
-    .colab-df-container {
-      display:flex;
-      gap: 12px;
-    }
-
-    .colab-df-convert {
-      background-color: #E8F0FE;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      display: none;
-      fill: #1967D2;
-      height: 32px;
-      padding: 0 0 0 0;
-      width: 32px;
-    }
-
-    .colab-df-convert:hover {
-      background-color: #E2EBFA;
-      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
-      fill: #174EA6;
-    }
-
-    .colab-df-buttons div {
-      margin-bottom: 4px;
-    }
-
-    [theme=dark] .colab-df-convert {
-      background-color: #3B4455;
-      fill: #D2E3FC;
-    }
-
-    [theme=dark] .colab-df-convert:hover {
-      background-color: #434B5C;
-      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
-      fill: #FFFFFF;
-    }
-  </style>
-<script>
-      const buttonEl =
-        document.querySelector('#df-e02d29f4-6ad1-436d-945c-08dada254127 button.colab-df-convert');
-      buttonEl.style.display =
-        google.colab.kernel.accessAllowed ? 'block' : 'none';
-
-      async function convertToInteractive(key) {
-        const element = document.querySelector('#df-e02d29f4-6ad1-436d-945c-08dada254127');
-        const dataTable =
-          await google.colab.kernel.invokeFunction('convertToInteractive',
-                                                    [key], {});
-        if (!dataTable) return;
-
-        const docLinkHtml = 'Like what you see? Visit the ' +
-          '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
-          + ' to learn more about interactive tables.';
-        element.innerHTML = '';
-        dataTable['output_type'] = 'display_data';
-        await google.colab.output.renderOutput(dataTable, element);
-        const docLink = document.createElement('div');
-        docLink.innerHTML = docLinkHtml;
-        element.appendChild(docLink);
-      }
-    </script>
-</div>
-<div id="id_e76e6c64-067d-4a21-942f-577cff27a179">
-<style>
-      .colab-df-generate {
-        background-color: #E8F0FE;
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        display: none;
-        fill: #1967D2;
-        height: 32px;
-        padding: 0 0 0 0;
-        width: 32px;
-      }
-
-      .colab-df-generate:hover {
-        background-color: #E2EBFA;
-        box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
-        fill: #174EA6;
-      }
-
-      [theme=dark] .colab-df-generate {
-        background-color: #3B4455;
-        fill: #D2E3FC;
-      }
-
-      [theme=dark] .colab-df-generate:hover {
-        background-color: #434B5C;
-        box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-        filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
-        fill: #FFFFFF;
-      }
-    </style>
-<button class="colab-df-generate" onclick="generateWithVariable('combo_dup')" style="display:none;" title="Generate code using this dataframe.">
-<svg height="24px" viewbox="0 0 24 24" width="24px" xmlns="http://www.w3.org/2000/svg">
-<path d="M7,19H8.4L18.45,9,17,7.55,7,17.6ZM5,21V16.75L18.45,3.32a2,2,0,0,1,2.83,0l1.4,1.43a1.91,1.91,0,0,1,.58,1.4,1.91,1.91,0,0,1-.58,1.4L9.25,21ZM18.45,9,17,7.55Zm-12,3A5.31,5.31,0,0,0,4.9,8.1,5.31,5.31,0,0,0,1,6.5,5.31,5.31,0,0,0,4.9,4.9,5.31,5.31,0,0,0,6.5,1,5.31,5.31,0,0,0,8.1,4.9,5.31,5.31,0,0,0,12,6.5,5.46,5.46,0,0,0,6.5,12Z"></path>
-</svg>
-</button>
-<script>
-      (() => {
-      const buttonEl =
-        document.querySelector('#id_e76e6c64-067d-4a21-942f-577cff27a179 button.colab-df-generate');
-      buttonEl.style.display =
-        google.colab.kernel.accessAllowed ? 'block' : 'none';
-
-      buttonEl.onclick = () => {
-        google.colab.notebook.generateWithVariable('combo_dup');
-      }
-      })();
-    </script>
-</div>
-</div>
-</div>
 </div>
 </div>
 <div class="jp-OutputArea-child">
@@ -10799,7 +10351,7 @@ geras :)
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [24]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># 6. Create report on metadata difference on same (author ID, game ID, review date created)</span>
@@ -10862,7 +10414,7 @@ geras :)
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
-<pre>/tmp/ipykernel_15151/2976787689.py:8: DeprecationWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+<pre>/var/folders/61/1pzzb_697tvd2m0ys5f0wg5c0000gn/T/ipykernel_73718/2976787689.py:8: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
   .apply(lambda g: g.drop_duplicates().shape[0])
 </pre>
 </div>
@@ -10870,7 +10422,6 @@ geras :)
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
-<div class="colab-df-container" id="df-efadb726-939d-40cb-8fb2-2b8e6b8fbec2">
 <div>
 <style scoped="">
     .dataframe tbody tr th:only-of-type {
@@ -10935,19 +10486,19 @@ geras :)
 <td>4</td>
 </tr>
 <tr>
-<th>15</th>
-<td>76561198151549673</td>
-<td>730</td>
-<td>1423992043</td>
+<th>12</th>
+<td>76561198133914594</td>
+<td>272350</td>
+<td>1401889835</td>
 <td>4</td>
 <td>1</td>
 <td>1</td>
 <td>1</td>
 <td>1</td>
-<td>2</td>
 <td>1</td>
-<td>2</td>
-<td>2</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
 </tr>
 <tr>
 <th>14</th>
@@ -10965,11 +10516,26 @@ geras :)
 <td>2</td>
 </tr>
 <tr>
-<th>12</th>
-<td>76561198133914594</td>
-<td>272350</td>
-<td>1401889835</td>
+<th>15</th>
+<td>76561198151549673</td>
+<td>730</td>
+<td>1423992043</td>
 <td>4</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>1</td>
+<td>2</td>
+<td>2</td>
+</tr>
+<tr>
+<th>1</th>
+<td>76561198013036300</td>
+<td>104900</td>
+<td>1394820950</td>
+<td>3</td>
 <td>1</td>
 <td>1</td>
 <td>1</td>
@@ -10995,11 +10561,11 @@ geras :)
 <td>1</td>
 </tr>
 <tr>
-<th>1</th>
-<td>76561198013036300</td>
-<td>104900</td>
-<td>1394820950</td>
-<td>3</td>
+<th>0</th>
+<td>76561197960430758</td>
+<td>43160</td>
+<td>1401897619</td>
+<td>2</td>
 <td>1</td>
 <td>1</td>
 <td>1</td>
@@ -11025,21 +10591,6 @@ geras :)
 <td>2</td>
 </tr>
 <tr>
-<th>6</th>
-<td>76561198070870953</td>
-<td>206190</td>
-<td>1403046720</td>
-<td>2</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr>
 <th>4</th>
 <td>76561198057462316</td>
 <td>730</td>
@@ -11055,10 +10606,10 @@ geras :)
 <td>1</td>
 </tr>
 <tr>
-<th>0</th>
-<td>76561197960430758</td>
-<td>43160</td>
-<td>1401897619</td>
+<th>6</th>
+<td>76561198070870953</td>
+<td>206190</td>
+<td>1403046720</td>
 <td>2</td>
 <td>1</td>
 <td>1</td>
@@ -11085,18 +10636,18 @@ geras :)
 <td>2</td>
 </tr>
 <tr>
-<th>11</th>
-<td>76561198123783241</td>
-<td>356000</td>
-<td>1426499371</td>
+<th>9</th>
+<td>76561198078970398</td>
+<td>50130</td>
+<td>1394821667</td>
 <td>2</td>
 <td>1</td>
 <td>1</td>
 <td>1</td>
 <td>1</td>
+<td>1</td>
 <td>2</td>
-<td>2</td>
-<td>2</td>
+<td>1</td>
 <td>2</td>
 </tr>
 <tr>
@@ -11115,18 +10666,18 @@ geras :)
 <td>1</td>
 </tr>
 <tr>
-<th>9</th>
-<td>76561198078970398</td>
-<td>50130</td>
-<td>1394821667</td>
+<th>11</th>
+<td>76561198123783241</td>
+<td>356000</td>
+<td>1426499371</td>
 <td>2</td>
 <td>1</td>
 <td>1</td>
 <td>1</td>
 <td>1</td>
-<td>1</td>
 <td>2</td>
-<td>1</td>
+<td>2</td>
+<td>2</td>
 <td>2</td>
 </tr>
 <tr>
@@ -11146,130 +10697,6 @@ geras :)
 </tr>
 </tbody>
 </table>
-</div>
-<div class="colab-df-buttons">
-<div class="colab-df-container">
-<button class="colab-df-convert" onclick="convertToInteractive('df-efadb726-939d-40cb-8fb2-2b8e6b8fbec2')" style="display:none;" title="Convert this dataframe to an interactive table.">
-<svg height="24px" viewbox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg">
-<path d="M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z"></path>
-</svg>
-</button>
-<style>
-    .colab-df-container {
-      display:flex;
-      gap: 12px;
-    }
-
-    .colab-df-convert {
-      background-color: #E8F0FE;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      display: none;
-      fill: #1967D2;
-      height: 32px;
-      padding: 0 0 0 0;
-      width: 32px;
-    }
-
-    .colab-df-convert:hover {
-      background-color: #E2EBFA;
-      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
-      fill: #174EA6;
-    }
-
-    .colab-df-buttons div {
-      margin-bottom: 4px;
-    }
-
-    [theme=dark] .colab-df-convert {
-      background-color: #3B4455;
-      fill: #D2E3FC;
-    }
-
-    [theme=dark] .colab-df-convert:hover {
-      background-color: #434B5C;
-      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
-      fill: #FFFFFF;
-    }
-  </style>
-<script>
-      const buttonEl =
-        document.querySelector('#df-efadb726-939d-40cb-8fb2-2b8e6b8fbec2 button.colab-df-convert');
-      buttonEl.style.display =
-        google.colab.kernel.accessAllowed ? 'block' : 'none';
-
-      async function convertToInteractive(key) {
-        const element = document.querySelector('#df-efadb726-939d-40cb-8fb2-2b8e6b8fbec2');
-        const dataTable =
-          await google.colab.kernel.invokeFunction('convertToInteractive',
-                                                    [key], {});
-        if (!dataTable) return;
-
-        const docLinkHtml = 'Like what you see? Visit the ' +
-          '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
-          + ' to learn more about interactive tables.';
-        element.innerHTML = '';
-        dataTable['output_type'] = 'display_data';
-        await google.colab.output.renderOutput(dataTable, element);
-        const docLink = document.createElement('div');
-        docLink.innerHTML = docLinkHtml;
-        element.appendChild(docLink);
-      }
-    </script>
-</div>
-<div id="id_eb167496-c8c7-46ed-a52f-172a952a390a">
-<style>
-      .colab-df-generate {
-        background-color: #E8F0FE;
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        display: none;
-        fill: #1967D2;
-        height: 32px;
-        padding: 0 0 0 0;
-        width: 32px;
-      }
-
-      .colab-df-generate:hover {
-        background-color: #E2EBFA;
-        box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
-        fill: #174EA6;
-      }
-
-      [theme=dark] .colab-df-generate {
-        background-color: #3B4455;
-        fill: #D2E3FC;
-      }
-
-      [theme=dark] .colab-df-generate:hover {
-        background-color: #434B5C;
-        box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-        filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
-        fill: #FFFFFF;
-      }
-    </style>
-<button class="colab-df-generate" onclick="generateWithVariable('diagnostic_report')" style="display:none;" title="Generate code using this dataframe.">
-<svg height="24px" viewbox="0 0 24 24" width="24px" xmlns="http://www.w3.org/2000/svg">
-<path d="M7,19H8.4L18.45,9,17,7.55,7,17.6ZM5,21V16.75L18.45,3.32a2,2,0,0,1,2.83,0l1.4,1.43a1.91,1.91,0,0,1,.58,1.4,1.91,1.91,0,0,1-.58,1.4L9.25,21ZM18.45,9,17,7.55Zm-12,3A5.31,5.31,0,0,0,4.9,8.1,5.31,5.31,0,0,0,1,6.5,5.31,5.31,0,0,0,4.9,4.9,5.31,5.31,0,0,0,6.5,1,5.31,5.31,0,0,0,8.1,4.9,5.31,5.31,0,0,0,12,6.5,5.46,5.46,0,0,0,6.5,12Z"></path>
-</svg>
-</button>
-<script>
-      (() => {
-      const buttonEl =
-        document.querySelector('#id_eb167496-c8c7-46ed-a52f-172a952a390a button.colab-df-generate');
-      buttonEl.style.display =
-        google.colab.kernel.accessAllowed ? 'block' : 'none';
-
-      buttonEl.onclick = () => {
-        google.colab.notebook.generateWithVariable('diagnostic_report');
-      }
-      })();
-    </script>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -11319,7 +10746,7 @@ geras :)
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [25]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Remove exact duplicates</span>
@@ -11348,10 +10775,12 @@ geras :)
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [26]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">write_pandas_parquet</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">paths</span><span class="o">.</span><span class="n">cleaned_sampled_parquet</span><span class="p">)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Set up for Spark app &amp; resource allocation</span>
+<span class="n">spark</span> <span class="o">=</span> <span class="n">create_spark_session</span><span class="p">(</span><span class="s2">"steam_reviews_data_health_audit_&amp;_cleaning_sampled"</span><span class="p">)</span>
+<span class="n">write_spark_parquet</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">),</span> <span class="n">path</span><span class="o">=</span><span class="n">paths</span><span class="o">.</span><span class="n">cleaned_sampled_parquet</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -11363,9 +10792,27 @@ geras :)
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>WARNING: Using incubator modules: jdk.incubator.vector
+Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/06/04 21:37:05 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/06/04 21:38:41 WARN TaskSetManager: Stage 0 contains a task of very large size (16996 KiB). The maximum recommended task size is 1000 KiB.
+[Stage 0:=====================================================&gt;   (30 + 2) / 32]</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Saved Pandas parquet to: /content/drive/MyDrive/DSC 288R/Project/data/cleaned_sampled.parquet
+<pre>Saved Spark parquet to: /Users/steveg/Desktop/DSC-288R-Capstone-Final-Project/data/cleaned_sampled_parquet
 </pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>                                                                                </pre>
 </div>
 </div>
 </div>

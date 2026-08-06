@@ -1,8 +1,10 @@
 [core]
     remote = s3_sample
-
 ['remote "local_sample"']
-    url = ../dvc_remote_sample
-
+    url = ../dvcstore
 ['remote "s3_sample"']
     url = s3://dsc-288r-capstone-steam-review-sampled-data/dvcstore
+['remote "s3_images"']
+    url = s3://dsc-288r-capstone-steam-review-sampled-data/dvcstore/imagestore
+['remote "s3_models"']
+    url = s3://dsc-288r-capstone-steam-review-sampled-data/dvcstore/modelstore
